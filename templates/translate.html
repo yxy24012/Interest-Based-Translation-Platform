@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block title %}{{ get_message('translate_page_title') }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-language me-2"></i>{{ get_message('translate_page_title') }}</h3>
+            </div>
+            <div class="card-body">
+                <!-- 作品信息 -->
+                <div class="mb-4">
+                    <h4>{{ work.title }}</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <i class="fas fa-language me-1"></i>{{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>
+                                <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                   class="text-decoration-none" 
+                                   style="color: #007bff; transition: color 0.2s ease;" 
+                                   onmouseover="this.style.color='#0056b3'" 
+                                   onmouseout="this.style.color='#007bff'">
+                                    {{ work.creator.username }}
+                                </a>
+                            </small>
+                    </div>
+                </div>
+                
+                <!-- 原文内容 -->
+                <div class="mb-4">
+                        <h5><i class="fas fa-file-text me-2"></i>{{ get_message('original_content') }}</h5>
+                    <div class="border rounded p-3 bg-light">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ work.content }}</pre>
+                        </div>
+                    </div>
+                    
+                    {% if work.media_filename %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-paperclip me-2"></i>{{ get_message('attachment') if get_message('attachment') else '附件' }}</h6>
+                        <div class="border rounded p-3 bg-light">
+                            {% set ext = work.media_filename.rsplit('.', 1)[-1].lower() %}
+                            {% if ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'] %}
+                                <img src="{{ url_for('uploaded_file', filename=work.media_filename) }}" class="img-fluid rounded" style="max-width: 100%; max-height: 400px; object-fit: contain;">
+                            {% elif ext in ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'] %}
+                                <video controls class="w-100" style="max-height: 400px;">
+                                    <source src="{{ url_for('uploaded_file', filename=work.media_filename) }}" type="video/{{ ext }}">
+                                    {{ get_message('video_not_supported') }}
+                                </video>
+                            {% elif ext in ['mp3', 'wav', 'ogg', 'aac', 'flac'] %}
+                                <audio controls class="w-100">
+                                    <source src="{{ url_for('uploaded_file', filename=work.media_filename) }}" type="audio/{{ ext }}">
+                                    {{ get_message('audio_not_supported') }}
+                                </audio>
+                            {% else %}
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-file me-3 fa-2x text-primary"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ work.media_filename }}</h6>
+                                        <small class="text-muted">{{ get_message('file_type') }}{{ ext.upper() }}</small>
+                                    </div>
+                                    <a href="{{ url_for('uploaded_file', filename=work.media_filename) }}" 
+                                       class="btn btn-outline-primary btn-sm" 
+                                       target="_blank" download>
+                                        <i class="fas fa-download me-1"></i>{{ get_message('download') }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if work.translation_expectation %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-star me-2 text-primary"></i><span class="fw-bold text-primary">{{ get_message('creator_expectation') }}</span></h5>
+                        <div class="border rounded p-3 bg-light">
+                            {{ work.translation_expectation }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if work.translation_requirements %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i><span class="fw-bold text-warning">{{ get_message('creator_requirements') }}</span></h5>
+                        <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
+                            {{ work.translation_requirements }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- 翻译表单 -->
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="content" class="form-label">
+                            <i class="fas fa-language me-1"></i>{{ get_message('translation_content_label') }} <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="content" name="content" rows="15" 
+                                  placeholder="{{ get_message('translation_content_placeholder') }}" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="media" class="form-label">
+                            <i class="fas fa-paperclip me-1"></i>{{ get_message('translation_attachment_label') }}
+                        </label>
+                        <input type="file" class="form-control" id="media" name="media" 
+                               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt">
+                        <div class="form-text">
+                            {{ get_message('supported_formats') }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" name="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>{{ get_message('submit_translation') }}
+                        </button>
+                        <button type="submit" name="save_draft" class="btn btn-outline-secondary">
+                            <i class="fas fa-save me-2"></i>{{ get_message('save_as_draft') }}
+                        </button>
+                        <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-danger">
+                            <i class="fas fa-times me-2"></i>{{ get_message('cancel') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div class="col-lg-4">
+        <!-- 翻译指南 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>{{ get_message('translation_guide') }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6 class="text-primary">{{ get_message('translation_tips') }}</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>{{ get_message('tip_understand') }}</li>
+                        <li><i class="fas fa-check text-success me-2"></i>{{ get_message('tip_natural') }}</li>
+                        <li><i class="fas fa-check text-success me-2"></i>{{ get_message('tip_terms') }}</li>
+                        <li><i class="fas fa-check text-success me-2"></i>{{ get_message('tip_culture') }}</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-warning">{{ get_message('notes') }}</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>{{ get_message('note_avoid_mt') }}</li>
+                        <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>{{ get_message('note_not_distort') }}</li>
+                        <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>{{ get_message('note_politeness') }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 作品信息 -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>{{ get_message('work_info') }}</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <strong>{{ get_message('language_pair') }}</strong>
+                        {{ work.original_language }} → {{ work.target_language }}
+                    </li>
+                    {% if work.category %}
+                    <li class="mb-2">
+                        <strong>{{ get_message('label_category') }}：</strong>
+                        {% if work.category == '投稿・文章' %}
+                            {{ get_message('category_post_article') if get_message('category_post_article') else '投稿・文章' }}
+                        {% elif work.category == '小说' %}
+                            {{ get_message('category_novel') if get_message('category_novel') else '小说' }}
+                        {% elif work.category == '图片' %}
+                            {{ get_message('category_image') if get_message('category_image') else '图片' }}
+                        {% elif work.category == '漫画' %}
+                            {{ get_message('category_comic') if get_message('category_comic') else '漫画' }}
+                        {% elif work.category == '音声' %}
+                            {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                        {% elif work.category == '视频・动画' %}
+                            {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                        {% elif work.category == '闲聊' %}
+                            {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                        {% elif work.category == '其他' %}
+                            {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                        {% else %}
+                            {{ work.category }}
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                    <li class="mb-2">
+                        <strong>{{ get_message('creator') }}：</strong>
+                        <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" class="text-decoration-none">
+                            {{ work.creator.username }}
+                        </a>
+                    </li>
+                    <li class="mb-0">
+                        <strong>{{ get_message('created_at_label') }}</strong>
+                        {{ work.created_at.strftime('%Y-%m-%d') }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 复制原文
+function copyOriginal() {
+    const originalText = `{{ work.content|replace('\n', '\\n')|replace('"', '\\"') }}`;
+    window.copyOriginal(originalText);
+}
+
+// 清空翻译
+function clearTranslation() {
+    if (confirm('{{ get_message("confirm_clear_translation") }}')) {
+        document.getElementById('translation_content').value = '';
+        updateWordCount();
+    }
+}
+
+// 字数统计
+function wordCount() {
+    const text = document.getElementById('translation_content').value;
+    const charCount = text.length;
+    const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    alert('{{ get_message("char_count_label") if get_message("char_count_label") else "字符数：" }}' + charCount + '\n' + '{{ get_message("word_count_label") if get_message("word_count_label") else "词数：" }}' + wordCount);
+}
+
+// 更新字数统计
+function updateWordCount() {
+    const text = document.getElementById('translation_content').value;
+    document.getElementById('translation-count').textContent = text.length;
+}
+
+// 监听输入事件
+document.getElementById('translation_content').addEventListener('input', updateWordCount);
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    updateWordCount();
+});
+</script>
+{% endblock %} 

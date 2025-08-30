@@ -1,0 +1,675 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block title %}
+{{ get_message('works_list') if get_message('works_list') else '作品列表' }} - {{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}
+{% endblock %}
+
+{% block content %}
+<style>
+/* 确保作品列表页面布局稳定 */
+.works-page-layout {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.works-sidebar {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+    padding-right: 15px;
+}
+
+.works-main-content {
+    flex: 0 0 75% !important;
+    max-width: 75% !important;
+    padding-left: 15px;
+}
+
+/* 手机分辨率下的筛选切换按钮 */
+.filter-toggle-btn {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 15px;
+    z-index: 1000;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.filter-toggle-btn:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+.filter-toggle-btn i {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .works-page-layout {
+        flex-direction: column !important;
+    }
+    
+    .works-sidebar,
+    .works-main-content {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 0;
+    }
+    
+    .works-sidebar {
+        margin-bottom: 2rem;
+        display: none; /* 默认隐藏筛选 */
+    }
+    
+    .works-sidebar.show {
+        display: block; /* 显示筛选 */
+    }
+    
+    .filter-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* 当筛选显示时，调整主内容区域 */
+    .works-main-content {
+        margin-top: 0;
+    }
+}
+
+.like-stats-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.3rem;
+    border-radius: 3px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    transition: none;
+    cursor: default;
+    font-size: 0.8rem;
+    min-width: auto;
+}
+
+.like-stats-card:hover {
+    background: transparent;
+    transform: none;
+}
+
+.like-stats-card.star {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.like-stats-card.star:hover {
+    background: #f8f9fa;
+}
+
+/* 收藏按钮样式 */
+.favorite-btn-mini {
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid;
+}
+
+.favorite-btn-mini:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn-mini .fa-heart {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.favorite-btn-mini:hover .fa-heart {
+    transform: scale(1.2);
+}
+
+.favorite-btn-mini.favorited {
+    animation: favoritePulse 0.3s ease;
+}
+
+@keyframes favoritePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.like-stats-card.star {
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.like-icon {
+    font-size: 0.8rem;
+}
+
+.like-count {
+    font-weight: 600;
+    color: #495057;
+}
+</style>
+
+<!-- 手机分辨率下的筛选切换按钮 -->
+<button class="filter-toggle-btn" id="filterToggleBtn" title="{{ get_message('toggle_filter') if get_message('toggle_filter') else '切换筛选' }}">
+    <i class="fas fa-filter"></i>
+</button>
+
+<div class="container-fluid">
+    <div class="row works-page-layout">
+        <!-- 筛选侧边栏 -->
+        <div class="col-md-3 works-sidebar" id="filterSidebar">
+            <div class="sidebar-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-filter me-2"></i>
+                            {{ get_message('filter') if get_message('filter') else '筛选' }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="{{ url_for('works') }}">
+                            <!-- 搜索 -->
+                            <div class="mb-3">
+                                <label for="search" class="form-label">
+                                    {{ get_message('search') if get_message('search') else '搜索' }}
+                                </label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       value="{{ search }}"                                        placeholder="{{ get_message('search_placeholder') if get_message('search_placeholder') else '搜索标题或内容...' }}">
+                            </div>
+                            
+                            <!-- 分类筛选 -->
+                            <div class="mb-3">
+                                <label for="category" class="form-label">
+                                    {{ get_message('category') if get_message('category') else '分类' }}
+                                </label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="">
+                                        {{ get_message('all_categories') if get_message('all_categories') else '所有分类' }}
+                                    </option>
+                                    <option value="投稿・文章" {% if request.args.get('category') == '投稿・文章' %}selected{% endif %}>
+                                        {{ get_message('category_post_article') if get_message('category_post_article') else '投稿・文章' }}
+                                    </option>
+                                    <option value="小说" {% if request.args.get('category') == '小说' %}selected{% endif %}>
+                                        {{ get_message('category_novel') if get_message('category_novel') else '小说' }}
+                                    </option>
+                                    <option value="图片" {% if request.args.get('category') == '图片' %}selected{% endif %}>
+                                        {{ get_message('category_image') if get_message('category_image') else '图片' }}
+                                    </option>
+                                    <option value="漫画" {% if request.args.get('category') == '漫画' %}selected{% endif %}>
+                                        {{ get_message('category_comic') if get_message('category_comic') else '漫画' }}
+                                    </option>
+                                    <option value="音声" {% if request.args.get('category') == '音声' %}selected{% endif %}>
+                                        {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                                    </option>
+                                    <option value="视频・动画" {% if request.args.get('category') == '视频・动画' %}selected{% endif %}>
+                                        {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                                    </option>
+                                    <option value="闲聊" {% if request.args.get('category') == '闲聊' %}selected{% endif %}>
+                                        {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                                    </option>
+                                    <option value="其他" {% if request.args.get('category') == '其他' %}selected{% endif %}>
+                                        {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- 原文语言筛选 -->
+                            <div class="mb-3">
+                                <label for="original_language" class="form-label">
+                                    {{ get_message('original_language') if get_message('original_language') else '原文语言' }}
+                                </label>
+                                <select class="form-select" id="original_language" name="original_language">
+                                    <option value="">{{ get_message('all_languages') }}</option>
+                                    <option value="中文" {% if request.args.get('original_language') == '中文' %}selected{% endif %}>{{ translate_language('中文') }}</option>
+                                    <option value="英文" {% if request.args.get('original_language') == '英文' %}selected{% endif %}>{{ translate_language('英文') }}</option>
+                                    <option value="日文" {% if request.args.get('original_language') == '日文' %}selected{% endif %}>{{ translate_language('日文') }}</option>
+                                    <option value="韩文" {% if request.args.get('original_language') == '韩文' %}selected{% endif %}>{{ translate_language('韩文') }}</option>
+                                    <option value="法文" {% if request.args.get('original_language') == '法文' %}selected{% endif %}>{{ translate_language('法文') }}</option>
+                                    <option value="德文" {% if request.args.get('original_language') == '德文' %}selected{% endif %}>{{ translate_language('德文') }}</option>
+                                    <option value="西班牙文" {% if request.args.get('original_language') == '西班牙文' %}selected{% endif %}>{{ translate_language('西班牙文') }}</option>
+                                    <option value="俄文" {% if request.args.get('original_language') == '俄文' %}selected{% endif %}>{{ translate_language('俄文') }}</option>
+                                    <option value="其他" {% if request.args.get('original_language') == '其他' %}selected{% endif %}>{{ get_message('language_other') }}</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 目标语言筛选 -->
+                            <div class="mb-3">
+                                <label for="target_language" class="form-label">
+                                    {{ get_message('target_language_label') if get_message('target_language_label') else '目标语言' }}
+                                </label>
+                                <select class="form-select" id="target_language" name="target_language">
+                                    <option value="">{{ get_message('all_languages') }}</option>
+                                    <option value="中文" {% if request.args.get('target_language') == '中文' %}selected{% endif %}>{{ translate_language('中文') }}</option>
+                                    <option value="英文" {% if request.args.get('target_language') == '英文' %}selected{% endif %}>{{ translate_language('英文') }}</option>
+                                    <option value="日文" {% if request.args.get('target_language') == '日文' %}selected{% endif %}>{{ translate_language('日文') }}</option>
+                                    <option value="韩文" {% if request.args.get('target_language') == '韩文' %}selected{% endif %}>{{ translate_language('韩文') }}</option>
+                                    <option value="法文" {% if request.args.get('target_language') == '法文' %}selected{% endif %}>{{ translate_language('法文') }}</option>
+                                    <option value="德文" {% if request.args.get('target_language') == '德文' %}selected{% endif %}>{{ translate_language('德文') }}</option>
+                                    <option value="西班牙文" {% if request.args.get('target_language') == '西班牙文' %}selected{% endif %}>{{ translate_language('西班牙文') }}</option>
+                                    <option value="俄文" {% if request.args.get('target_language') == '俄文' %}selected{% endif %}>{{ translate_language('俄文') }}</option>
+                                    <option value="其他" {% if request.args.get('target_language') == '其他' %}selected{% endif %}>{{ get_message('language_other') }}</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 状态筛选 -->
+                            <div class="mb-3">
+                                <label for="status" class="form-label">
+                                    {{ get_message('status') if get_message('status') else '状态' }}
+                                </label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="">
+                                        {{ get_message('all_status') if get_message('all_status') else '所有状态' }}
+                                    </option>
+                                    <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>
+                                        {{ get_message('status_pending') if get_message('status_pending') else '待翻译' }}
+                                    </option>
+                                    <option value="translating" {% if request.args.get('status') == 'translating' %}selected{% endif %}>
+                                        {{ get_message('status_translating') if get_message('status_translating') else '翻译中' }}
+                                    </option>
+                                    <option value="completed" {% if request.args.get('status') == 'completed' %}selected{% endif %}>
+                                        {{ get_message('status_completed') if get_message('status_completed') else '已完成' }}
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- 标签筛选 -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {{ get_message('tags') if get_message('tags') else '标签' }}
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="tag_multiple_translators" name="tags" value="multiple_translators" 
+                                           {% if request.args.get('tags') == 'multiple_translators' %}checked{% endif %}>
+                                    <label class="form-check-label" for="tag_multiple_translators">
+                                        <i class="fas fa-users me-1"></i>
+                                        {{ get_message('tag_multiple_translators') if get_message('tag_multiple_translators') else '多人翻译' }}
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>
+                                {{ get_message('apply_filter') if get_message('apply_filter') else '应用筛选' }}
+                            </button>
+                        </form>
+                        
+                        <!-- 清除筛选 -->
+                        {% if search or request.args.get('category') or request.args.get('original_language') or request.args.get('target_language') or request.args.get('status') or request.args.getlist('tags') %}
+                        <div class="mt-2">
+                            <a href="{{ url_for('works') }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-times me-2"></i>
+                                {{ get_message('clear_filter') if get_message('clear_filter') else '清除筛选' }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主要内容 -->
+        <div class="col-md-9 works-main-content">
+            <!-- 页面标题和统计 -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0"><i class="fas fa-book me-2"></i>{{ get_message('section_works') }}</h1>
+                    <p class="text-muted mb-0">
+                        {{ works.total }}
+                        {{ get_message('section_works') }}
+                        {% if search or request.args.get('category') or request.args.get('original_language') or request.args.get('target_language') or request.args.get('status') or request.args.getlist('tags') %}
+                        ({{ get_message('filtered') }})
+                        {% endif %}
+                    </p>
+                </div>
+                {% if session.get('role') in ['creator', 'admin'] %}
+                <a href="{{ url_for('upload') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>{{ get_message('upload_work') if get_message('upload_work') else '上传作品' }}
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- 作品列表 -->
+            {% if works.items %}
+            <div class="row">
+                {% for work in works.items %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card work-card h-100">
+                        <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=work.id) }}';">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">
+                                    {{ work.title }}
+                                </h5>
+                                <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }} status-badge">
+                                    {{ {'pending': get_message('status_pending'), 'translating': get_message('status_translating'), 'completed': get_message('status_completed')}[work.status] }}
+                                </span>
+                            </div>
+                            <p class="card-text small text-muted">
+                                {{ work.content[:100] }}{% if work.content|length > 100 %}...{% endif %}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-language me-1"></i>{{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                                </small>
+                                <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                            </div>
+                            <!-- 标签区域 -->
+                            {% if work.category or work.allow_multiple_translators %}
+                            <div class="mt-2">
+                                <small class="text-muted d-flex align-items-center gap-2">
+                                    {% if work.category %}
+                                    <span class="badge bg-info">
+                                        {% if work.category == '投稿・文章' %}
+                                            {{ get_message('category_post_article') if get_message('category_post_article') else '投稿・文章' }}
+                                        {% elif work.category == '小说' %}
+                                            {{ get_message('category_novel') if get_message('category_novel') else '小说' }}
+                                        {% elif work.category == '图片' %}
+                                            {{ get_message('category_image') if get_message('category_image') else '图片' }}
+                                        {% elif work.category == '漫画' %}
+                                            {{ get_message('category_comic') if get_message('category_comic') else '漫画' }}
+                                        {% elif work.category == '音声' %}
+                                            {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                                        {% elif work.category == '视频・动画' %}
+                                            {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                                        {% elif work.category == '闲聊' %}
+                                            {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                                        {% elif work.category == '其他' %}
+                                            {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                                        {% else %}
+                                            {{ work.category }}
+                                        {% endif %}
+                                    </span>
+                                    {% endif %}
+                                    
+                                    {% if work.allow_multiple_translators %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-users me-1"></i>
+                                        {{ get_message('tag_multiple_translators') if get_message('tag_multiple_translators') else '多人翻译' }}
+                                    </span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted d-flex align-items-center">
+                                    {% if work.creator %}
+                                    <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                       class="text-decoration-none me-2" 
+                                       style="transition: transform 0.2s ease;" 
+                                       onmouseover="this.style.transform='scale(1.1)'" 
+                                       onmouseout="this.style.transform='scale(1)'"
+                                       onclick="event.stopPropagation();">
+                                        <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                             class="rounded-circle" style="width: 20px; height: 20px; object-fit: cover; cursor: pointer;" 
+                                             alt="{{ get_message('avatar_alt') if get_message('avatar_alt') else '头像' }}">
+                                    </a>
+                                    <span onclick="event.stopPropagation(); window.location.href='{{ url_for('user_profile', user_id=work.creator.id) }}';" 
+                                          style="cursor: pointer; color: #007bff; font-weight: 600; transition: color 0.2s ease;" 
+                                          onmouseover="this.style.color='#0056b3';" 
+                                          onmouseout="this.style.color='#007bff';">
+                                        {{ work.creator.username }}
+                                    </span>
+                                    {% else %}
+                                    <img src="{{ url_for('static', filename='default_avatar.png') }}" 
+                                         class="rounded-circle me-2" style="width: 20px; height: 20px; object-fit: cover;" 
+                                         alt="{{ get_message('avatar_alt') if get_message('avatar_alt') else '头像' }}">
+                                    <span style="color: #6c757d; font-weight: 600;">
+                                        {{ get_message('unknown_user') if get_message('unknown_user') else '未知用户' }}
+                                    </span>
+                                    {% endif %}
+                                </small>
+                                
+                                <!-- 点赞统计和收藏按钮 -->
+                                <div class="d-flex align-items-center gap-1">
+                                    {% set work_likes = Like.query.filter_by(target_type='work', target_id=work.id).count() %}
+                                    {% set total_author_likes = 0 %}
+                                    {% for translation in work.translations %}
+                                        {% set total_author_likes = total_author_likes + AuthorLike.query.filter_by(translation_id=translation.id).count() %}
+                                    {% endfor %}
+                                    
+                                    <div class="like-stats-card">
+                                        <i class="fas fa-thumbs-up text-primary like-icon"></i>
+                                        <span class="like-count">{{ work_likes }}</span>
+                                    </div>
+                                    {% if total_author_likes > 0 %}
+                                    <div class="like-stats-card star">
+                                        <i class="fas fa-star text-warning like-icon"></i>
+                                        <span class="like-count">{{ total_author_likes }}</span>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- 收藏按钮 -->
+                                    {% if session.get('user_id') %}
+                                    {% set user_favorited = Favorite.query.filter_by(user_id=session.get('user_id'), work_id=work.id).first() if Favorite else None %}
+                                    <button class="btn btn-sm {{ 'btn-danger' if user_favorited else 'btn-outline-danger' }} favorite-btn-mini" 
+                                            data-work-id="{{ work.id }}" 
+                                            data-favorited="{{ 'true' if user_favorited else 'false' }}"
+                                            onclick="event.stopPropagation(); toggleFavorite({{ work.id }}, this)"
+                                            title="{{ get_message('remove_from_favorites') if user_favorited else get_message('add_to_favorites') }}">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- 分页 -->
+            {% if works.pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if works.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('works', page=works.prev_num, search=search, category=request.args.get('category'), original_language=request.args.get('original_language'), target_language=request.args.get('target_language'), status=request.args.get('status'), tags=request.args.getlist('tags')) }}">
+                            {{ get_message('previous_page') if get_message('previous_page') else '上一页' }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in works.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != works.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('works', page=page_num, search=search, category=request.args.get('category'), original_language=request.args.get('original_language'), target_language=request.args.get('target_language'), status=request.args.get('status'), tags=request.args.getlist('tags')) }}">{{ page_num }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                            {% endif %}
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if works.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('works', page=works.next_num, search=search, category=request.args.get('category'), original_language=request.args.get('original_language'), target_language=request.args.get('target_language'), status=request.args.get('status'), tags=request.args.getlist('tags')) }}">
+                            {{ get_message('next_page') if get_message('next_page') else '下一页' }}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">{{ get_message('no_works_found') if get_message('no_works_found') else '暂无作品' }}</h4>
+                <p class="text-muted">{{ get_message('no_works_description') if get_message('no_works_description') else '没有找到符合条件的作品' }}</p>
+                {% if session.get('role') in ['creator', 'admin'] %}
+                <a href="{{ url_for('upload') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>{{ get_message('upload_first_work') if get_message('upload_first_work') else '上传第一个作品' }}
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 删除成功提示弹窗 -->
+<div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="deleteSuccessModalLabel">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ get_message('delete_success') if get_message('delete_success') else '作品已删除' }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-trash-alt fa-3x text-success mb-3"></i>
+                    <p class="mb-0">{{ get_message('delete_success') if get_message('delete_success') else '作品已删除' }}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                    {{ get_message('confirm') if get_message('confirm') else '确定' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 检查URL参数，如果是从删除操作跳转过来的，显示删除成功弹窗
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('deleted') === 'true') {
+        // 显示删除成功弹窗
+        const deleteSuccessModal = new bootstrap.Modal(document.getElementById('deleteSuccessModal'));
+        deleteSuccessModal.show();
+        
+        // 清除URL参数，避免刷新页面时重复显示
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('deleted');
+        window.history.replaceState({}, '', newUrl);
+    }
+    
+    // 筛选切换功能
+    const filterToggleBtn = document.getElementById('filterToggleBtn');
+    const filterSidebar = document.getElementById('filterSidebar');
+    const filterIcon = filterToggleBtn.querySelector('i');
+    
+    if (filterToggleBtn && filterSidebar) {
+        filterToggleBtn.addEventListener('click', function() {
+            filterSidebar.classList.toggle('show');
+            
+            // 更新按钮图标和标题
+            if (filterSidebar.classList.contains('show')) {
+                filterIcon.className = 'fas fa-times';
+                filterToggleBtn.title = '隐藏筛选';
+            } else {
+                filterIcon.className = 'fas fa-filter';
+                filterToggleBtn.title = '显示筛选';
+            }
+        });
+    }
+});
+
+// 收藏功能
+function toggleFavorite(workId, button) {
+    fetch(`/favorite/${workId}/toggle`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const isFavorited = data.is_favorited;
+            
+            if (isFavorited) {
+                // 已收藏状态
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-danger');
+                button.style.backgroundColor = '#dc3545';
+                button.style.borderColor = '#dc3545';
+                button.style.color = 'white';
+                button.title = '{{ get_message("remove_from_favorites") }}';
+                button.classList.add('favorited');
+                
+                // 显示成功消息
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("success") if get_message("success") else "成功" }}', data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                // 未收藏状态
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-outline-danger');
+                button.style.backgroundColor = 'transparent';
+                button.style.borderColor = '#dc3545';
+                button.style.color = '#dc3545';
+                button.title = '{{ get_message("add_to_favorites") }}';
+                button.classList.remove('favorited');
+                
+                // 显示成功消息
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("success") if get_message("success") else "成功" }}', data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+            }
+        } else {
+            if (window.showNotificationCard) {
+                window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', data.message, 'error');
+            } else {
+                alert(data.message);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (window.showNotificationCard) {
+            window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', '{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}', 'error');
+        } else {
+            alert('{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}');
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_message('confirm_translate_title') if get_message('confirm_translate_title') else '翻译请求确认' }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<style>
+/* 完全禁用所有过渡效果 */
+.confirm-translate-page * {
+    transition: none !important;
+    animation: none !important;
+}
+
+.confirm-translate-page .btn:hover,
+.confirm-translate-page .card:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+}
+
+/* 确保按钮内容稳定 */
+#submit-button {
+    transition: none !important;
+}
+
+#submit-button:hover {
+    transform: none !important;
+}
+</style>
+
+<div class="confirm-translate-page">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="mb-0"><i class="fas fa-language me-2"></i>{{ get_message('confirm_translate_title') if get_message('confirm_translate_title') else '翻译请求确认' }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ get_message('please_reconfirm_requirements') if get_message('please_reconfirm_requirements') else '请再次确认翻译要求。' }}
+                    </div>
+                    
+                    {% if submitted %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>{{ get_message('translate_request_sent') if get_message('translate_request_sent') else '翻译请求已发送，请等待作者同意。' }}
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- 作者期待和要求 -->
+                        {% if author_expectation %}
+                        <div class="mb-4">
+                            <h5><i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') if get_message('creator_expectation') else '作者期待' }}</h5>
+                            <div class="border rounded p-3 bg-light">
+                                <p class="mb-0">{{ author_expectation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if author_requirement %}
+                        <div class="mb-4">
+                            <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') if get_message('creator_requirements') else '翻译要求' }}</h5>
+                            <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
+                                <p class="mb-0">{{ author_requirement }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if translator_expectation %}
+                        <div class="mb-4">
+                            <h5><i class="fas fa-comment me-2 text-info"></i>{{ get_message('your_expectation') if get_message('your_expectation') else '您的期待' }}</h5>
+                            <div class="border rounded p-3 bg-light">
+                                <p class="mb-0">{{ translator_expectation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="POST">
+                            <!-- 选择操作类型 -->
+                            <div class="mb-4">
+                                <h5><i class="fas fa-cog me-2"></i>{{ get_message('choose_action') if get_message('choose_action') else '选择操作' }}</h5>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="action_type" id="action_request" value="request" checked>
+                                    <label class="form-check-label" for="action_request">
+                                        <i class="fas fa-heart me-1"></i>{{ get_message('have_expectations_for_creator') if get_message('have_expectations_for_creator') else '我对作者有期待/要求' }}
+                                    </label>
+                                    <small class="form-text text-muted d-block">
+                                        {{ get_message('explain_expectations_then_translate') if get_message('explain_expectations_then_translate') else '向作者表达期待或要求后再开始翻译' }}
+                                    </small>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="action_type" id="action_direct" value="direct">
+                                    <label class="form-check-label" for="action_direct">
+                                        <i class="fas fa-check me-1"></i>{{ get_message('agree_and_start_translation') if get_message('agree_and_start_translation') else '同意要求并开始翻译' }}
+                                    </label>
+                                    <small class="form-text text-muted d-block">
+                                        {{ get_message('agree_and_go_to_translate_page') if get_message('agree_and_go_to_translate_page') else '同意作者要求并进入翻译页面' }}
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <!-- 对作者的期待/要求 -->
+                            <div class="mb-4" id="expectation_section">
+                                <h5><i class="fas fa-heart me-2 text-danger"></i>{{ get_message('expectations_for_creator') if get_message('expectations_for_creator') else '对作者的期待/要求' }}</h5>
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">{{ get_message('enter_expectations_for_translation') if get_message('enter_expectations_for_translation') else '请输入您对翻译的期待或要求' }}</label>
+                                    <textarea class="form-control" id="content" name="content" rows="6" 
+                                              placeholder="{{ get_message('expectations_placeholder') if get_message('expectations_placeholder') else '例如：翻译风格、术语统一、文化考虑等...' }}"></textarea>
+                                    <div class="form-text">
+                                        {{ get_message('empty_then_direct_translate') if get_message('empty_then_direct_translate') else '留空则直接开始翻译' }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submit-button">
+                                    <i class="fas fa-paper-plane me-2"></i>{{ get_message('send_request_to_creator') if get_message('send_request_to_creator') else '向作者发送请求' }}
+                                </button>
+                                <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                                </a>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const actionTypeRadios = document.querySelectorAll('input[name="action_type"]');
+    const expectationSection = document.getElementById('expectation_section');
+    const submitButton = document.getElementById('submit-button');
+    const submitIcon = submitButton.querySelector('i');
+    
+    // 创建两个不同的按钮文本元素
+    const requestText = '{{ get_message("send_request_to_creator") if get_message("send_request_to_creator") else "向作者发送请求" }}';
+    const directText = '{{ get_message("agree_and_start_translation") if get_message("agree_and_start_translation") else "同意要求并开始翻译" }}';
+    
+    function updateUI() {
+        const selectedValue = document.querySelector('input[name="action_type"]:checked').value;
+        
+        // 更新按钮图标和文本
+        if (selectedValue === 'direct') {
+            submitIcon.className = 'fas fa-check me-2';
+            submitButton.innerHTML = submitIcon.outerHTML + directText;
+            expectationSection.style.display = 'none';
+        } else {
+            submitIcon.className = 'fas fa-paper-plane me-2';
+            submitButton.innerHTML = submitIcon.outerHTML + requestText;
+            expectationSection.style.display = 'block';
+        }
+    }
+    
+    // 添加事件监听器
+    actionTypeRadios.forEach(radio => {
+        radio.addEventListener('change', updateUI);
+    });
+    
+    // 初始化
+    updateUI();
+});
+</script>
+{% endblock %} 

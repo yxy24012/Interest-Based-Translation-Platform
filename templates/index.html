@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+
+
+{% block title %}
+{{ get_message('home') if get_message('home') else '首页' }} - {{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}
+{% endblock %}
+
+{% block content %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: none;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    color: white;
+    padding: 3rem 0;
+    margin: 3rem 0;
+    border-radius: 15px;
+}
+
+.recent-works {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin: 2rem 0;
+}
+
+.hot-works {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin: 2rem 0;
+    border-left: 4px solid #dc3545;
+}
+
+.hot-work-card {
+    position: relative;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: linear-gradient(135deg, #fff 0%, #fff8f8 100%);
+}
+
+.hot-work-card:hover {
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+    transform: translateY(-2px);
+}
+
+.hot-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.hot-rank {
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.work-preview-card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.work-preview-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.language-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<!-- 英雄区域 -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">
+                    {{ get_message('hero_title') if get_message('hero_title') else '基于兴趣的翻译平台' }}
+                </h1>
+                <p class="hero-subtitle">
+                    {{ get_message('hero_subtitle') if get_message('hero_subtitle') else '根据您的兴趣，翻译和分享来自世界各地的精彩内容' }}
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>
+                        {{ get_message('get_started') if get_message('get_started') else '立即开始' }}
+                    </a>
+                    <a href="{{ url_for('works') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-book me-2"></i>
+                        {{ get_message('explore_works') if get_message('explore_works') else '探索作品' }}
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="fas fa-globe-asia" style="font-size: 8rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 功能特色 -->
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="h3">
+                {{ get_message('platform_features') if get_message('platform_features') else '平台特色' }}
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4>
+                    {{ get_message('interest_driven') if get_message('interest_driven') else '兴趣驱动' }}
+                </h4>
+                <p class="text-muted">
+                    {{ get_message('interest_driven_desc') if get_message('interest_driven_desc') else '来自世界各地的翻译者、创作者和读者，因为相同的兴趣汇聚于此' }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h4>
+                    {{ get_message('completely_free') if get_message('completely_free') else '完全免费' }}
+                </h4>
+                <p class="text-muted">
+                    {{ get_message('completely_free_desc') if get_message('completely_free_desc') else '在这里，翻译者可以获得喜爱创作者的正式授权。而创作者也可以得到翻译者们为爱发电的翻译' }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4>
+                    {{ get_message('quality_assurance') if get_message('quality_assurance') else '质量保证' }}
+                </h4>
+                <p class="text-muted">
+                    {{ get_message('quality_assurance_desc') if get_message('quality_assurance_desc') else '通过高水平的翻译者和读者的点评保证翻译质量，刚入门的翻译家也能在此获得成长' }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- 最热作品预览 -->
+{% if hot_works and hot_works|length > 0 %}
+<div class="container">
+    <div class="hot-works">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h4 mb-0">
+                <i class="fas fa-fire text-danger me-2"></i>
+                {{ get_message('popular_works') if get_message('popular_works') else '最热作品' }}
+            </h3>
+            <a href="{{ url_for('works') }}" class="btn btn-outline-danger">
+                {{ get_message('view_all') if get_message('view_all') else '查看全部' }}
+            </a>
+        </div>
+        
+        <div class="row">
+            {% for work in hot_works %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="work-preview-card hot-work-card" onclick="window.location.href='{{ url_for('work_detail', work_id=work.id) }}';" style="cursor: pointer;">
+                    <div class="hot-badge">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="hot-rank">{{ loop.index }}</span>
+                    </div>
+                    <h6 class="mb-2">{{ work.title }}</h6>
+                    <p class="small text-muted mb-2">{{ work.content[:80] }}{% if work.content|length > 80 %}...{% endif %}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="language-badge">
+                                {{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 最新作品预览 -->
+{% if recent_works and recent_works|length > 0 %}
+<div class="container">
+    <div class="recent-works">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h4 mb-0">
+                {{ get_message('recent_works') if get_message('recent_works') else '最新作品' }}
+            </h3>
+            <a href="{{ url_for('works') }}" class="btn btn-outline-primary">
+                {{ get_message('view_all') if get_message('view_all') else '查看全部' }}
+            </a>
+        </div>
+        
+        <div class="row">
+            {% for work in recent_works %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="work-preview-card" onclick="window.location.href='{{ url_for('work_detail', work_id=work.id) }}';" style="cursor: pointer;">
+                    <h6 class="mb-2">{{ work.title }}</h6>
+                    <p class="small text-muted mb-2">{{ work.content[:80] }}{% if work.content|length > 80 %}...{% endif %}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="language-badge">
+                                {{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 行动号召 -->
+<div class="container">
+    <div class="cta-section text-center">
+        <h2 class="mb-3">
+            {{ get_message('get_started_today') if get_message('get_started_today') else '立即开始' }}
+        </h2>
+        <p class="mb-4">
+            {{ get_message('get_started_today_desc') if get_message('get_started_today_desc') else '发现来自世界各地的精彩内容，加入我们的翻译社区' }}
+        </p>
+        <a href="{{ url_for('works') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-rocket me-2"></i>
+            {{ get_message('get_started') if get_message('get_started') else '立即开始' }}
+        </a>
+    </div>
+</div>
+{% endblock %} 

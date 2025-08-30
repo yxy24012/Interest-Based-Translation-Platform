@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_message('trusted_translators') }} - {{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <!-- 我信赖的翻译者 -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>{{ get_message('my_trusted_translators') }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if trusted %}
+                        <div class="row">
+                            {% for t in trusted %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <a href="{{ url_for('user_profile', user_id=t.translator_id) }}" class="text-decoration-none">
+                                                    <img src="{{ url_for('uploaded_file', filename=get_user_by_id(t.translator_id).avatar) if get_user_by_id(t.translator_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                         class="rounded-circle shadow" 
+                                                         style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
+                                                </a>
+                                            </div>
+                                            <h6 class="card-title">
+                                                <a href="{{ url_for('user_profile', user_id=t.translator_id) }}" class="text-decoration-none">
+                                                    {{ get_username(t.translator_id) }}
+                                                </a>
+                                            </h6>
+                                            <!-- 偏好语言显示 -->
+                                            <div class="mb-2">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-language me-1"></i>
+                                                    {{ get_message('preferred_language') }}：{{ get_user_language_display_name(get_user_by_id(t.translator_id)) }}
+                                                </small>
+                                            </div>
+                                            <div class="mt-2">
+                                                <a href="{{ url_for('conversation', user_id=t.translator_id) }}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-comment me-1"></i>{{ get_message('send_private_message') }}
+                                                </a>
+                                                <form method="post" action="{{ url_for('untrust_translator', translator_id=t.translator_id) }}" class="d-inline">
+                                                    {% set confirm_msg = get_message('confirm_untrust_translator') %}
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm ms-1" onclick="return confirm('{{ confirm_msg }}')">
+                                                        <i class="fas fa-user-times me-1"></i>{{ get_message('untrust_this_translator') }}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-user-shield fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{{ get_message('no_trusted_translators') }}</h5>
+                            <p class="text-muted">{{ get_message('you_have_no_trusted_translators') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- 信赖我的创作者 -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-heart me-2"></i>{{ get_message('creators_who_trust_me') }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if trusted_by %}
+                        <div class="row">
+                            {% for t in trusted_by %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <a href="{{ url_for('user_profile', user_id=t.user_id) }}" class="text-decoration-none">
+                                                    <img src="{{ url_for('uploaded_file', filename=get_user_by_id(t.user_id).avatar) if get_user_by_id(t.user_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                         class="rounded-circle shadow" 
+                                                         style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
+                                                </a>
+                                            </div>
+                                            <h6 class="card-title">
+                                                <a href="{{ url_for('user_profile', user_id=t.user_id) }}" class="text-decoration-none">
+                                                    {{ get_username(t.user_id) }}
+                                                </a>
+                                            </h6>
+                                            <!-- 偏好语言显示 -->
+                                            <div class="mb-2">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-language me-1"></i>
+                                                    {{ get_message('preferred_language') }}：{{ get_user_language_display_name(get_user_by_id(t.user_id)) }}
+                                                </small>
+                                            </div>
+                                            <div class="mt-2">
+                                                <a href="{{ url_for('conversation', user_id=t.user_id) }}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-comment me-1"></i>{{ get_message('send_private_message') }}
+                                                </a>
+                                                <a href="{{ url_for('index') }}" class="btn btn-outline-success btn-sm ms-1">
+                                                    <i class="fas fa-language me-1"></i>{{ get_message('view_works') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{{ get_message('no_creators_trust_you') }}</h5>
+                            <p class="text-muted">{{ get_message('no_creators_trust_you') }}</p>
+                            <p class="text-muted small">{{ get_message('keep_providing_quality_service') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-sign-in-alt me-2"></i>{{ get_message('login') }}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-1"></i>{{ get_message('username_or_email') if get_message('username_or_email') else get_message('username') + ' / ' + get_message('email') }}
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" required 
+                               placeholder="{{ get_message('enter_username_or_email') if get_message('enter_username_or_email') else get_message('enter_username') + ' / ' + get_message('email') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>{{ get_message('password') }}
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" required 
+                                   placeholder="{{ get_message('enter_password') }}">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>{{ get_message('login') }}
+                        </button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted mb-2">{{ get_message('no_account') }}</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>{{ get_message('register_now') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+</div>
+
+<script>
+// 密码显示/隐藏切换
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const icon = this.querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+
+// 表单验证
+document.querySelector('form').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    
+    if (!username) {
+        e.preventDefault();
+        alert('{{ get_message("please_enter_username_or_email") if get_message("please_enter_username_or_email") else get_message("please_enter_username") }}');
+        return;
+    }
+    
+    if (!password) {
+        e.preventDefault();
+        alert('{{ get_message("please_enter_password") }}');
+        return;
+    }
+});
+</script>
+{% endblock %}

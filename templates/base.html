@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('lang', 'en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 导航栏优化 */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white !important;
+        }
+
+        /* 导航栏按钮样式 */
+        .navbar .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 10 !important;
+        }
+
+        .navbar .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* 确保导航栏链接可见 */
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0 2px;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 10 !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white !important;
+        }
+
+        /* 消息通知样式 */
+        .message-notification {
+            position: relative;
+        }
+        
+        /* 手机端汉堡菜单红点样式 */
+        .navbar-toggler .message-badge {
+            z-index: 1000;
+        }
+
+        .message-notification:hover {
+            transform: translateY(-1px);
+        }
+
+        .message-notification i {
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .message-notification:hover i {
+            transform: scale(1.1);
+        }
+
+        .message-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            min-width: 20px;
+            min-height: 20px;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* 可点击卡片样式 */
+        .clickable-card {
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .clickable-card:active {
+            transform: translateY(0);
+        }
+
+        /* 作品卡片悬停效果 */
+        .card-body[onclick] {
+            transition: all 0.3s ease;
+        }
+
+        .card-body[onclick]:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+            transform: translateY(-1px);
+        }
+
+        /* 卡片优化 */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+        }
+
+        /* 按钮优化 */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        /* 表单优化 */
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* 徽章优化 */
+        .badge {
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+        }
+
+        /* 工作卡片优化 */
+        .work-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .work-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .work-card .card-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .work-card .card-title:hover {
+            color: var(--primary-color);
+        }
+
+        /* 状态徽章 */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* 用户头像优化 */
+        .avatar {
+            border: 3px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 侧边栏优化 */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+        }
+
+        /* 修复侧边栏位置问题 */
+        .sidebar-container {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        /* 确保侧边栏在左侧 */
+        .filter-sidebar {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 强制主页布局 */
+        .container-fluid .row {
+            display: flex !important;
+            flex-direction: row !important;
+        }
+
+        .container-fluid .col-md-3 {
+            flex: 0 0 25% !important;
+            max-width: 25% !important;
+        }
+
+        .container-fluid .col-md-9 {
+            flex: 0 0 75% !important;
+            max-width: 75% !important;
+        }
+
+        /* 响应式侧边栏 */
+        @media (max-width: 768px) {
+            .container-fluid .row {
+                flex-direction: column !important;
+            }
+            
+            .container-fluid .col-md-3,
+            .container-fluid .col-md-9 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+            
+            .sidebar-container {
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* 消息提示优化 */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 分页优化 */
+        .pagination .page-link {
+            border-radius: 6px;
+            margin: 0 2px;
+            border: none;
+            color: var(--text-secondary);
+        }
+
+        .pagination .page-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .navbar .btn {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
+            }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* 工具提示优化 */
+        .tooltip {
+            font-size: 0.875rem;
+        }
+
+        /* 模态框优化 */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* 下拉菜单优化 */
+        .dropdown-menu {
+            border-radius: 8px;
+            border: none;
+            box-shadow: var(--shadow-md);
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-bg);
+        }
+
+        /* 上传按钮样式 */
+        .upload-btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white !important;
+            border-radius: 8px;
+            margin: 0 8px;
+            padding: 8px 16px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .upload-btn.active {
+            background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+        }
+
+        /* 统一点赞样式 */
+        .like-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .like-icon {
+            font-size: 0.9rem;
+            transition: none;
+        }
+
+        .like-icon:hover {
+            transform: none;
+        }
+
+        .like-count {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .like-stats-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.15rem 0.3rem;
+            border-radius: 3px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            transition: none;
+            cursor: default;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+
+        .like-stats-card:hover {
+            background: transparent;
+            transform: none;
+        }
+
+        .like-stats-card.star {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .like-stats-card.star:hover {
+            background: #f8f9fa;
+        }
+
+        .like-stats-card.comment {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .like-stats-card.comment:hover {
+            background: #f8f9fa;
+        }
+
+        .like-stats-card.translation {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .like-stats-card.translation:hover {
+            background: #f8f9fa;
+        }
+
+        /* 确保作品详情页侧边栏始终在右侧 */
+        .work-detail-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        /* 作品详情页布局强制样式 */
+        .work-detail-container {
+            display: flex !important;
+            flex-direction: row !important;
+        }
+        
+        .work-detail-main {
+            flex: 2 !important;
+            margin-right: 20px !important;
+        }
+        
+        .work-detail-sidebar {
+            flex: 1 !important;
+            position: sticky !important;
+            top: 100px !important;
+            height: fit-content !important;
+            min-width: 300px !important;
+        }
+        
+        /* 确保在小屏幕上堆叠 */
+        @media (max-width: 991.98px) {
+            .work-detail-container {
+                flex-direction: column !important;
+            }
+            
+            .work-detail-main {
+                margin-right: 0 !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .work-detail-sidebar {
+                min-width: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-language me-2"></i>{{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}
+            </a>
+            
+            <button class="navbar-toggler position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+                <span class="message-badge" id="mobile-unread-count" style="display: none; position: absolute; top: -8px; right: -8px;">0</span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'works' }}" href="{{ url_for('works') }}">
+                            <i class="fas fa-book me-1"></i>
+                            {{ get_message('works') if get_message('works') else '作品' }}
+                        </a>
+                    </li>
+                    {% if session.get('role') == 'translator' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('works') }}?status=translating">
+                            <i class="fas fa-language me-1"></i>
+                            {{ get_message('translate') if get_message('translate') else '翻译' }}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if session.get('user_id') %}
+                    <!-- 上传按钮 -->
+                    <li class="nav-item">
+                        <a class="nav-link upload-btn {{ 'active' if request.endpoint == 'upload' }}" href="{{ url_for('upload') }}">
+                            <i class="fas fa-upload me-1"></i>
+                            {{ get_message('upload') if get_message('upload') else '上传' }}
+                        </a>
+                    </li>
+                    
+                    <!-- 私信按钮 -->
+                    <li class="nav-item">
+                        <a class="nav-link message-notification" href="{{ url_for('message_list') }}" title="{{ get_message('messages') if get_message('messages') else '私信' }}">
+                            <i class="fas fa-envelope"></i>
+                            <span class="message-badge" id="unread-count" style="display: none;">0</span>
+                        </a>
+                    </li>
+                    
+                    <!-- 用户菜单 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ session.get('username', 'User') }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}">
+                                <i class="fas fa-user-circle me-2"></i>
+                                {{ get_message('profile') if get_message('profile') else '个人资料' }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('friends_list') }}">
+                                <i class="fas fa-users me-2"></i>
+                                {{ get_message('friends') if get_message('friends') else '好友' }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('trusted_list') }}">
+                                <i class="fas fa-user-shield me-2"></i>
+                                {{ get_message('trusted_translators') if get_message('trusted_translators') else '信赖翻译者' }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('favorites_list') }}">
+                                <i class="fas fa-heart me-2"></i>
+                                {{ get_message('favorites') if get_message('favorites') else '我的收藏' }}
+                            </a></li>
+                            {% if session.get('role') == 'admin' %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin_panel') }}">
+                                <i class="fas fa-cog me-2"></i>
+                                {{ get_message('admin_panel') if get_message('admin_panel') else '管理面板' }}
+                            </a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                {{ get_message('logout') if get_message('logout') else '登出' }}
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="fas fa-sign-in-alt me-1"></i>
+                            {{ get_message('login') if get_message('login') else '登录' }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">
+                            <i class="fas fa-user-plus me-1"></i>
+                            {{ get_message('register') if get_message('register') else '注册' }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- 语言切换 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i>
+                            {% set current_lang = session.get('lang', 'zh') %}
+                            {% if current_lang == 'zh' %}中文
+                            {% elif current_lang == 'ja' %}日本語
+                            {% elif current_lang == 'en' %}English
+                            {% elif current_lang == 'ru' %}Русский
+                            {% elif current_lang == 'ko' %}한국어
+                            {% elif current_lang == 'fr' %}Français
+                            {% else %}中文{% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='zh') }}">
+                                <i class="fas fa-flag me-2"></i>中文
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='ja') }}">
+                                <i class="fas fa-flag me-2"></i>日本語
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}">
+                                <i class="fas fa-flag me-2"></i>English
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='ru') }}">
+                                <i class="fas fa-flag me-2"></i>Русский
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='ko') }}">
+                                <i class="fas fa-flag me-2"></i>한국어
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='fr') }}">
+                                <i class="fas fa-flag me-2"></i>Français
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 自定义通知卡片 -->
+    <div id="notificationCard" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050; display: none; max-width: 350px;">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div id="notificationIcon" class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i id="notificationIconClass" class="fas fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="card-title mb-1" id="notificationTitle">{{ get_message('notice') if get_message('notice') else '通知' }}</h6>
+                        <p class="card-text small mb-0" id="notificationMessage"></p>
+                    </div>
+                    <div class="flex-shrink-0 ms-2">
+                        <button type="button" class="btn-close btn-close-sm" onclick="hideNotificationCard()" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <main class="container-fluid py-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="fas fa-language me-2"></i>{{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}
+                    </h5>
+                    <p class="mb-0">
+                        {{ get_message('site_description') if get_message('site_description') else '连接创作者与翻译者的专业平台' }}
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Made by 楊幸瑀</p>
+                    <p class="mb-0">神戸情報大学院大学</p>
+                    <small class="text-muted">© 2024 翻译平台. 保留所有权利.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 未读消息计数 -->
+    {% if session.get('user_id') %}
+    <script>
+        function updateUnreadCount() {
+            fetch('/messages/unread_count')
+                .then(response => response.json())
+                .then(data => {
+                    // 更新桌面端消息红点
+                    const badge = document.getElementById('unread-count');
+                    // 更新手机端汉堡菜单红点
+                    const mobileBadge = document.getElementById('mobile-unread-count');
+                    
+                    if (data.count > 0) {
+                        if (badge) {
+                            badge.textContent = data.count;
+                            badge.style.display = 'flex';
+                        }
+                        if (mobileBadge) {
+                            mobileBadge.textContent = data.count;
+                            mobileBadge.style.display = 'flex';
+                        }
+                    } else {
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
+                        if (mobileBadge) {
+                            mobileBadge.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        
+        // 页面加载时更新未读消息数
+        document.addEventListener('DOMContentLoaded', updateUnreadCount);
+        
+        // 每30秒更新一次
+        setInterval(updateUnreadCount, 30000);
+    </script>
+    {% endif %}
+    
+    <!-- 通用通知卡片功能 -->
+    <script>
+        // 通用通知卡片函数
+        window.showNotificationCard = function(title, message, type = 'info') {
+            try {
+                const card = document.getElementById('notificationCard');
+                const titleElement = document.getElementById('notificationTitle');
+                const messageElement = document.getElementById('notificationMessage');
+                const iconElement = document.getElementById('notificationIconClass');
+                const iconContainer = document.getElementById('notificationIcon');
+                
+                if (!card || !titleElement || !messageElement || !iconElement) {
+                    // 如果页面没有通知卡片元素，降级到浏览器弹窗
+                    alert(message);
+                    return;
+                }
+                
+                // 设置标题和内容
+                titleElement.textContent = title;
+                messageElement.textContent = message;
+                
+                // 设置图标和颜色
+                let iconClass, bgColor, textColor;
+                switch (type) {
+                    case 'success':
+                        iconClass = 'fa-check-circle';
+                        bgColor = 'bg-success';
+                        textColor = 'text-white';
+                        break;
+                    case 'error':
+                        iconClass = 'fa-exclamation-circle';
+                        bgColor = 'bg-danger';
+                        textColor = 'text-white';
+                        break;
+                    case 'warning':
+                        iconClass = 'fa-exclamation-triangle';
+                        bgColor = 'bg-warning';
+                        textColor = 'text-dark';
+                        break;
+                    default:
+                        iconClass = 'fa-info-circle';
+                        bgColor = 'bg-info';
+                        textColor = 'text-white';
+                }
+                
+                iconElement.className = `fas ${iconClass} ${textColor}`;
+                iconContainer.className = `rounded-circle d-flex align-items-center justify-content-center ${bgColor}`;
+                iconContainer.style.width = '40px';
+                iconContainer.style.height = '40px';
+                
+                // 显示卡片
+                card.style.display = 'block';
+                
+                // 3秒后自动隐藏
+                setTimeout(() => {
+                    if (window.hideNotificationCard) {
+                        window.hideNotificationCard();
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }, 3000);
+            } catch (error) {
+                // 发生错误时降级到浏览器弹窗
+                alert(message);
+            }
+        };
+        
+        // 隐藏通知卡片函数
+        window.hideNotificationCard = function() {
+            try {
+                const card = document.getElementById('notificationCard');
+                if (card) {
+                    card.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('隐藏通知卡片时发生错误:', error);
+            }
+        };
+        
+        // 通用复制原文函数
+        window.copyOriginal = function(originalText) {
+            navigator.clipboard.writeText(originalText).then(function() {
+                alert('{{ get_message("copied_original") if get_message("copied_original") else "原文已复制到剪贴板" }}');
+            });
+        };
+        
+        // 通用字符计数函数
+        window.updateWordCount = function(textareaId, displayId) {
+            const textarea = document.getElementById(textareaId);
+            const display = document.getElementById(displayId);
+            if (textarea && display) {
+                const charCount = textarea.value.length;
+                const wordCount = textarea.value.trim().split(/\s+/).filter(word => word.length > 0).length;
+                display.textContent = `{{ get_message("char_count_label") if get_message("char_count_label") else "字符数：" }}${charCount} | {{ get_message("word_count_label") if get_message("word_count_label") else "词数：" }}${wordCount}`;
+            }
+        };
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

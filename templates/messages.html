@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="fas fa-envelope me-2"></i>{{ get_message('message_center') }}</h2>
+    
+    <!-- 通知消息（点赞等） -->
+    {% if notification_messages %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-heart me-2"></i>{{ get_message('notifications') }}</h5>
+        </div>
+        <div class="card-body">
+            {% for msg in notification_messages %}
+            <div class="alert alert-success d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-heart me-2"></i>
+                        <span>{{ format_message_content(msg.content, msg.work_id, msg.id, msg.liker_id) | safe }}</span>
+                    </div>
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+                <div class="ms-3">
+                    <form method="post" action="{{ url_for('mark_message_read', message_id=msg.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-check me-1"></i>{{ get_message('mark_as_read') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 系统消息 -->
+    {% if system_messages %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-bell me-2"></i>{{ get_message('system_notifications') }}</h5>
+        </div>
+        <div class="card-body">
+            {% for msg in system_messages %}
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span>
+                            {{ format_message_content(msg.content, msg.work_id, msg.id, msg.liker_id) | safe }}
+                        </span>
+                    </div>
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+                <div class="ms-3">
+                    <form method="post" action="{{ url_for('mark_message_read', message_id=msg.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-check me-1"></i>{{ get_message('mark_as_read') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 待处理的好友请求 -->
+    {% if pending_friend_requests %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>{{ get_message('friend_requests') }}</h5>
+        </div>
+        <div class="card-body">
+            {% for req in pending_friend_requests %}
+            <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-user me-2"></i>
+                    <a href="{{ url_for('user_profile', user_id=req.user_id) }}" class="text-decoration-none">
+                        {{ get_username(req.user_id) }}
+                    </a> {{ get_message('requests_to_add_friend') }}
+                    <small class="text-muted ms-2">{{ req.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                <div>
+                    <form method="post" action="{{ url_for('accept_friend', friend_id=req.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-success btn-sm">{{ get_message('agree') }}</button>
+                    </form>
+                    <form method="post" action="{{ url_for('reject_friend', friend_id=req.id) }}" class="d-inline ms-1">
+                        <button type="submit" class="btn btn-danger btn-sm">{{ get_message('reject') }}</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 待处理的翻译请求 -->
+    {% if pending_translation_requests %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-language me-2"></i>{{ get_message('translation_requests') }}</h5>
+        </div>
+        <div class="card-body">
+            {% for req in pending_translation_requests %}
+            <div class="alert alert-primary d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-edit me-2"></i>
+                        <a href="{{ url_for('user_profile', user_id=req.translator_id) }}" class="text-decoration-none fw-bold">
+                            {{ get_username(req.translator_id) }}
+                        </a> 
+                        <span class="ms-2">{{ get_message('requests_to_translate_work') }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <a href="{{ url_for('work_detail', work_id=req.work_id) }}" class="text-decoration-none fw-bold">
+                            "{{ get_work_title(req.work_id) }}"
+                        </a>
+                    </div>
+                    {% if req.content %}
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-comment me-1"></i>{{ get_message('expectation_requirement') }}{{ req.content }}
+                        </small>
+                    </div>
+                    {% endif %}
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>{{ req.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+                <div class="ms-3">
+                    <form method="post" action="{{ url_for('approve_translation_request', work_id=req.work_id, req_id=req.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fas fa-check me-1"></i>{{ get_message('agree') }}
+                        </button>
+                    </form>
+                    <form method="post" action="{{ url_for('reject_translation_request', work_id=req.work_id, req_id=req.id) }}" class="d-inline ms-1">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-times me-1"></i>{{ get_message('reject') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 待处理的翻译者请求 -->
+    {% if pending_translator_requests %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-comment-dots me-2"></i>{{ get_message('translator_requests') if get_message('translator_requests') else '翻译者请求' }}</h5>
+        </div>
+        <div class="card-body">
+            {% for req in pending_translator_requests %}
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-edit me-2"></i>
+                        <a href="{{ url_for('user_profile', user_id=req.translator_id) }}" class="text-decoration-none fw-bold">
+                            {{ get_username(req.translator_id) }}
+                        </a> 
+                        <span class="ms-2">{{ get_message('requests_author_help') if get_message('requests_author_help') else '向您提出要求' }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <a href="{{ url_for('work_detail', work_id=req.work_id) }}" class="text-decoration-none fw-bold">
+                            "{{ get_work_title(req.work_id) }}"
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-comment me-1"></i>{{ get_message('translator_request_content') if get_message('translator_request_content') else '要求内容' }}: {{ req.content }}
+                        </small>
+                    </div>
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>{{ req.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+                <div class="ms-3">
+                    <form method="post" action="{{ url_for('approve_translator_request', work_id=req.work_id, req_id=req.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fas fa-check me-1"></i>{{ get_message('agree') if get_message('agree') else '同意' }}
+                        </button>
+                    </form>
+                    <form method="post" action="{{ url_for('reject_translator_request', work_id=req.work_id, req_id=req.id) }}" class="d-inline ms-1">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-times me-1"></i>{{ get_message('reject') if get_message('reject') else '拒绝' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 私信列表 -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-comments me-2"></i>{{ get_message('private_messages') }}</h5>
+        </div>
+        <div class="card-body">
+            {% if users_with_messages %}
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                {% for item in users_with_messages %}
+                {% set u = item.user %}
+                <div class="col">
+                    <div class="card shadow-sm {% if item.has_unread %}border-warning{% endif %}">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <a href="{{ url_for('user_profile', user_id=u.id) }}" class="text-decoration-none">
+                                    <img src="{{ url_for('uploaded_file', filename=u.avatar) if u.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                         class="rounded-circle me-3 shadow" 
+                                         style="width:40px;height:40px;object-fit:cover;border:2px solid #eee;cursor:pointer;">
+                                </a>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <a href="{{ url_for('user_profile', user_id=u.id) }}" class="text-decoration-none">
+                                            <span class="fw-bold" style="font-size:1.1em;color:#007bff;">{{ u.username }}</span>
+                                        </a>
+                                        {% if item.has_unread %}
+                                        <span class="badge bg-warning text-dark ms-2">{{ item.unread_count }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if item.latest_message %}
+                                    <div class="text-muted small mt-1">
+                                        {% if item.latest_message.sender_id == u.id %}
+                                        <span class="text-primary">{{ u.username }}:</span>
+                                        {% else %}
+                                        <span class="text-success">{{ get_message('me') if get_message('me') else '我' }}:</span>
+                                        {% endif %}
+                                        {{ item.latest_message.content[:30] }}{% if item.latest_message.content|length > 30 %}...{% endif %}
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-clock me-1"></i>{{ item.latest_message.created_at.strftime('%m-%d %H:%M') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ url_for('conversation', user_id=u.id) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-comment me-1"></i>{{ get_message('enter_conversation') }}
+                                </a>
+                                {% if item.has_unread %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>{{ get_message('unread_messages') }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">{{ get_message('no_private_messages') }}</h5>
+                <p class="text-muted">{{ get_message('no_private_messages_desc') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function markMessageAsRead(messageId) {
+    // 发送AJAX请求标记消息为已读
+    fetch(`/messages/${messageId}/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 可选：更新UI显示消息已读状态
+            console.log('Message marked as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error marking message as read:', error);
+    });
+}
+</script>
+{% endblock %} 

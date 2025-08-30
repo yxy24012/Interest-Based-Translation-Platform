@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">
+                <i class="fas fa-crown me-2 text-warning"></i>{{ get_message('admin_requests_management') if get_message('admin_requests_management') else '管理员申请管理' }}
+            </h3>
+            
+            <!-- 待审核申请 -->
+            {% if pending_requests %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock me-2 text-warning"></i>{{ get_message('pending_requests') if get_message('pending_requests') else '待审核申请' }} ({{ pending_requests|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for request in pending_requests %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h6 class="mb-1">
+                                    <a href="{{ url_for('user_profile', user_id=request.user.id) }}" class="text-decoration-none">
+                                        {{ request.user.username }}
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ request.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-success btn-sm" onclick="showApproveModal({{ request.id }})">
+                                    <i class="fas fa-check me-1"></i>{{ get_message('approve') if get_message('approve') else '批准' }}
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="showRejectModal({{ request.id }})">
+                                    <i class="fas fa-times me-1"></i>{{ get_message('reject') if get_message('reject') else '拒绝' }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>{{ get_message('application_reason') if get_message('application_reason') else '申请理由：' }}</strong>
+                            <p class="mb-0 mt-2">{{ request.reason }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- 已批准申请 -->
+            {% if approved_requests %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2 text-success"></i>{{ get_message('approved_requests') if get_message('approved_requests') else '已批准申请' }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for request in approved_requests %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">
+                                    <a href="{{ url_for('user_profile', user_id=request.user.id) }}" class="text-decoration-none">
+                                        {{ request.user.username }}
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ request.reviewed_at.strftime('%Y-%m-%d %H:%M') }}
+                                    {% if request.reviewer %}
+                                    by {{ request.reviewer.username }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <span class="badge bg-success">{{ get_message('approved') if get_message('approved') else '已批准' }}</span>
+                        </div>
+                        {% if request.review_notes %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <strong>{{ get_message('review_notes') if get_message('review_notes') else '审核备注：' }}</strong>{{ request.review_notes }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- 已拒绝申请 -->
+            {% if rejected_requests %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-times-circle me-2 text-danger"></i>{{ get_message('rejected_requests') if get_message('rejected_requests') else '已拒绝申请' }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for request in rejected_requests %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">
+                                    <a href="{{ url_for('user_profile', user_id=request.user.id) }}" class="text-decoration-none">
+                                        {{ request.user.username }}
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ request.reviewed_at.strftime('%Y-%m-%d %H:%M') }}
+                                    {% if request.reviewer %}
+                                    by {{ request.reviewer.username }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <span class="badge bg-danger">{{ get_message('rejected') if get_message('rejected') else '已拒绝' }}</span>
+                        </div>
+                        {% if request.review_notes %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <strong>{{ get_message('rejection_reason') if get_message('rejection_reason') else '拒绝理由：' }}</strong>{{ request.review_notes }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if not pending_requests and not approved_requests and not rejected_requests %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">{{ get_message('no_admin_requests') if get_message('no_admin_requests') else '暂无管理员申请' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 批准模态框 -->
+<div class="modal fade" id="approveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ get_message('approve_application') if get_message('approve_application') else '批准申请' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="approveForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="approveNotes" class="form-label">{{ get_message('review_notes_optional') if get_message('review_notes_optional') else '审核备注（可选）' }}</label>
+                        <textarea class="form-control" id="approveNotes" name="review_notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ get_message('cancel') if get_message('cancel') else '取消' }}</button>
+                    <button type="submit" class="btn btn-success">{{ get_message('approve') if get_message('approve') else '批准' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 拒绝模态框 -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ get_message('reject_application') if get_message('reject_application') else '拒绝申请' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="rejectForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="rejectNotes" class="form-label">{{ get_message('rejection_reason_optional') if get_message('rejection_reason_optional') else '拒绝理由（可选）' }}</label>
+                        <textarea class="form-control" id="rejectNotes" name="review_notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ get_message('cancel') if get_message('cancel') else '取消' }}</button>
+                    <button type="submit" class="btn btn-danger">{{ get_message('reject') if get_message('reject') else '拒绝' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showApproveModal(requestId) {
+    const modal = new bootstrap.Modal(document.getElementById('approveModal'));
+    const form = document.getElementById('approveForm');
+    form.action = `/admin/request/${requestId}/approve`;
+    modal.show();
+}
+
+function showRejectModal(requestId) {
+    const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
+    const form = document.getElementById('rejectForm');
+    form.action = `/admin/request/${requestId}/reject`;
+    modal.show();
+}
+</script>
+{% endblock %} 

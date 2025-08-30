@@ -1,0 +1,2715 @@
+{% extends 'base.html' %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block head %}
+<style>
+    .work-detail-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        padding: 20px 0;
+    }
+    
+    .card {
+        border-radius: 15px;
+        border: 2px solid #495057;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        border-bottom: 2px solid #495057;
+    }
+    
+    .badge {
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-weight: 500;
+    }
+    
+    /* 统一的点赞按钮样式 */
+    .like-btn {
+        border-radius: 20px;
+        min-width: 80px;
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .like-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .like-icon {
+        transition: transform 0.2s ease;
+        margin-right: 6px;
+    }
+    
+    .like-btn:hover .like-icon {
+        transform: scale(1.2);
+    }
+    
+    /* 点赞数字样式 */
+    .like-count {
+        font-weight: 700;
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+            /* 实心按钮的点赞数字 - 白色文字 */
+        .btn-primary .like-count,
+        .btn-success .like-count,
+        .btn-warning .like-count,
+        .btn-info .like-count,
+        .btn-danger .like-count,
+        .btn-secondary .like-count,
+        .btn-dark .like-count,
+        .btn-purple .like-count {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+    
+            /* 空心按钮的点赞数字 - 保持按钮颜色 */
+        .btn-outline-primary .like-count {
+            color: #007bff !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+        }
+        
+        .btn-outline-success .like-count {
+            color: #28a745 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(40, 167, 69, 0.2);
+        }
+        
+        .btn-outline-warning .like-count {
+            color: #ffc107 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(255, 193, 7, 0.2);
+        }
+        
+        .btn-outline-info .like-count {
+            color: #17a2b8 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(23, 162, 184, 0.2);
+        }
+        
+        .btn-outline-danger .like-count {
+            color: #dc3545 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(220, 53, 69, 0.2);
+        }
+        
+        .btn-outline-secondary .like-count {
+            color: #6c757d !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(108, 117, 125, 0.2);
+        }
+        
+        /* 自定义紫色按钮样式 - 使用更强的选择器 */
+        .btn.btn-purple,
+        .btn-purple {
+            background-color: #6f42c1 !important;
+            border-color: #6f42c1 !important;
+            color: white !important;
+        }
+        
+        .btn.btn-purple:hover,
+        .btn-purple:hover {
+            background-color: #5a32a3 !important;
+            border-color: #5a32a3 !important;
+            color: white !important;
+        }
+        
+        .btn.btn-outline-purple,
+        .btn-outline-purple {
+            color: #6f42c1 !important;
+            border-color: #6f42c1 !important;
+            background-color: transparent !important;
+        }
+        
+        .btn.btn-outline-purple:hover,
+        .btn-outline-purple:hover {
+            color: white !important;
+            background-color: #6f42c1 !important;
+            border-color: #6f42c1 !important;
+        }
+        
+        .btn-purple .like-count {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+        
+        .btn-outline-purple .like-count {
+            color: #6f42c1 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(111, 66, 193, 0.2);
+        }
+        
+        /* 确保所有按钮颜色优先级最高 */
+        .btn.btn-primary {
+            background-color: #007bff !important;
+            border-color: #007bff !important;
+            color: white !important;
+        }
+        
+        .btn.btn-outline-primary {
+            color: #007bff !important;
+            border-color: #007bff !important;
+            background-color: transparent !important;
+        }
+        
+        .btn.btn-success {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+            color: white !important;
+        }
+        
+        .btn.btn-outline-success {
+            color: #28a745 !important;
+            border-color: #28a745 !important;
+            background-color: transparent !important;
+        }
+        
+        .btn.btn-warning {
+            background-color: #ffc107 !important;
+            border-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+        
+        .btn.btn-outline-warning {
+            color: #ffc107 !important;
+            border-color: #ffc107 !important;
+            background-color: transparent !important;
+        }
+    
+    /* 校正点赞按钮特殊样式 */
+    .correction-like-btn {
+        border-radius: 20px;
+        min-width: 80px;
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .correction-like-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .correction-like-btn .like-icon {
+        transition: transform 0.2s ease;
+        margin-right: 6px;
+    }
+    
+    .correction-like-btn:hover .like-icon {
+        transform: scale(1.2);
+    }
+    
+    .correction-like-count {
+        font-weight: 700;
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+            /* 校正点赞实心按钮 */
+        .btn-warning .correction-like-count {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+        
+        /* 校正点赞空心按钮 */
+        .btn-outline-warning .correction-like-count {
+            color: #ffc107 !important;
+            font-weight: 800;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(255, 193, 7, 0.2);
+        }
+    
+    /* 评论点赞按钮 */
+    .comment-like-btn {
+        border-radius: 15px;
+        min-width: 60px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .comment-like-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .comment-like-count {
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    /* 点赞按钮组样式 */
+    .like-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* 收藏按钮样式 */
+    .favorite-btn {
+        border-radius: 20px;
+        min-width: 80px;
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .favorite-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .favorite-btn .fa-heart {
+        transition: transform 0.2s ease;
+        margin-right: 6px;
+    }
+    
+    .favorite-btn:hover .fa-heart {
+        transform: scale(1.2);
+    }
+    
+    .favorite-btn.favorited {
+        animation: favoritePulse 0.3s ease;
+    }
+    
+    @keyframes favoritePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .like-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    /* 点赞动画效果 */
+    @keyframes likePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .like-btn.liked,
+    .correction-like-btn.liked,
+    .comment-like-btn.liked {
+        animation: likePulse 0.3s ease;
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    
+    .breadcrumb-item a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: #007bff;
+    }
+    
+    .alert {
+        border-radius: 15px;
+        border: none;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #495057;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .comment-item {
+        border-radius: 15px;
+        border: 2px solid #495057;
+        transition: all 0.3s ease;
+    }
+    
+    .comment-item:hover {
+        border-color: #007bff;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+        border-width: 3px;
+    }
+    
+    .status-badge {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    .gradient-bg-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+    
+    .gradient-bg-success {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+    
+    .gradient-bg-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    }
+    
+    .gradient-bg-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .h3 {
+            font-size: 1.5rem;
+        }
+        
+        .like-btn,
+        .correction-like-btn {
+            min-width: 70px;
+            font-size: 0.85rem;
+        }
+        
+        .comment-like-btn {
+            min-width: 50px;
+            font-size: 0.8rem;
+        }
+        
+        /* 侧边栏优化 */
+        .work-detail-sidebar {
+            margin-top: 2rem !important;
+        }
+        
+        .work-detail-sidebar .card {
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .work-detail-sidebar .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        /* 作者信息卡片优化 */
+        .author-info-card .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .author-info-card img {
+            width: 70px !important;
+            height: 70px !important;
+        }
+        
+        .author-info-card h6 {
+            font-size: 1.2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .author-info-card p {
+            font-size: 0.9rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        .author-info-card .badge {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.6rem !important;
+            margin-bottom: 0.3rem !important;
+        }
+        
+        /* 作者统计信息优化 */
+        .author-stats .col-4 {
+            padding: 0 0.25rem !important;
+        }
+        
+        .author-stats .border {
+            padding: 0.75rem 0.5rem !important;
+        }
+        
+        .author-stats .fs-5 {
+            font-size: 1.25rem !important;
+        }
+        
+        .author-stats small {
+            font-size: 0.75rem !important;
+            line-height: 1.2 !important;
+        }
+        
+        /* 操作按钮优化 */
+        .author-actions .btn {
+            padding: 0.6rem 1rem !important;
+            font-size: 0.85rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 作品信息卡片优化 */
+        .work-info-card .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .work-info-card .d-flex {
+            padding: 0.75rem 0.5rem !important;
+        }
+        
+        .work-info-card .fw-bold {
+            font-size: 0.9rem !important;
+        }
+        
+        /* 翻译操作卡片优化 */
+        .translation-ops-card .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .translation-ops-card .btn {
+            padding: 0.75rem 1rem !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .translation-ops-card .alert {
+            padding: 0.75rem !important;
+            font-size: 0.85rem !important;
+        }
+    }
+    
+    /* 超小屏幕优化 */
+    @media (max-width: 576px) {
+        .work-detail-sidebar .card-body {
+            padding: 1.25rem !important;
+        }
+        
+        .author-info-card img {
+            width: 60px !important;
+            height: 60px !important;
+        }
+        
+        .author-info-card h6 {
+            font-size: 1.1rem !important;
+        }
+        
+        .author-stats .border {
+            padding: 0.5rem 0.25rem !important;
+        }
+        
+        .author-stats .fs-5 {
+            font-size: 1.1rem !important;
+        }
+        
+        .author-stats small {
+            font-size: 0.7rem !important;
+        }
+        
+        .author-actions .btn {
+            padding: 0.5rem 0.8rem !important;
+            font-size: 0.8rem !important;
+        }
+        
+        .work-info-card .d-flex {
+            padding: 0.5rem 0.25rem !important;
+        }
+        
+        .work-info-card .fw-bold {
+            font-size: 0.85rem !important;
+        }
+        
+        .translation-ops-card .btn {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.85rem !important;
+        }
+    }
+    
+    /* 动画效果 */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* 增强边框可见性 */
+    .border {
+        border-width: 2px !important;
+    }
+    
+    .border-dark {
+        border-color: #343a40 !important;
+    }
+    
+    /* 卡片阴影增强 */
+    .card {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        border: 2px solid #495057;
+    }
+    
+    .card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #343a40;
+    }
+    
+    /* 头像悬停效果 */
+    .rounded-circle {
+        transition: transform 0.3s ease;
+    }
+    
+    .rounded-circle:hover {
+        transform: scale(1.05);
+    }
+    
+    /* 徽章悬停效果 */
+    .badge {
+        transition: all 0.3s ease;
+    }
+    
+    .badge:hover {
+        transform: scale(1.05);
+    }
+    
+    /* 确保按钮始终可见 */
+    .btn {
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* 确保所有按钮类型都可见 */
+    .btn-primary,
+    .btn-secondary,
+    .btn-success,
+    .btn-danger,
+    .btn-warning,
+    .btn-info,
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-warning,
+    .btn-outline-info {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 确保导航栏按钮可见 */
+    .navbar .btn,
+    .navbar .nav-link {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    
+    /* 确保侧边栏按钮可见 */
+    .card .btn {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- 页面头部 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>
+                                {{ get_message('home') }}
+                            </a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ work.title }}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex gap-2">
+                    <!-- 作品编辑按钮 -->
+                    {% if session.get('user_id') == work.creator.id and work.status != 'completed' %}
+                    <a href="{{ url_for('edit_work', work_id=work.id) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-edit me-1"></i>{{ get_message('edit') if get_message('edit') else '编辑' }}
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteWork()">
+                        <i class="fas fa-trash me-1"></i>{{ get_message('delete') }}
+                    </button>
+                    {% endif %}
+                    
+                    <!-- 管理员编辑按钮 -->
+                    {% if session.get('user_id') and current_user and current_user.role == 'admin' %}
+                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="showAdminEditModal()">
+                        <i class="fas fa-edit me-1"></i>{{ get_message('admin_edit') }}
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="showAdminDeleteModal()">
+                        <i class="fas fa-trash me-1"></i>{{ get_message('admin_delete') }}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 主要内容 -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2 text-primary">{{ work.title }}</h1>
+                            <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                                <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }} fs-6">
+                                    <i class="fas fa-{{ 'check-circle' if work.status == 'completed' else 'clock' if work.status == 'translating' else 'hourglass-half' }} me-1"></i>
+                                    {% if work.status == 'pending' %}
+                                        {{ get_message('status_pending') }}
+                                    {% elif work.status == 'translating' %}
+                                        {{ get_message('status_translating') }}
+                                    {% elif work.status == 'completed' %}
+                                        {{ get_message('status_completed') }}
+                                    {% endif %}
+                                </span>
+                                {% if work.category %}
+                                <span class="badge fs-6" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); color: #212529; border: 1px solid #ced4da;">
+                                    <i class="fas fa-tag me-1"></i>
+                                    {% if work.category == '投稿・文章' %}
+                                        {{ get_message('category_post_article') }}
+                                    {% elif work.category == '小说' %}
+                                        {{ get_message('category_novel') }}
+                                    {% elif work.category == '图片' %}
+                                        {{ get_message('category_image') }}
+                                    {% elif work.category == '漫画' %}
+                                        {{ get_message('category_comic') }}
+                                    {% elif work.category == '音声' %}
+                                        {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                                    {% elif work.category == '视频・动画' %}
+                                        {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                                    {% elif work.category == '闲聊' %}
+                                        {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                                    {% elif work.category == '其他' %}
+                                        {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                                    {% else %}
+                                        {{ work.category }}
+                                    {% endif %}
+                                </span>
+                                {% endif %}
+                                <span class="badge bg-info text-white fs-6">
+                                    <i class="fas fa-language me-1"></i>{{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="d-flex align-items-center justify-content-md-end">
+                                <div class="text-end">
+                                    <small class="text-muted d-block">
+                                        {{ get_message('creator') if get_message('creator') else '创作者' }}
+                                    </small>
+                                    <div class="d-flex align-items-center justify-content-end">
+                                        <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                           class="text-decoration-none me-2" 
+                                           style="transition: transform 0.2s ease;" 
+                                           onmouseover="this.style.transform='scale(1.1)'" 
+                                           onmouseout="this.style.transform='scale(1)'">
+                                            <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                 class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover; cursor: pointer;" 
+                                                 alt="{{ get_message('avatar') }}">
+                                        </a>
+                                        <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                           class="text-decoration-none fw-bold" 
+                                           style="color: #007bff; transition: color 0.2s ease;" 
+                                           onmouseover="this.style.color='#0056b3'" 
+                                           onmouseout="this.style.color='#007bff'">
+                                            {{ work.creator.username }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            <div class="card-body p-4">
+                <!-- 多媒体文件 -->
+                {% if work.media_filename %}
+                <div class="mb-4">
+                    <div class="card border-0" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                        <div class="card-body p-3">
+                            <h6 class="mb-3 text-dark fw-bold">
+                                <i class="fas fa-paperclip me-2"></i>{{ get_message('attachment') if get_message('attachment') else '附件' }}
+                            </h6>
+                            {% set ext = work.media_filename.rsplit('.', 1)[-1].lower() %}
+                            {% if ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'] %}
+                            <img src="{{ url_for('uploaded_file', filename=work.media_filename) }}" class="img-fluid rounded shadow-sm" style="max-width:100%;">
+                            {% elif ext in ['mp3', 'wav', 'ogg', 'aac'] %}
+                            <audio controls src="{{ url_for('uploaded_file', filename=work.media_filename) }}" class="w-100" style="max-width:500px;"></audio>
+                            {% elif ext in ['mp4', 'webm', 'ogg'] %}
+                            <video controls src="{{ url_for('uploaded_file', filename=work.media_filename) }}" class="w-100" style="max-width:500px;"></video>
+                            {% else %}
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-file me-2"></i>
+                                <a href="{{ url_for('uploaded_file', filename=work.media_filename) }}" target="_blank" class="text-decoration-none">
+                                    {{ get_message('download_attachment') if get_message('download_attachment') else '下载附件' }}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 联系要求提示 -->
+                {% if work.contact_before_translate %}
+                <div class="alert alert-warning border-0 mb-4" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-exclamation-triangle me-3 fa-lg text-warning mt-1"></i>
+                        <div>
+                            <h6 class="mb-2 fw-bold">{{ get_message('contact_before_translate_title') }}</h6>
+                            <p class="mb-0">{{ get_message('contact_before_translate_desc') }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 原文内容 -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-text me-2 text-primary"></i>{{ get_message('original_content') }}
+                        </h5>
+                        <!-- 作品点赞和收藏 -->
+                        {% if session.get('user_id') %}
+                        <div class="like-group">
+                            {% set work_likes = Like.query.filter_by(target_type='work', target_id=work.id).count() if Like else 0 %}
+                            {% set user_liked = Like.query.filter_by(target_type='work', target_id=work.id, user_id=session.get('user_id')).first() if Like else None %}
+                            <button class="btn {{ 'btn-primary' if user_liked else 'btn-outline-primary' }} btn-sm like-btn" 
+                                    data-type="work" 
+                                    data-id="{{ work.id }}" 
+                                    data-liked="{{ 'true' if user_liked else 'false' }}"
+                                    class="btn {{ 'btn-primary' if user_liked else 'btn-outline-primary' }} btn-sm like-btn">
+                                <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                <span class="like-count">{{ work_likes }}</span>
+                            </button>
+                            
+                            <!-- 收藏按钮 -->
+                            {% set user_favorited = Favorite.query.filter_by(user_id=session.get('user_id'), work_id=work.id).first() if Favorite else None %}
+                            <button class="btn {{ 'btn-danger' if user_favorited else 'btn-outline-danger' }} btn-sm favorite-btn" 
+                                    data-work-id="{{ work.id }}" 
+                                    data-favorited="{{ 'true' if user_favorited else 'false' }}"
+                                    onclick="toggleFavorite({{ work.id }}, this)">
+                                <i class="fas fa-heart me-1"></i>
+                                <span class="favorite-text">{{ get_message('remove_from_favorites') if user_favorited else get_message('add_to_favorites') }}</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card border-0" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                        <div class="card-body p-4">
+                            <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; line-height: 1.6; color: #212529;">{{ work.content }}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 创作者期待 -->
+                {% if work.translation_expectation %}
+                <div class="mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') }}
+                    </h5>
+                    <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                        <span style="color: #212529;">{{ work.translation_expectation }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 创作者要求 -->
+                {% if work.translation_requirements %}
+                <div class="mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') }}
+                    </h5>
+                    <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
+                        {{ work.translation_requirements }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 翻译者期待/要求 -->
+                {% if translator_expectation and approved_req %}
+                <div class="mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-user-edit me-2 text-danger"></i>{{ get_message('translator') }}<a href="{{ url_for('user_profile', user_id=approved_req.translator_id) }}" class="text-decoration-underline">{{ get_username(approved_req.translator_id) }}</a>{{ get_message('translator_expectation') }}
+                    </h5>
+                    <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                        <span style="color: #212529;">{{ translator_expectation }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 一般要求（已同意） -->
+                {% if general_expectation and approved_general_req %}
+                <div class="mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-user-edit me-2 text-danger"></i>{{ get_message('translator') }}<a href="{{ url_for('user_profile', user_id=approved_general_req.translator_id) }}" class="text-decoration-underline">{{ get_username(approved_general_req.translator_id) }}</a>{{ get_message('translator_expectation') }}
+                    </h5>
+                    <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                        <span style="color: #212529;">{{ general_expectation }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 翻译内容 -->
+                {% set valid_translations = translations|selectattr('status', 'ne', 'rejected')|list %}
+                {% if valid_translations and valid_translations|length > 0 %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-language me-2 text-success"></i>{{ get_message('translation_content') }}
+                            {% if work.allow_multiple_translators %}
+                            <span class="badge bg-info ms-2">
+                                <i class="fas fa-users me-1"></i>{{ get_message('multiple_translators') }}
+                            </span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    
+                    {% for translation in valid_translations %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('uploaded_file', filename=translation.translator.avatar) if translation.translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                         class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
+                                    <div>
+                                        <h6 class="mb-1">
+                                            <a href="{{ url_for('user_profile', user_id=translation.translator.id) }}" class="text-decoration-none fw-bold">
+                                                {{ translation.translator.username }}
+                                            </a>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>{{ translation.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-{{ 'success' if translation.status == 'approved' else 'warning' if translation.status == 'submitted' else 'secondary' }}">
+                                        {{ {'draft': get_message('status_draft') if get_message('status_draft') else '草稿', 'submitted': get_message('status_submitted') if get_message('status_submitted') else '已提交', 'approved': get_message('status_approved') if get_message('status_approved') else '已通过', 'rejected': get_message('status_rejected') if get_message('status_rejected') else '已拒绝'}[translation.status] }}
+                                    </span>
+                                    {% set translation_author_likes = AuthorLike.query.filter_by(translation_id=translation.id, correction_id=None).count() if AuthorLike else 0 %}
+                                    <!-- 翻译作者点赞徽章已隐藏 -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- 翻译文本 -->
+                            <div class="border border-dark rounded p-3 mb-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                                <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; color: #212529;">{{ translation.content }}</pre>
+                            </div>
+                            
+                            <!-- 作者操作按钮 -->
+                            {% if session.get('user_id') == work.creator.id and translation.status == 'submitted' %}
+                            <div class="d-flex gap-2 mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="showAcceptModal({{ translation.id }})">
+                                    <i class="fas fa-check me-1"></i>{{ get_message('accept') }}
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="showRejectModal({{ translation.id }})">
+                                    <i class="fas fa-times me-1"></i>{{ get_message('reject') }}
+                                </button>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- 校正者功能 -->
+                            {% if session.get('user_id') and current_user and current_user.is_reviewer and session.get('user_id') != translation.translator.id %}
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="collapse" data-bs-target="#correctionForm{{ translation.id }}">
+                                    <i class="fas fa-edit me-2"></i>{{ get_message('add_correction') }}
+                                </button>
+                            </div>
+                            {% elif session.get('user_id') and current_user and current_user.is_reviewer and session.get('user_id') == translation.translator.id %}
+                            <div class="mb-3">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>{{ get_message('cannot_correct_own') }}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- 校正表单 -->
+                            <div class="collapse mb-3" id="correctionForm{{ translation.id }}">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-check-circle me-2"></i>{{ get_message('correction_content') }}
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ url_for('add_correction', work_id=work.id) }}">
+                                            <input type="hidden" name="translation_id" value="{{ translation.id }}">
+                                            <div class="mb-3">
+                                                <label class="form-label">{{ get_message('correction_content_label') }}</label>
+                                                <textarea name="content" class="form-control" rows="4" placeholder="{{ get_message('correction_content_placeholder') }}" required></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">{{ get_message('correction_notes_label') }}</label>
+                                                <textarea name="notes" class="form-control" rows="2" placeholder="{{ get_message('correction_notes_placeholder') }}"></textarea>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-warning">
+                                                    <i class="fas fa-check me-2"></i>{{ get_message('submit_correction') }}
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#correctionForm{{ translation.id }}">
+                                                    {{ get_message('cancel') }}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 翻译点赞 -->
+                            {% if session.get('user_id') %}
+                            <div class="mb-3 like-group">
+                                {% set translation_likes = Like.query.filter_by(target_type='translation', target_id=translation.id).count() if Like else 0 %}
+                                {% set user_liked_translation = Like.query.filter_by(target_type='translation', target_id=translation.id, user_id=session.get('user_id')).first() if Like else None %}
+                                <button class="btn {{ 'btn-success' if user_liked_translation else 'btn-outline-success' }} like-btn" 
+                                        data-type="translation" 
+                                        data-id="{{ translation.id }}" 
+                                        data-liked="{{ 'true' if user_liked_translation else 'false' }}"
+                                        style="{{ 'background-color: #28a745 !important; border-color: #28a745 !important; color: white !important;' if user_liked_translation else 'color: #28a745 !important; border-color: #28a745 !important; background-color: transparent !important;' }}">
+                                    <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                    <span class="like-count" style="{{ 'color: white !important; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;' if user_liked_translation else 'color: #28a745 !important; text-shadow: 0 1px 2px rgba(40, 167, 69, 0.2) !important;' }}">{{ translation_likes }}</span>
+                                </button>
+                                
+                                <!-- 作者专属点赞 -->
+                                {% if session.get('user_id') == work.creator.id %}
+                                {% set author_likes = AuthorLike.query.filter_by(translation_id=translation.id, correction_id=None).count() if AuthorLike else 0 %}
+                                {% set user_author_liked = AuthorLike.query.filter_by(translation_id=translation.id, correction_id=None, author_id=session.get('user_id')).first() if AuthorLike else None %}
+                                <!-- 作者专属点赞按钮已隐藏 -->
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            
+                            <!-- 该翻译者的校正列表 -->
+                            {% set translation_corrections = corrections|selectattr('translation_id', 'equalto', translation.id)|list %}
+                            {% if translation_corrections|length > 0 %}
+                            <div class="border-top pt-3">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-check-circle me-2 text-warning"></i>{{ translation.translator.username }} {{ get_message('translator_corrections') }}
+                                </h6>
+                                
+                                {% for correction in translation_corrections %}
+                                <div class="border rounded p-3 mb-3" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ url_for('uploaded_file', filename=correction.reviewer.avatar) if correction.reviewer.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                 class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
+                                            <div>
+                                                <h6 class="mb-0">
+                                                    <a href="{{ url_for('user_profile', user_id=correction.reviewer.id) }}" class="text-decoration-none fw-bold">
+                                                        {{ correction.reviewer.username }}
+                                                    </a>
+                                                    <span class="badge bg-warning ms-2">
+                                                        <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') if get_message('reviewer') else '校正者' }}
+                                                    </span>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar me-1"></i>{{ correction.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        {% if session.get('user_id') == correction.reviewer.id or (current_user and current_user.role == 'admin') %}
+                                        <form method="POST" action="{{ url_for('delete_correction', work_id=work.id, correction_id=correction.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('{{ get_message('confirm_delete_correction') }}')">
+                                                <i class="fas fa-trash me-1"></i>{{ get_message('delete') }}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="text-warning mb-2">
+                                            <i class="fas fa-edit me-2"></i>{{ get_message('correction_content_label') }}
+                                        </h6>
+                                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                                            <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; color: #212529;">{{ correction.content }}</pre>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if correction.notes %}
+                                    <div class="mb-3">
+                                        <h6 class="text-info mb-2">
+                                            <i class="fas fa-sticky-note me-2"></i>{{ get_message('correction_notes_label') }}
+                                        </h6>
+                                        <p class="mb-0">{{ correction.notes }}</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- 校正点赞 -->
+                                    {% if session.get('user_id') %}
+                                    <div class="like-group mb-3">
+                                        {% set correction_likes = CorrectionLike.query.filter_by(correction_id=correction.id).count() if CorrectionLike else 0 %}
+                                        {% set author_likes = AuthorLike.query.filter_by(translation_id=correction.translation_id, correction_id=correction.id).count() if AuthorLike else 0 %}
+                                        {% set total_likes = correction_likes + author_likes %}
+                                        
+                                        {% set user_liked_correction = CorrectionLike.query.filter_by(correction_id=correction.id, user_id=session.get('user_id')).first() if CorrectionLike else None %}
+                                        {% set user_author_liked_correction = AuthorLike.query.filter_by(translation_id=correction.translation_id, correction_id=correction.id, author_id=session.get('user_id')).first() if AuthorLike else None %}
+                                        {% set user_has_liked = user_liked_correction or user_author_liked_correction %}
+                                        {% set is_author = session.get('user_id') == work.creator.id %}
+                                        
+                                        <button class="btn {{ 'btn-warning' if user_has_liked else 'btn-outline-warning' }} correction-like-btn" 
+                                                data-correction-id="{{ correction.id }}" 
+                                                data-liked="{{ 'true' if user_has_liked else 'false' }}"
+                                                data-is-author="{{ 'true' if is_author else 'false' }}">
+                                            <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                            <span class="correction-like-count">{{ total_likes }}</span>
+                                        </button>
+                                        {% if author_likes > 0 %}
+                                        <!-- 作者点赞徽章已隐藏 -->
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- 校正评论区域 -->
+                                    <div class="border-top pt-3">
+                                        <h6 class="mb-2">
+                                            <i class="fas fa-comments me-2 text-warning"></i>{{ get_message('correction_comments') }}
+                                        </h6>
+                                        
+                                        <!-- 校正评论列表 -->
+                                        <div class="correction-comments mb-3" data-correction-id="{{ correction.id }}">
+                                            <!-- 评论将通过AJAX加载 -->
+                                        </div>
+                                        
+                                        {% if session.get('user_id') %}
+                                        <form class="correction-comment-form" data-correction-id="{{ correction.id }}">
+                                            <div class="mb-3">
+                                                <textarea class="form-control" rows="2" placeholder="{{ get_message('correction_comment_placeholder') }}" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_comment') }}
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+                            <!-- 该翻译者的评论区域 -->
+                            <div class="border-top pt-3">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-comments me-2 text-success"></i>{{ translation.translator.username }} {{ get_message('translator_comments') }}
+                                </h6>
+                                
+                                <!-- 翻译评论列表 -->
+                                <div class="translation-comments mb-3" data-translation-id="{{ translation.id }}">
+                                    <!-- 评论将通过AJAX加载 -->
+                                </div>
+                                
+                                <!-- 翻译评论表单 -->
+                                {% if session.get('user_id') %}
+                                <form class="translation-comment-form" data-translation-id="{{ translation.id }}">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" rows="3" placeholder="{{ get_message('translation_comment_placeholder') }}" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_translation_comment') }}
+                                    </button>
+                                </form>
+                                {% endif %}
+                                
+                                <!-- 翻译附件 -->
+                                {% if translation.media_filename %}
+                                <div class="mt-3">
+                                    <h6 class="mb-2">
+                                        <i class="fas fa-paperclip me-2"></i>{{ get_message('translation_attachments') if get_message('translation_attachments') else '翻译附件' }}
+                                    </h6>
+                                    {% set ext = translation.media_filename.rsplit('.', 1)[-1].lower() %}
+                                    {% if ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'] %}
+                                    <img src="{{ url_for('uploaded_file', filename=translation.media_filename) }}" class="img-fluid rounded shadow" style="max-width:100%;">
+                                    {% elif ext in ['mp3', 'wav', 'ogg', 'aac'] %}
+                                    <audio controls src="{{ url_for('uploaded_file', filename=translation.media_filename) }}" style="width:100%;max-width:400px;"></audio>
+                                    {% elif ext in ['mp4', 'webm', 'ogg'] %}
+                                    <video controls src="{{ url_for('uploaded_file', filename=translation.media_filename) }}" style="width:100%;max-width:400px;"></video>
+                                    {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-file me-2"></i>
+                                        <a href="{{ url_for('uploaded_file', filename=translation.media_filename) }}" target="_blank" class="text-decoration-none">
+                                            {{ get_message('download_translation_attachment') }}
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                
+                                <!-- 翻译操作按钮 -->
+                                {% if session.get('user_id') == translation.translator.id and work.status != 'completed' %}
+                                <div class="d-flex gap-2 mt-3">
+                                    <a href="{{ url_for('edit_translation', work_id=work.id) }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-edit me-2"></i>{{ get_message('edit') }}
+                                    </a>
+                                    {% if translation.status == 'submitted' %}
+                                    <button type="button" class="btn btn-outline-danger" onclick="deleteTranslation({{ translation.id }})">
+                                        <i class="fas fa-trash me-2"></i>{{ get_message('delete') }}
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                    
+
+                    
+                    <!-- 管理员翻译操作按钮 -->
+                    {% if session.get('user_id') and current_user and current_user.role == 'admin' and valid_translations and valid_translations|length > 0 %}
+                    <div class="mt-3">
+                        <h6 class="mb-2">
+                            <i class="fas fa-cog me-2"></i>{{ get_message('admin_operations') if get_message('admin_operations') else '管理员操作' }}
+                        </h6>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('edit_translation', work_id=work.id) }}" class="btn btn-outline-warning">
+                                <i class="fas fa-edit me-2"></i>{{ get_message('admin_edit') }}
+                            </a>
+                            {% for translation in valid_translations %}
+                            <button type="button" class="btn btn-outline-danger" onclick="deleteTranslation({{ translation.id }})">
+                                <i class="fas fa-trash me-2"></i>{{ get_message('admin_delete') }} ({{ translation.translator.username }})
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- 翻译请求区域 -->
+                {% if not valid_translations or valid_translations|length == 0 %}
+                {% if session.get('user_id') and session.get('user_id') != work.creator.id %}
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-info-circle me-3 fa-lg"></i>
+                        <div>
+                            <h6 class="mb-1">{{ get_message('start_translation') }}</h6>
+                            <p class="mb-0">{{ get_message('start_translation_desc') }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                
+                <!-- 翻译请求处理区域 -->
+                {% if translation_requests and translation_requests|length > 0 %}
+                <div class="mt-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-clock me-2 text-warning"></i>{{ get_message('translation_request') }}
+                    </h5>
+                    {% for request in translation_requests %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                {% set translator = get_user_by_id(request.translator_id) %}
+                                <img src="{{ url_for('uploaded_file', filename=translator.avatar) if translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                     class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{{ url_for('user_profile', user_id=translator.id) }}" class="text-decoration-none fw-bold">
+                                            {{ translator.username }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ request.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </small>
+            </div>
+        </div>
+                            {% if request.content %}
+                            <div class="mb-3">
+                                <h6 class="text-muted">{{ get_message('translator_expectation_label') }}</h6>
+                                <p class="mb-0">{{ request.content }}</p>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex gap-2">
+                                <form method="POST" action="{{ url_for('approve_translation_request', work_id=work.id, req_id=request.id) }}" class="d-inline">
+                                    <input type="hidden" name="source" value="work_detail">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check me-1"></i>{{ get_message('approve') }}
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('reject_translation_request', work_id=work.id, req_id=request.id) }}" class="d-inline">
+                                    <input type="hidden" name="source" value="work_detail">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ get_message('confirm_reject_request') }}')">
+                                        <i class="fas fa-times me-1"></i>{{ get_message('reject') }}
+                                    </button>
+                                </form>
+                            </div>
+            </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- 翻译者请求处理区域 -->
+                {% if translator_requests and translator_requests|length > 0 %}
+                <div class="mt-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-clock me-2 text-warning"></i>{{ get_message('translator_request') }}
+                    </h5>
+                    {% for request in translator_requests %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                {% set translator = get_user_by_id(request.translator_id) %}
+                                <img src="{{ url_for('uploaded_file', filename=translator.avatar) if translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                     class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{{ url_for('user_profile', user_id=translator.id) }}" class="text-decoration-none fw-bold">
+                                            {{ translator.username }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ request.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </small>
+                                </div>
+                            </div>
+                            {% if request.content %}
+                            <div class="mb-3">
+                                <h6 class="text-muted">{{ get_message('translator_expectation_label') }}</h6>
+                                <p class="mb-0">{{ request.content }}</p>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex gap-2">
+                                <form method="POST" action="{{ url_for('approve_translator_request', work_id=work.id, req_id=request.id) }}" class="d-inline">
+                                    <input type="hidden" name="source" value="work_detail">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check me-1"></i>{{ get_message('approve') }}
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('reject_translator_request', work_id=work.id, req_id=request.id) }}" class="d-inline">
+                                    <input type="hidden" name="source" value="work_detail">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ get_message('confirm_reject_request') }}')">
+                                        <i class="fas fa-times me-1"></i>{{ get_message('reject') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- 评论区域 -->
+                <div class="mt-5">
+                    <h5 class="mb-3">
+                        <i class="fas fa-comments me-2 text-info"></i>{{ get_message('comments') }}
+                    </h5>
+                    
+                    <!-- 评论列表 -->
+                    <div class="work-comments-container mb-4" data-work-id="{{ work.id }}">
+                        {% set work_comments = Comment.query.filter_by(work_id=work.id, translation_id=None, correction_id=None).order_by(Comment.created_at.desc()).all() if Comment else [] %}
+                        {% if work_comments %}
+                        <div class="space-y-3">
+                            {% for comment in work_comments %}
+                            <div class="d-flex mb-3">
+                                <img src="{{ url_for('uploaded_file', filename=comment.author.avatar) if comment.author.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                     class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <a href="{{ url_for('user_profile', user_id=comment.author.id) }}" class="text-decoration-none fw-bold me-2">
+                                            {{ comment.author.username }}
+                                        </a>
+                                        <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        <div class="ms-auto d-flex align-items-center gap-2">
+                                            {% if session.get('user_id') %}
+                                            {% set comment_likes = Like.query.filter_by(target_type='comment', target_id=comment.id).count() if Like else 0 %}
+                                            {% set user_liked_comment = Like.query.filter_by(target_type='comment', target_id=comment.id, user_id=session.get('user_id')).first() if Like else None %}
+                                            {% set can_delete_comment = session.get('user_id') == comment.author.id or (current_user and current_user.role == 'admin') %}
+                                            {% if can_delete_comment %}
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment({{ comment.id }})">
+                                                <i class="fas fa-trash me-1"></i>{{ get_message('delete') }}
+                                            </button>
+                                            {% endif %}
+                                            <button class="btn btn-sm {{ 'btn-secondary' if user_liked_comment else 'btn-outline-secondary' }} like-btn" 
+                                                    data-type="comment" 
+                                                    data-id="{{ comment.id }}" 
+                                                    data-liked="{{ 'true' if user_liked_comment else 'false' }}"
+                                                    style="{{ 'background-color: #6c757d !important; border-color: #6c757d !important; color: white !important;' if user_liked_comment else 'color: #6c757d !important; border-color: #6c757d !important; background-color: transparent !important;' }}">
+                                                <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                                <span class="like-count" style="{{ 'color: white !important; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;' if user_liked_comment else 'color: #6c757d !important; text-shadow: 0 1px 2px rgba(108, 117, 125, 0.2) !important;' }}">{{ comment_likes }}</span>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-comments fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">{{ get_message('no_comments') }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if session.get('user_id') %}
+                    <form method="POST">
+                        <input type="hidden" name="add_comment" value="1">
+                        <div class="mb-3">
+                            <textarea name="content" class="form-control" rows="3" placeholder="{{ get_message('comment_placeholder') }}" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_work_comment') }}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    
+    <!-- 侧边栏 -->
+    <div class="col-lg-4 work-detail-sidebar">
+        <!-- 翻译操作区域 -->
+        {% if session.get('user_id') and session.get('user_id') != work.creator.id %}
+        <div class="card shadow-sm border-0 mb-4 translation-ops-card">
+            <div class="card-header gradient-bg-primary text-white border-0" style="background: linear-gradient(135deg, #0056b3 0%, #004085 100%) !important;">
+                <h6 class="mb-0">
+                    <i class="fas fa-language me-2"></i>{{ get_message('translation_operations') }}
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                {% set trusted = TrustedTranslator.query.filter_by(user_id=work.creator.id, translator_id=session.get('user_id')).first() if TrustedTranslator else None %}
+                {% set can_translate = (current_user and current_user.is_translator) or trusted %}
+                
+                {% if can_translate %}
+                    {% set current_user_translation = None %}
+                    {% if current_user %}
+                        {% set current_user_translation = Translation.query.filter_by(work_id=work.id, translator_id=current_user.id).filter(Translation.status != 'rejected').first() if Translation else None %}
+                    {% endif %}
+                    {% set valid_translation = current_user_translation %}
+                    {% if not valid_translation %}
+                        {% if work.status == 'translating' %}
+                            {% if work.allow_multiple_translators and not work.translation_requirements %}
+                                <!-- 允许多人翻译且无翻译要求，可以直接翻译 -->
+                                <a href="{{ url_for('translate_work', work_id=work.id) }}" class="btn btn-primary w-100 mb-3 py-3">
+                                    <i class="fas fa-language me-2 fa-lg"></i>{{ get_message('start_translation') }}
+                                </a>
+                                <div class="alert alert-info border-0 mb-0">
+                                    <i class="fas fa-users me-2"></i>{{ get_message('multiple_translators_allowed') if get_message('multiple_translators_allowed') else '允许多人翻译' }}
+                                </div>
+                            {% elif current_user_approved_req or current_user_approved_translator_req %}
+                                <!-- 已获得同意的翻译者可以继续翻译 -->
+                                <a href="{{ url_for('translate_work', work_id=work.id) }}" class="btn btn-primary w-100 mb-3 py-3">
+                                    <i class="fas fa-language me-2 fa-lg"></i>{{ get_message('start_translation') }}
+                                </a>
+                                <div class="alert alert-success border-0 mb-0">
+                                    <i class="fas fa-check-circle me-2"></i>{{ get_message('approved_translator') }}
+                                </div>
+                            {% else %}
+                                <!-- 作品正在翻译中，其他翻译者无法翻译 -->
+                                <div class="alert alert-warning border-0 mb-0">
+                                    <i class="fas fa-clock me-2"></i>{{ get_message('work_already_translating') }}
+                                </div>
+                            {% endif %}
+                        {% elif work.contact_before_translate and not trusted %}
+                            <!-- 需要私信确认 -->
+                            <a href="{{ url_for('conversation', user_id=work.creator.id) }}" class="btn btn-warning w-100 mb-3 py-3">
+                                <i class="fas fa-envelope me-2 fa-lg"></i>{{ get_message('message_author') }}
+                            </a>
+                            <div class="alert alert-info border-0 mb-0">
+                                <i class="fas fa-info-circle me-2"></i>{{ get_message('need_contact_author') }}
+                            </div>
+                        {% elif work.translation_requirements and not trusted %}
+                            <!-- 需要确认翻译要求（即使允许多人翻译也需要确认） -->
+                            <a href="{{ url_for('confirm_translate', work_id=work.id) }}" class="btn btn-warning w-100 mb-3 py-3">
+                                <i class="fas fa-check-circle me-2 fa-lg"></i>{{ get_message('confirm_translation_requirements') }}
+                            </a>
+                            <div class="alert alert-info border-0 mb-0">
+                                <i class="fas fa-info-circle me-2"></i>{{ get_message('need_agree_requirements') }}
+                            </div>
+                        {% else %}
+                            <!-- 直接翻译 -->
+                            <a href="{{ url_for('translate_work', work_id=work.id) }}" class="btn btn-primary w-100 mb-3 py-3">
+                                <i class="fas fa-language me-2 fa-lg"></i>{{ get_message('start_translation') }}
+                            </a>
+                            {% if trusted %}
+                            <div class="alert alert-success border-0 mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>{{ get_message('trusted_translator') }}
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                        
+                        <!-- 提出要求按钮 -->
+                        {% if work.status != 'translating' or current_user_approved_req or current_user_approved_translator_req %}
+                        <div class="mt-3">
+                            <a href="{{ url_for('make_request', work_id=work.id) }}" class="btn btn-outline-info w-100 mb-2 py-2">
+                                <i class="fas fa-comment-dots me-2"></i>{{ get_message('make_request_to_creator') if get_message('make_request_to_creator') else '向作者提出要求' }}
+                            </a>
+                            <small class="text-muted d-block text-center">
+                                <i class="fas fa-info-circle me-1"></i>{{ get_message('make_request_desc') if get_message('make_request_desc') else '向作者表达您的期待或要求' }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="alert alert-success border-0 mb-0">
+                        <i class="fas fa-check-circle me-2"></i>{{ get_message('you_already_translated') if get_message('you_already_translated') else '您已经翻译过这个作品' }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-warning border-0 mb-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ get_message('need_translator_qualification') }}
+                </div>
+                <a href="{{ url_for('apply_translator') }}" class="btn btn-warning w-100">
+                    <i class="fas fa-user-plus me-2"></i>{{ get_message('apply_translator') }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 作品信息 -->
+        <div class="card shadow-sm border-0 mb-4 work-info-card">
+            <div class="card-header gradient-bg-info text-white border-0" style="background: linear-gradient(135deg, #138496 0%, #0f6674 100%) !important;">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ get_message('work_info') }}
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border: 1px solid #ced4da;">
+                            <span class="text-dark fw-bold">{{ get_message('language') }}</span>
+                            <span class="fw-bold text-dark">
+                                {{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                            </span>
+                        </div>
+                    </div>
+                    {% if work.category %}
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border: 1px solid #ced4da;">
+                            <span class="text-dark fw-bold">{{ get_message('category') }}</span>
+                            <span class="fw-bold text-dark">
+                                {% if work.category == '投稿・文章' %}
+                                    {{ get_message('category_post_article') }}
+                                {% elif work.category == '小说' %}
+                                    {{ get_message('category_novel') }}
+                                {% elif work.category == '图片' %}
+                                    {{ get_message('category_image') }}
+                                {% elif work.category == '漫画' %}
+                                    {{ get_message('category_comic') }}
+                                {% elif work.category == '音声' %}
+                                    {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                                {% elif work.category == '视频・动画' %}
+                                    {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                                {% elif work.category == '闲聊' %}
+                                    {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                                {% elif work.category == '其他' %}
+                                    {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                                {% else %}
+                                    {{ work.category }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border: 1px solid #ced4da;">
+                            <span class="text-dark fw-bold">{{ get_message('created_date') }}</span>
+                            <span class="fw-bold text-dark">{{ work.created_at.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border: 1px solid #ced4da;">
+                            <span class="text-dark fw-bold">{{ get_message('status') }}</span>
+                            <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }} fs-6">
+                                {% if work.status == 'pending' %}
+                                    {{ get_message('status_pending') }}
+                                {% elif work.status == 'translating' %}
+                                    {{ get_message('status_translating') }}
+                                {% elif work.status == 'completed' %}
+                                    {{ get_message('status_completed') }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 作者信息 -->
+        <div class="card shadow-sm border-0 author-info-card">
+            <div class="card-header gradient-bg-success text-white border-0" style="background: linear-gradient(135deg, #1e7e34 0%, #155724 100%) !important;">
+                <h6 class="mb-0">
+                    <i class="fas fa-user me-2"></i>{{ get_message('author_info') }}
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                <!-- 作者基本信息 -->
+                <div class="text-center mb-4">
+                    <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                       class="text-decoration-none" 
+                       style="transition: transform 0.2s ease;" 
+                       onmouseover="this.style.transform='scale(1.05)'" 
+                       onmouseout="this.style.transform='scale(1)'">
+                        <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                             class="rounded-circle mb-3 shadow-sm" style="width:80px;height:80px;object-fit:cover;border:3px solid #e9ecef; cursor: pointer;" alt="{{ get_message('avatar') }}">
+                    </a>
+                    <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                       class="text-decoration-none" 
+                       style="color: #212529; transition: color 0.2s ease;" 
+                       onmouseover="this.style.color='#007bff'" 
+                       onmouseout="this.style.color='#212529'">
+                        <h6 class="mb-2 fw-bold">{{ work.creator.username }}</h6>
+                    </a>
+                    {% if work.creator.bio %}
+                    <p class="text-muted small mb-3">{{ work.creator.bio }}</p>
+                    {% endif %}
+                    
+                    <!-- 角色标签 -->
+                    <div class="mb-3">
+                        {% if work.creator.is_translator %}
+                        <span class="badge bg-success me-1">
+                            <i class="fas fa-language me-1"></i>{{ get_message('translator') }}
+                        </span>
+                        {% endif %}
+                        {% if work.creator.is_reviewer %}
+                        <span class="badge bg-warning me-1">
+                            <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') }}
+                        </span>
+                        {% endif %}
+                        {% if work.creator.role == 'admin' %}
+                        <span class="badge bg-danger me-1">
+                            <i class="fas fa-crown me-1"></i>{{ get_message('admin') }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- 统计信息 -->
+                <div class="row text-center mb-4 g-2 author-stats">
+                    <div class="col-4">
+                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                            <div class="fw-bold text-primary fs-5">{{ author_stats.works_count if author_stats else 0 }}</div>
+                            <small class="text-dark fw-bold">{{ get_message('works') }}</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                            <div class="fw-bold text-success fs-5">{{ author_stats.translations_count if author_stats else 0 }}</div>
+                            <small class="text-dark fw-bold">{{ get_message('translations') }}</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                            <div class="fw-bold text-warning fs-5">{{ author_stats.total_likes if author_stats else 0 }}</div>
+                            <small class="text-dark fw-bold">{{ get_message('likes') }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 注册时间 -->
+                <div class="text-center mb-4">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}{{ work.creator.created_at.strftime('%Y-%m-%d') }}
+                    </small>
+                </div>
+                
+                <!-- 偏好语言 -->
+                <div class="text-center mb-4">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>{{ get_message('preferred_language') }}
+                        {% if work.creator.preferred_language == 'zh' %}
+                            {{ get_message('chinese') }}
+                        {% elif work.creator.preferred_language == 'ja' %}
+                            {{ get_message('japanese') }}
+                        {% else %}
+                            {{ work.creator.preferred_language }}
+                        {% endif %}
+                    </small>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="d-grid gap-2 author-actions">
+                    {% if session.get('user_id') and session.get('user_id') != work.creator.id %}
+                    <a href="{{ url_for('conversation', user_id=work.creator.id) }}" class="btn btn-outline-primary btn-sm" style="cursor: pointer; z-index: 1000; position: relative;">
+                        <i class="fas fa-envelope me-2"></i>{{ get_message('message_author') }}
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" class="btn btn-outline-secondary btn-sm" style="cursor: pointer; z-index: 1000; position: relative;">
+                        <i class="fas fa-user me-2"></i>{{ get_message('view_profile') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 接受翻译模态框 -->
+<div class="modal fade" id="acceptTranslationModal" tabindex="-1" aria-labelledby="acceptTranslationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="acceptTranslationModalLabel">
+                    {{ get_message('accept_translation') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="acceptTranslationForm">
+                    <div class="mb-3">
+                        <label for="evaluation" class="form-label">
+                            {{ get_message('evaluation_optional') }}
+                        </label>
+                        <textarea class="form-control" id="evaluation" name="evaluation" rows="4" 
+                                placeholder="{{ get_message('evaluation_placeholder') }}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="addLike" name="addLike" checked>
+                            <label class="form-check-label" for="addLike">
+                                {{ get_message('add_like_to_translation') }}
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ get_message('cancel') }}
+                </button>
+                <button type="button" class="btn btn-success" onclick="acceptTranslation()">
+                    {{ get_message('accept') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 拒绝翻译模态框 -->
+<div class="modal fade" id="rejectTranslationModal" tabindex="-1" aria-labelledby="rejectTranslationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectTranslationModalLabel">
+                    {{ get_message('reject_translation') if get_message('reject_translation') else '拒绝翻译' }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="rejectTranslationForm">
+                    <div class="mb-3">
+                        <label for="rejectEvaluation" class="form-label">
+                            {{ get_message('reject_reason') if get_message('reject_reason') else '拒绝理由（可选）' }}
+                        </label>
+                        <textarea class="form-control" id="rejectEvaluation" name="rejectEvaluation" rows="4" 
+                                placeholder="{{ get_message('reject_reason_placeholder') if get_message('reject_reason_placeholder') else '请输入拒绝翻译的理由...' }}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ get_message('cancel') }}
+                </button>
+                <button type="button" class="btn btn-danger" onclick="rejectTranslation()">
+                    {{ get_message('reject') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 管理员编辑模态框 -->
+<div class="modal fade" id="adminEditModal" tabindex="-1" aria-labelledby="adminEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminEditModalLabel">
+                    {{ get_message('admin_edit') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="adminEditForm">
+                    <div class="mb-3">
+                        <label for="adminEditReason" class="form-label">
+                            {{ get_message('edit_reason') if get_message('edit_reason') else '编辑理由' }}
+                        </label>
+                        <textarea class="form-control" id="adminEditReason" name="adminEditReason" rows="4" 
+                                placeholder="{{ get_message('edit_reason_placeholder') if get_message('edit_reason_placeholder') else '请输入编辑理由...' }}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ get_message('cancel') }}
+                </button>
+                <button type="button" class="btn btn-warning" onclick="adminEditWork()">
+                    {{ get_message('edit') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 管理员删除模态框 -->
+<div class="modal fade" id="adminDeleteModal" tabindex="-1" aria-labelledby="adminDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminDeleteModalLabel">
+                    {{ get_message('admin_delete') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{ get_message('notify_creator_and_translator') if get_message('notify_creator_and_translator') else '此操作将通知作品作者和翻译者。' }}
+                </div>
+                <form id="adminDeleteForm">
+                    <div class="mb-3">
+                        <label for="adminDeleteReason" class="form-label">
+                            {{ get_message('delete_reason') if get_message('delete_reason') else '删除理由' }}
+                        </label>
+                        <textarea class="form-control" id="adminDeleteReason" name="adminDeleteReason" rows="4" 
+                                placeholder="{{ get_message('delete_reason_placeholder') if get_message('delete_reason_placeholder') else '请输入删除理由...' }}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ get_message('cancel') }}
+                </button>
+                <button type="button" class="btn btn-danger" onclick="adminDeleteWork()">
+                    {{ get_message('delete') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 点赞功能
+document.querySelectorAll('.like-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const type = this.dataset.type;
+        const id = this.dataset.id;
+        const isLiked = this.dataset.liked === 'true';
+        
+        fetch(`/like/${type}/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const countElement = this.querySelector('.like-count');
+                const currentCount = parseInt(countElement.textContent);
+                
+                if (data.action === 'liked') {
+                    countElement.textContent = currentCount + 1;
+                    this.dataset.liked = 'true';
+                    this.classList.add('liked');
+                    
+                    // 根据按钮类型切换样式
+                    if (this.classList.contains('btn-outline-primary')) {
+                        this.classList.remove('btn-outline-primary');
+                        this.classList.add('btn-primary');
+                        this.style.backgroundColor = '#007bff';
+                        this.style.borderColor = '#007bff';
+                        this.style.color = 'white';
+                        countElement.style.color = 'white';
+                        countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                    } else if (this.classList.contains('btn-outline-success')) {
+                        this.classList.remove('btn-outline-success');
+                        this.classList.add('btn-success');
+                        this.style.backgroundColor = '#28a745';
+                        this.style.borderColor = '#28a745';
+                        this.style.color = 'white';
+                        countElement.style.color = 'white';
+                        countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                    } else if (this.classList.contains('btn-outline-secondary')) {
+                        this.classList.remove('btn-outline-secondary');
+                        this.classList.add('btn-secondary');
+                        this.style.backgroundColor = '#6c757d';
+                        this.style.borderColor = '#6c757d';
+                        this.style.color = 'white';
+                        countElement.style.color = 'white';
+                        countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                    } else if (this.classList.contains('btn-outline-warning')) {
+                        this.classList.remove('btn-outline-warning');
+                        this.classList.add('btn-warning');
+                        this.style.backgroundColor = '#ffc107';
+                        this.style.borderColor = '#ffc107';
+                        this.style.color = '#212529';
+                        countElement.style.color = '#212529';
+                        countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                    }
+                } else {
+                    countElement.textContent = currentCount - 1;
+                    this.dataset.liked = 'false';
+                    this.classList.remove('liked');
+                    
+                    // 根据按钮类型切换样式
+                    if (this.classList.contains('btn-primary')) {
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-outline-primary');
+                        this.style.backgroundColor = 'transparent';
+                        this.style.borderColor = '#007bff';
+                        this.style.color = '#007bff';
+                        countElement.style.color = '#007bff';
+                        countElement.style.textShadow = '0 1px 2px rgba(0, 123, 255, 0.2)';
+                    } else if (this.classList.contains('btn-success')) {
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-outline-success');
+                        this.style.backgroundColor = 'transparent';
+                        this.style.borderColor = '#28a745';
+                        this.style.color = '#28a745';
+                        countElement.style.color = '#28a745';
+                        countElement.style.textShadow = '0 1px 2px rgba(40, 167, 69, 0.2)';
+                    } else if (this.classList.contains('btn-secondary')) {
+                        this.classList.remove('btn-secondary');
+                        this.classList.add('btn-outline-secondary');
+                        this.style.backgroundColor = 'transparent';
+                        this.style.borderColor = '#6c757d';
+                        this.style.color = '#6c757d';
+                        countElement.style.color = '#6c757d';
+                        countElement.style.textShadow = '0 1px 2px rgba(108, 117, 125, 0.2)';
+                    } else if (this.classList.contains('btn-warning')) {
+                        this.classList.remove('btn-warning');
+                        this.classList.add('btn-outline-warning');
+                        this.style.backgroundColor = 'transparent';
+                        this.style.borderColor = '#ffc107';
+                        this.style.color = '#ffc107';
+                        countElement.style.color = '#ffc107';
+                        countElement.style.textShadow = '0 1px 2px rgba(255, 193, 7, 0.2)';
+                    }
+                }
+            }
+        });
+    });
+});
+
+// 显示接受翻译模态框
+function showAcceptModal(translationId) {
+    // 存储翻译ID供后续使用
+    window.currentTranslationId = translationId;
+    const modal = new bootstrap.Modal(document.getElementById('acceptTranslationModal'));
+    modal.show();
+}
+
+// 接受翻译
+function acceptTranslation() {
+    const evaluation = document.getElementById('evaluation').value;
+    const addLike = document.getElementById('addLike').checked;
+    
+    fetch('{{ url_for("accept_translation", work_id=work.id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            evaluation: evaluation,
+            addLike: addLike,
+            translation_id: window.currentTranslationId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('acceptTranslationModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+// 显示拒绝翻译模态框
+function showRejectModal(translationId) {
+    // 存储翻译ID供后续使用
+    window.currentTranslationId = translationId;
+    const modal = new bootstrap.Modal(document.getElementById('rejectTranslationModal'));
+    modal.show();
+}
+
+// 拒绝翻译
+function rejectTranslation() {
+    const evaluation = document.getElementById('rejectEvaluation').value;
+    
+    fetch('{{ url_for("reject_translation", work_id=work.id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            evaluation: evaluation,
+            translation_id: window.currentTranslationId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('rejectTranslationModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+// 删除翻译
+function deleteTranslation(translationId) {
+    if (confirm('{{ get_message("confirm_delete_translation") }}')) {
+        fetch('{{ url_for("delete_translation", work_id=work.id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                translation_id: translationId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('删除翻译时出错:', error);
+            alert('删除翻译时发生错误，请重试');
+        });
+    }
+}
+
+// 显示管理员编辑模态框
+function showAdminEditModal() {
+    const modal = new bootstrap.Modal(document.getElementById('adminEditModal'));
+    modal.show();
+}
+
+    // 校正点赞功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const correctionLikeButtons = document.querySelectorAll('.correction-like-btn');
+        
+        correctionLikeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const correctionId = this.getAttribute('data-correction-id');
+                const isLiked = this.getAttribute('data-liked') === 'true';
+                const isAuthor = this.getAttribute('data-is-author') === 'true';
+                
+                // 根据是否是作者选择不同的API
+                const apiUrl = isAuthor ? `/correction/${correctionId}/author_like` : `/correction/${correctionId}/like`;
+                
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 更新按钮状态
+                        const likeCount = this.querySelector('.correction-like-count');
+                        likeCount.textContent = data.likes_count;
+                        
+                        if (data.liked) {
+                            this.classList.remove('btn-outline-warning');
+                            this.classList.add('btn-warning');
+                            this.classList.add('liked');
+                            this.setAttribute('data-liked', 'true');
+                        } else {
+                            this.classList.remove('btn-warning');
+                            this.classList.add('btn-outline-warning');
+                            this.classList.remove('liked');
+                            this.setAttribute('data-liked', 'false');
+                        }
+                        
+                        // 如果是作者点赞，刷新页面以更新显示
+                        if (isAuthor) {
+                            location.reload();
+                        }
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('操作失败，请重试');
+                });
+            });
+        });
+        
+        // 作者专属点赞功能（按钮已隐藏）
+        // const authorLikeButtons = document.querySelectorAll('.author-like-btn');
+        // 作者点赞按钮功能已隐藏，但后端逻辑保留
+    
+    // 加载翻译评论
+    loadTranslationComments();
+    
+    // 加载校正评论
+    loadCorrectionComments();
+    
+    // 翻译评论表单提交
+    document.querySelectorAll('.translation-comment-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const translationId = this.getAttribute('data-translation-id');
+            const textarea = this.querySelector('textarea');
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('{{ get_message("comment_required") if get_message("comment_required") else "请输入评论内容" }}');
+                return;
+            }
+            
+            // 验证翻译ID是否存在
+            if (!translationId || translationId === '') {
+                alert('{{ get_message("translation_not_found") if get_message("translation_not_found") else "未找到翻译" }}');
+                return;
+            }
+            
+            // 移除二次确认，直接提交评论
+            
+            const formData = new FormData();
+            formData.append('content', content);
+            formData.append('work_id', '{{ work.id }}');
+            formData.append('translation_id', translationId);
+            
+            fetch('/comment/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    textarea.value = '';
+                    loadTranslationComments();
+                    // 显示成功消息
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success alert-dismissible fade show';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    form.parentNode.insertBefore(successAlert, form.nextSibling);
+                    // 3秒后自动消失
+                    setTimeout(() => {
+                        if (successAlert.parentNode) {
+                            successAlert.remove();
+                        }
+                    }, 3000);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('评论提交失败，请重试');
+            });
+        });
+    });
+    
+    // 校正评论表单提交
+    document.querySelectorAll('.correction-comment-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const correctionId = this.getAttribute('data-correction-id');
+            const textarea = this.querySelector('textarea');
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('{{ get_message("comment_required") if get_message("comment_required") else "请输入评论内容" }}');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('content', content);
+            formData.append('work_id', '{{ work.id }}');
+            formData.append('correction_id', correctionId);
+            
+            fetch('/comment/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    textarea.value = '';
+                    loadCorrectionComments();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('评论提交失败，请重试');
+            });
+        });
+    });
+});
+
+// 加载翻译评论
+function loadTranslationComments() {
+    const translationComments = document.querySelectorAll('.translation-comments');
+    
+    translationComments.forEach(container => {
+        const translationId = container.getAttribute('data-translation-id');
+        
+        // 如果没有翻译ID，跳过加载
+        if (!translationId || translationId === '') {
+            return;
+        }
+        
+        fetch(`/comments/translation/${translationId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderComments(container, data.comments);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading translation comments:', error);
+        });
+    });
+}
+
+// 加载校正评论
+function loadCorrectionComments() {
+    const correctionComments = document.querySelectorAll('.correction-comments');
+    correctionComments.forEach(container => {
+        const correctionId = container.getAttribute('data-correction-id');
+        
+        // 如果没有校正ID，跳过加载
+        if (!correctionId || correctionId === '') {
+            return;
+        }
+        
+        fetch(`/comments/correction/${correctionId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderComments(container, data.comments);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading correction comments:', error);
+        });
+    });
+}
+
+// 加载作品评论
+function loadWorkComments() {
+    const workCommentsContainer = document.querySelector('.work-comments-container');
+    if (workCommentsContainer) {
+        const workId = workCommentsContainer.getAttribute('data-work-id');
+        
+        fetch(`/comments/work/${workId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderWorkComments(workCommentsContainer, data.comments);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading work comments:', error);
+        });
+    }
+}
+
+// 渲染作品评论
+function renderWorkComments(container, comments) {
+    if (comments.length === 0) {
+        container.innerHTML = '<div class="text-center py-4"><i class="fas fa-comments fa-2x text-muted mb-3"></i><p class="text-muted">{{ get_message("no_comments_yet") if get_message("no_comments_yet") else "暂无评论" }}</p></div>';
+        return;
+    }
+    
+    let html = '';
+    comments.forEach(comment => {
+        const avatarSrc = comment.author_avatar ? `/uploads/${comment.author_avatar}` : '/static/default_avatar.png';
+        html += `
+            <div class="d-flex mb-3">
+                <img src="${avatarSrc}" class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-1">
+                        <a href="/user/${comment.author_id}" class="text-decoration-none fw-bold me-2">${comment.author_name}</a>
+                        <small class="text-muted">${comment.created_at}</small>
+                        <div class="ms-auto d-flex align-items-center gap-2">
+                            ${comment.can_delete ? `<button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})"><i class="fas fa-trash me-1"></i>{{ get_message("delete_comment") if get_message("delete_comment") else "删除" }}</button>` : ''}
+                            <button class="btn btn-sm ${comment.user_liked ? 'btn-secondary' : 'btn-outline-secondary'} like-btn" 
+                                    data-type="comment" 
+                                    data-id="${comment.id}" 
+                                    data-liked="${comment.user_liked || 'false'}"
+                                    style="${comment.user_liked ? 'background-color: #6c757d !important; border-color: #6c757d !important; color: white !important;' : 'color: #6c757d !important; border-color: #6c757d !important; background-color: transparent !important;'}">
+                                <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                <span class="like-count" style="${comment.user_liked ? 'color: white !important; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;' : 'color: #6c757d !important; text-shadow: 0 1px 2px rgba(108, 117, 125, 0.2) !important;'}">${comment.likes_count || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mb-0">${comment.content}</p>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+    
+    // 为作品评论点赞按钮添加事件监听器
+    container.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const id = this.dataset.id;
+            const isLiked = this.dataset.liked === 'true';
+            
+            fetch(`/like/${type}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const countElement = this.querySelector('.like-count');
+                    const currentCount = parseInt(countElement.textContent);
+                    
+                    if (data.action === 'liked') {
+                        countElement.textContent = currentCount + 1;
+                        this.dataset.liked = 'true';
+                        this.classList.add('liked');
+                        
+                        // 根据按钮类型切换样式
+                        if (this.classList.contains('btn-outline-secondary')) {
+                            this.classList.remove('btn-outline-secondary');
+                            this.classList.add('btn-secondary');
+                            this.style.backgroundColor = '#6c757d';
+                            this.style.borderColor = '#6c757d';
+                            this.style.color = 'white';
+                            countElement.style.color = 'white';
+                            countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                        }
+                    } else {
+                        countElement.textContent = currentCount - 1;
+                        this.dataset.liked = 'false';
+                        this.classList.remove('liked');
+                        
+                        // 根据按钮类型切换样式
+                        if (this.classList.contains('btn-secondary')) {
+                            this.classList.remove('btn-secondary');
+                            this.classList.add('btn-outline-secondary');
+                            this.style.backgroundColor = 'transparent';
+                            this.style.borderColor = '#6c757d';
+                            this.style.color = '#6c757d';
+                            countElement.style.color = '#6c757d';
+                            countElement.style.textShadow = '0 1px 2px rgba(108, 117, 125, 0.2)';
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败，请重试');
+            });
+        });
+    });
+}
+
+// 渲染评论
+function renderComments(container, comments) {
+    if (comments.length === 0) {
+        container.innerHTML = '<div class="text-center py-3"><small class="text-muted">{{ get_message("no_comments_yet") if get_message("no_comments_yet") else "暂无评论" }}</small></div>';
+        return;
+    }
+    
+    let html = '';
+    comments.forEach(comment => {
+        const avatarSrc = comment.author_avatar ? `/uploads/${comment.author_avatar}` : '/static/default_avatar.png';
+        html += `
+            <div class="d-flex mb-3">
+                <img src="${avatarSrc}" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-1">
+                        <span class="fw-bold me-2">${comment.author_name}</span>
+                        <small class="text-muted">${comment.created_at}</small>
+                        <div class="ms-auto d-flex align-items-center gap-2">
+                            ${comment.can_delete ? `<button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})"><i class="fas fa-trash me-1"></i>{{ get_message("delete_comment") if get_message("delete_comment") else "删除" }}</button>` : ''}
+                            <button class="btn btn-sm ${comment.user_liked ? 'btn-secondary' : 'btn-outline-secondary'} comment-like-btn" 
+                                    data-type="comment" 
+                                    data-id="${comment.id}" 
+                                    data-liked="${comment.user_liked || 'false'}"
+                                    style="${comment.user_liked ? 'background-color: #6c757d !important; border-color: #6c757d !important; color: white !important;' : 'color: #6c757d !important; border-color: #6c757d !important; background-color: transparent !important;'}">
+                                <i class="fas fa-thumbs-up like-icon me-1"></i>
+                                <span class="comment-like-count" style="${comment.user_liked ? 'color: white !important; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;' : 'color: #6c757d !important; text-shadow: 0 1px 2px rgba(108, 117, 125, 0.2) !important;'}">${comment.likes_count || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mb-0">${comment.content}</p>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+    
+    // 为评论点赞按钮添加事件监听器
+    container.querySelectorAll('.comment-like-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const id = this.dataset.id;
+            const isLiked = this.dataset.liked === 'true';
+            
+            fetch(`/like/${type}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const countElement = this.querySelector('.comment-like-count');
+                    const currentCount = parseInt(countElement.textContent);
+                    
+                    if (data.action === 'liked') {
+                        countElement.textContent = currentCount + 1;
+                        this.dataset.liked = 'true';
+                        this.classList.add('liked');
+                        
+                        // 根据按钮类型切换样式
+                        if (this.classList.contains('btn-outline-secondary')) {
+                            this.classList.remove('btn-outline-secondary');
+                            this.classList.add('btn-secondary');
+                            this.style.backgroundColor = '#6c757d';
+                            this.style.borderColor = '#6c757d';
+                            this.style.color = 'white';
+                            countElement.style.color = 'white';
+                            countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                        } else if (this.classList.contains('btn-outline-primary')) {
+                            this.classList.remove('btn-outline-primary');
+                            this.classList.add('btn-primary');
+                            this.style.backgroundColor = '#007bff';
+                            this.style.borderColor = '#007bff';
+                            this.style.color = 'white';
+                            countElement.style.color = 'white';
+                            countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                        } else if (this.classList.contains('btn-outline-success')) {
+                            this.classList.remove('btn-outline-success');
+                            this.classList.add('btn-success');
+                            this.style.backgroundColor = '#28a745';
+                            this.style.borderColor = '#28a745';
+                            this.style.color = 'white';
+                            countElement.style.color = 'white';
+                            countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                        } else if (this.classList.contains('btn-outline-purple')) {
+                            this.classList.remove('btn-outline-purple');
+                            this.classList.add('btn-purple');
+                            this.style.backgroundColor = '#6f42c1';
+                            this.style.borderColor = '#6f42c1';
+                            this.style.color = 'white';
+                            countElement.style.color = 'white';
+                            countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
+                        }
+                    } else {
+                        countElement.textContent = currentCount - 1;
+                        this.dataset.liked = 'false';
+                        this.classList.remove('liked');
+                        
+                        // 根据按钮类型切换样式
+                        if (this.classList.contains('btn-secondary')) {
+                            this.classList.remove('btn-secondary');
+                            this.classList.add('btn-outline-secondary');
+                            this.style.backgroundColor = 'transparent';
+                            this.style.borderColor = '#6c757d';
+                            this.style.color = '#6c757d';
+                            countElement.style.color = '#6c757d';
+                            countElement.style.textShadow = '0 1px 2px rgba(108, 117, 125, 0.2)';
+                        } else if (this.classList.contains('btn-primary')) {
+                            this.classList.remove('btn-primary');
+                            this.classList.add('btn-outline-primary');
+                            this.style.backgroundColor = 'transparent';
+                            this.style.borderColor = '#007bff';
+                            this.style.color = '#007bff';
+                            countElement.style.color = '#007bff';
+                            countElement.style.textShadow = '0 1px 2px rgba(0, 123, 255, 0.2)';
+                        } else if (this.classList.contains('btn-success')) {
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-outline-success');
+                            this.style.backgroundColor = 'transparent';
+                            this.style.borderColor = '#28a745';
+                            this.style.color = '#28a745';
+                            countElement.style.color = '#28a745';
+                            countElement.style.textShadow = '0 1px 2px rgba(40, 167, 69, 0.2)';
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败，请重试');
+            });
+        });
+    });
+}
+
+// 删除评论
+function deleteComment(commentId) {
+    if (confirm('{{ get_message("confirm_delete_comment") }}')) {
+        fetch(`/comment/${commentId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 重新加载所有类型的评论
+                loadTranslationComments();
+                loadCorrectionComments();
+                loadWorkComments();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('删除评论失败，请重试');
+        });
+    }
+}
+
+// 管理员编辑作品
+function adminEditWork() {
+    const reason = document.getElementById('adminEditReason').value;
+    
+    // 先跳转到编辑页面，然后发送理由
+    window.location.href = '{{ url_for("edit_work", work_id=work.id) }}?admin_reason=' + encodeURIComponent(reason);
+}
+
+// 显示管理员删除模态框
+function showAdminDeleteModal() {
+    const modal = new bootstrap.Modal(document.getElementById('adminDeleteModal'));
+    modal.show();
+}
+
+// 管理员删除作品
+function adminDeleteWork() {
+    const reason = document.getElementById('adminDeleteReason').value;
+    
+    if (!reason.trim()) {
+        alert('{{ get_message("alert_enter_deletion_reason") }}');
+        return;
+    }
+    
+    fetch('{{ url_for("delete_work", work_id=work.id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            admin_reason: reason
+        })
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('adminDeleteModal'));
+            modal.hide();
+            // 跳转到作品列表页面并显示删除成功提示
+            window.location.href = '{{ url_for("works") }}?deleted=true';
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('删除作品时出错:', error);
+        alert('删除作品时发生错误，请重试');
+    });
+}
+
+// 删除作品
+function deleteWork() {
+    if (confirm('{{ get_message("confirm_delete_work") }}')) {
+        fetch('{{ url_for("delete_work", work_id=work.id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // 跳转到作品列表页面并显示删除成功提示
+                window.location.href = '{{ url_for("works") }}?deleted=true';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('删除作品时出错:', error);
+            alert('删除作品时发生错误，请重试');
+        });
+    }
+}
+
+// 收藏功能
+function toggleFavorite(workId, button) {
+    fetch(`/favorite/${workId}/toggle`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const isFavorited = data.is_favorited;
+            const favoriteText = button.querySelector('.favorite-text');
+            
+            if (isFavorited) {
+                // 已收藏状态
+                button.classList.remove('btn-outline-danger');
+                button.classList.add('btn-danger');
+                button.style.backgroundColor = '#dc3545';
+                button.style.borderColor = '#dc3545';
+                button.style.color = 'white';
+                favoriteText.textContent = '{{ get_message("remove_from_favorites") }}';
+                button.classList.add('favorited');
+                
+                // 显示成功消息
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("success") if get_message("success") else "成功" }}', data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                // 未收藏状态
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-outline-danger');
+                button.style.backgroundColor = 'transparent';
+                button.style.borderColor = '#dc3545';
+                button.style.color = '#dc3545';
+                favoriteText.textContent = '{{ get_message("add_to_favorites") }}';
+                button.classList.remove('favorited');
+                
+                // 显示成功消息
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("success") if get_message("success") else "成功" }}', data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+            }
+        } else {
+            if (window.showNotificationCard) {
+                window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', data.message, 'error');
+            } else {
+                alert(data.message);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (window.showNotificationCard) {
+            window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', '{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}', 'error');
+        } else {
+            alert('{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}');
+        }
+    });
+}
+</script>
+{% endblock %}

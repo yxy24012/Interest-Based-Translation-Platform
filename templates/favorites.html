@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block head %}
+<style>
+    .favorites-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
+    .favorites-header h1 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .favorites-header p {
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    .favorite-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .favorite-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+    }
+    
+    .favorite-card .card-body {
+        cursor: pointer;
+    }
+    
+    .favorite-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+    
+    .work-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .stat-item i {
+        color: #667eea;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .empty-state h3 {
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+    
+    .empty-state p {
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .status-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+    }
+    
+    .pagination-container {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- 页面标题 -->
+    <div class="favorites-header">
+        <h1>
+            <i class="fas fa-heart me-3"></i>
+            {{ get_message('favorites') if get_message('favorites') else '我的收藏' }}
+        </h1>
+        <p>{{ get_message('favorites_description') if get_message('favorites_description') else '您收藏的所有作品' }}</p>
+    </div>
+    
+    <!-- 收藏作品列表 -->
+    {% if favorites %}
+    <div class="row">
+        {% for favorite in favorites %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card favorite-card h-100">
+                <div class="card-body" onclick="window.location.href='{{ url_for('work_detail', work_id=favorite.work.id) }}'">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0">{{ favorite.work.title }}</h5>
+                        <span class="badge bg-{{ 'success' if favorite.work.status == 'completed' else 'warning' if favorite.work.status == 'translating' else 'secondary' }} status-badge">
+                            {{ {'pending': get_message('status_pending'), 'translating': get_message('status_translating'), 'completed': get_message('status_completed')}[favorite.work.status] }}
+                        </span>
+                    </div>
+                    
+                    <p class="card-text text-muted mb-3">
+                        {{ favorite.work.content[:100] }}{% if favorite.work.content|length > 100 %}...{% endif %}
+                    </p>
+                    
+                    <div class="work-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-language"></i>
+                            <span>{{ translate_language(favorite.work.original_language) }} → {{ translate_language(favorite.work.target_language) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="work-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span>{{ favorite.like_count }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-comments"></i>
+                            <span>{{ favorite.translation_count }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ favorite.work.created_at.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="favorite-date mt-3">
+                        <i class="fas fa-heart text-danger me-1"></i>
+                        {{ get_message('favorited_on') if get_message('favorited_on') else '收藏于' }} {{ favorite.favorite_date.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>
+                            <a href="{{ url_for('user_profile', user_id=favorite.work.creator.id) }}" 
+                               class="text-decoration-none" 
+                               style="color: #007bff; transition: color 0.2s ease;" 
+                               onmouseover="this.style.color='#0056b3'" 
+                               onmouseout="this.style.color='#007bff'">
+                                {{ favorite.work.creator.username }}
+                            </a>
+                        </small>
+                        <button class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); removeFavorite({{ favorite.work.id }}, this)">
+                            <i class="fas fa-heart-broken me-1"></i>
+                            {{ get_message('remove_from_favorites') if get_message('remove_from_favorites') else '取消收藏' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- 分页 -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination-container">
+        <nav aria-label="{{ get_message('favorites_pagination') if get_message('favorites_pagination') else '收藏作品分页' }}">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('favorites_list', page=pagination.prev_num) }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != pagination.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('favorites_list', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('favorites_list', page=pagination.next_num) }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <!-- 空状态 -->
+    <div class="empty-state">
+        <i class="fas fa-heart"></i>
+        <h3>{{ get_message('no_favorites') if get_message('no_favorites') else '暂无收藏作品' }}</h3>
+        <p>{{ get_message('no_favorites_description') if get_message('no_favorites_description') else '您还没有收藏任何作品。浏览作品时点击收藏按钮即可添加到收藏列表。' }}</p>
+        <a href="{{ url_for('works') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-search me-2"></i>
+            {{ get_message('browse_works') if get_message('browse_works') else '浏览作品' }}
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function removeFavorite(workId, button) {
+    if (confirm('{{ get_message("confirm_remove_favorite") if get_message("confirm_remove_favorite") else "确定要取消收藏这个作品吗？" }}')) {
+        fetch(`/favorite/${workId}/toggle`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 显示成功消息
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("success") if get_message("success") else "成功" }}', data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+                
+                // 移除卡片元素
+                const card = button.closest('.col-lg-4');
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // 检查是否还有收藏作品
+                    const remainingCards = document.querySelectorAll('.favorite-card');
+                    if (remainingCards.length === 0) {
+                        location.reload(); // 重新加载页面显示空状态
+                    }
+                }, 300);
+            } else {
+                if (window.showNotificationCard) {
+                    window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', data.message, 'error');
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (window.showNotificationCard) {
+                window.showNotificationCard('{{ get_message("error") if get_message("error") else "错误" }}', '{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}', 'error');
+            } else {
+                alert('{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}');
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-crown me-2 text-warning"></i>{{ get_message('admin_application') if get_message('admin_application') else '管理员申请' }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>{{ get_message('application_description') if get_message('application_description') else '申请说明' }}</h6>
+                        <p class="mb-0">
+                            {{ get_message('admin_application_reason') if get_message('admin_application_reason') else '申请管理员权限需要详细说明以下理由：' }}
+                            <ul class="mt-2 mb-0">
+                                <li>{{ get_message('why_admin_reason') if get_message('why_admin_reason') else '为什么想要成为管理员' }}</li>
+                                <li>{{ get_message('what_contribution') if get_message('what_contribution') else '能够做出什么样的贡献' }}</li>
+                                <li>{{ get_message('how_improve_community') if get_message('how_improve_community') else '如何致力于改善社区' }}</li>
+                            </ul>
+                        </p>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">
+                                {{ get_message('application_reason') if get_message('application_reason') else '申请理由' }}
+                            </label>
+                            <textarea class="form-control" id="reason" name="reason" rows="8" 
+                                    placeholder="{{ get_message('application_reason_placeholder') if get_message('application_reason_placeholder') else '请详细填写申请理由...' }}" required></textarea>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-paper-plane me-2"></i>{{ get_message('submit_application') if get_message('submit_application') else '提交申请' }}
+                            </button>
+                            <a href="{{ url_for('profile') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

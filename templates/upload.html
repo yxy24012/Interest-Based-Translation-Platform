@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="fas fa-upload me-2"></i>
+                    {{ get_message('upload_work') }}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <!-- 基本信息 -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    <i class="fas fa-heading me-1"></i>
+                                    {{ get_message('title') }} <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="title" name="title" required 
+                                       placeholder="{{ get_message('enter_work_title') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                    <div class="mb-3">
+                                <label for="category" class="form-label">
+                                    <i class="fas fa-tags me-1"></i>
+                                    {{ get_message('category') }} <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">{{ get_message('select_category') }}</option>
+                                    <option value="投稿・文章">{% if user.preferred_language == 'ja' %}投稿・文章
+                                    {% elif user.preferred_language == 'en' %}Post/Article
+                                    {% elif user.preferred_language == 'ru' %}Пост/Статья
+                                    {% elif user.preferred_language == 'ko' %}게시물/기사
+                                    {% elif user.preferred_language == 'fr' %}Publication/Article
+                                    {% else %}投稿・文章{% endif %}</option>
+                                    <option value="小说">{% if user.preferred_language == 'ja' %}小説
+                                    {% elif user.preferred_language == 'en' %}Novel
+                                    {% elif user.preferred_language == 'ru' %}Роман
+                                    {% elif user.preferred_language == 'ko' %}소설
+                                    {% elif user.preferred_language == 'fr' %}Roman
+                                    {% else %}小说{% endif %}</option>
+                                    <option value="图片">{% if user.preferred_language == 'ja' %}画像
+                                    {% elif user.preferred_language == 'en' %}Image
+                                    {% elif user.preferred_language == 'ru' %}Изображение
+                                    {% elif user.preferred_language == 'ko' %}이미지
+                                    {% elif user.preferred_language == 'fr' %}Image
+                                    {% else %}图片{% endif %}</option>
+                                    <option value="漫画">{% if user.preferred_language == 'ja' %}漫画
+                                    {% elif user.preferred_language == 'en' %}Comic
+                                    {% elif user.preferred_language == 'ru' %}Комикс
+                                    {% elif user.preferred_language == 'ko' %}만화
+                                    {% elif user.preferred_language == 'fr' %}Bande dessinée
+                                    {% else %}漫画{% endif %}</option>
+                                    <option value="音声">{% if user.preferred_language == 'ja' %}音声
+                                    {% elif user.preferred_language == 'en' %}Audio
+                                    {% elif user.preferred_language == 'ru' %}Аудио
+                                    {% elif user.preferred_language == 'ko' %}오디오
+                                    {% elif user.preferred_language == 'fr' %}Audio
+                                    {% else %}音声{% endif %}</option>
+                                    <option value="视频・动画">{% if user.preferred_language == 'ja' %}動画・アニメ
+                                    {% elif user.preferred_language == 'en' %}Video/Animation
+                                    {% elif user.preferred_language == 'ru' %}Видео/Анимация
+                                    {% elif user.preferred_language == 'ko' %}비디오/애니메이션
+                                    {% elif user.preferred_language == 'fr' %}Vidéo/Animation
+                                    {% else %}视频・动画{% endif %}</option>
+                                    <option value="闲聊">{% if user.preferred_language == 'ja' %}雑談
+                                    {% elif user.preferred_language == 'en' %}Chat
+                                    {% elif user.preferred_language == 'ru' %}Чат
+                                    {% elif user.preferred_language == 'ko' %}잡담
+                                    {% elif user.preferred_language == 'fr' %}Discussion
+                                    {% else %}闲聊{% endif %}</option>
+                                    <option value="其他">{% if user.preferred_language == 'ja' %}その他
+                                    {% elif user.preferred_language == 'en' %}Other
+                                    {% elif user.preferred_language == 'ru' %}Другое
+                                    {% elif user.preferred_language == 'ko' %}기타
+                                    {% elif user.preferred_language == 'fr' %}Autre
+                                    {% else %}其他{% endif %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 语言设置 -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="original_language" class="form-label">
+                                    <i class="fas fa-language me-1"></i>
+                                    {{ get_message('original_language') }} <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="original_language" name="original_language" required>
+                                    <option value="中文" {% if user.preferred_language == 'zh' %}selected{% endif %}>{{ translate_language('中文') }}</option>
+                                    <option value="英文" {% if user.preferred_language == 'en' %}selected{% endif %}>{{ translate_language('英文') }}</option>
+                                    <option value="日文" {% if user.preferred_language == 'ja' %}selected{% endif %}>{{ translate_language('日文') }}</option>
+                                    <option value="韩文" {% if user.preferred_language == 'ko' %}selected{% endif %}>{{ translate_language('韩文') }}</option>
+                                    <option value="法文" {% if user.preferred_language == 'fr' %}selected{% endif %}>{{ translate_language('法文') }}</option>
+                                    <option value="德文">{{ translate_language('德文') }}</option>
+                                    <option value="西班牙文">{{ translate_language('西班牙文') }}</option>
+                                    <option value="俄文" {% if user.preferred_language == 'ru' %}selected{% endif %}>{{ translate_language('俄文') }}</option>
+                                    <option value="其他">{% if user.preferred_language == 'ja' %}その他
+                                    {% elif user.preferred_language == 'en' %}Other
+                                    {% elif user.preferred_language == 'ru' %}Другое
+                                    {% elif user.preferred_language == 'ko' %}기타
+                                    {% elif user.preferred_language == 'fr' %}Autre
+                                    {% else %}其他{% endif %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="target_language" class="form-label">
+                                    <i class="fas fa-language me-1"></i>
+                                    {{ get_message('target_language') }} <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="target_language" name="target_language" required>
+                                    <option value="英文" {% if user.preferred_language != 'en' %}selected{% endif %}>{{ translate_language('英文') }}</option>
+                                    <option value="中文">{{ translate_language('中文') }}</option>
+                                    <option value="日文" {% if user.preferred_language == 'en' %}selected{% endif %}>{{ translate_language('日文') }}</option>
+                                    <option value="韩文">{{ translate_language('韩文') }}</option>
+                                    <option value="法文">{{ translate_language('法文') }}</option>
+                                    <option value="德文">{{ translate_language('德文') }}</option>
+                                    <option value="西班牙文">{{ translate_language('西班牙文') }}</option>
+                                    <option value="俄文">{{ translate_language('俄文') }}</option>
+                                    <option value="其他">{% if user.preferred_language == 'ja' %}その他
+                                    {% elif user.preferred_language == 'en' %}Other
+                                    {% elif user.preferred_language == 'ru' %}Другое
+                                    {% elif user.preferred_language == 'ko' %}기타
+                                    {% elif user.preferred_language == 'fr' %}Autre
+                                    {% else %}其他{% endif %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 作品内容 -->
+                    <div class="mb-3">
+                        <label for="content" class="form-label">
+                            <i class="fas fa-file-text me-1"></i>
+                            {{ get_message('content') }} <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="content" name="content" rows="8" required 
+                                  placeholder="{{ get_message('enter_work_content') }}"></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            {{ get_message('content_help') }}
+                        </div>
+                    </div>
+
+                    <!-- 多媒体文件 -->
+                    <div class="mb-3">
+                        <label for="media_file" class="form-label">
+                            <i class="fas fa-paperclip me-1"></i>
+                            {{ get_message('multimedia_files') }}
+                        </label>
+                        <input type="file" class="form-control" id="media_file" name="media_file" accept="image/*,audio/*,video/*">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            {{ get_message('supported_formats') }}
+                        </div>
+                    </div>
+
+                    <!-- 翻译期待 -->
+                    <div class="mb-3">
+                        <label for="translation_expectation" class="form-label">
+                            <i class="fas fa-star me-1"></i>
+                            {{ get_message('translation_expectation') }}
+                        </label>
+                        <textarea class="form-control" id="translation_expectation" name="translation_expectation" rows="3" 
+                                  placeholder="{{ get_message('translation_expectation_placeholder') }}"></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            {{ get_message('translation_expectation_help') }}
+                        </div>
+                    </div>
+                    
+                    <!-- 翻译要求 -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_requirements">
+                            <label class="form-check-label" for="show_requirements">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                {{ get_message('translation_requirements') }}<br>
+                                <small class="text-muted">
+                                    {{ get_message('requirements_note') }}
+                                </small>
+                            </label>
+                        </div>
+                        <div id="requirements_section" style="display: none;">
+                            <textarea class="form-control mt-2" id="translation_requirements" name="translation_requirements" rows="3" 
+                                      placeholder="{% if user.preferred_language == 'ja' %}翻訳者に無断での配布、商業利用などを禁止するよう要求
+                                      {% elif user.preferred_language == 'en' %}Require translators not to distribute without permission or use for commercial purposes, etc.
+                                      {% elif user.preferred_language == 'ru' %}Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.
+                                      {% elif user.preferred_language == 'ko' %}번역자에게 무단 배포, 상업적 이용 등을 금지하도록 요구
+                                      {% elif user.preferred_language == 'fr' %}Exiger des traducteurs de ne pas distribuer sans autorisation ou utiliser à des fins commerciales, etc.
+                                      {% else %}要求翻译者不要擅自进行传播、用于商业用途等{% endif %}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 翻译设置 -->
+                    <div class="mb-4">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="contact_before_translate" name="contact_before_translate">
+                            <label class="form-check-label" for="contact_before_translate">
+                                <i class="fas fa-envelope me-1"></i>
+                                {{ get_message('contact_before_translate') }}
+                            </label>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ get_message('contact_before_translate_help') }}
+                            </div>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="allow_multiple_translators" name="allow_multiple_translators">
+                            <label class="form-check-label" for="allow_multiple_translators">
+                                <i class="fas fa-users me-1"></i>
+                                {{ get_message('allow_multiple_translators') }}
+                            </label>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ get_message('allow_multiple_translators_help') }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 提交按钮 -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>
+                            {{ get_message('upload_work') }}
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            {{ get_message('cancel') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 上传指南 -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-question-circle me-2"></i>
+                    {{ get_message('upload_guide') }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">
+                            {{ get_message('good_examples') }}
+                        </h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-2"></i>
+                                {{ get_message('clear_structured_content') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>
+                                {{ get_message('appropriate_category') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>
+                                {{ get_message('specific_requirements') }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-warning">
+                            {{ get_message('should_avoid') }}
+                        </h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-times text-danger me-2"></i>
+                                {{ get_message('vague_content') }}</li>
+                            <li><i class="fas fa-times text-danger me-2"></i>
+                                {{ get_message('copyright_infringing') }}</li>
+                            <li><i class="fas fa-times text-danger me-2"></i>
+                                {{ get_message('inappropriate_content') }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 翻译要求显示/隐藏
+document.getElementById('show_requirements').addEventListener('change', function() {
+    const requirementsSection = document.getElementById('requirements_section');
+    if (this.checked) {
+        requirementsSection.style.display = 'block';
+            } else {
+            requirementsSection.style.display = 'none';
+        }
+    });
+    
+// 字符计数
+document.getElementById('content').addEventListener('input', function() {
+    const charCount = this.value.length;
+    const wordCount = this.value.trim().split(/\s+/).filter(word => word.length > 0).length;
+    
+    // 可以在这里添加字符计数显示
+});
+
+       // 文件大小检查
+       document.getElementById('media_file').addEventListener('change', function() {
+           const file = this.files[0];
+           if (file) {
+               const maxSize = 10 * 1024 * 1024; // 10MB
+               if (file.size > maxSize) {
+                   showNotificationCard("{{ get_message('file_too_large_title') if get_message('file_too_large_title') else '文件过大' }}", "{{ get_message('file_too_large') }}", 'error');
+                   this.value = '';
+               }
+           }
+       });
+       
+               // 动态更新翻译语言选择
+        document.getElementById('original_language').addEventListener('change', function() {
+            const originalLanguage = this.value;
+            const targetLanguageSelect = document.getElementById('target_language');
+            
+            // 根据原文语言设置翻译语言
+            if (originalLanguage === '英文') {
+                // 如果原文是英语，翻译语言选择日语
+                targetLanguageSelect.value = '日文';
+            } else if (originalLanguage !== '其他') {
+                // 其他语言都选择英语
+                targetLanguageSelect.value = '英文';
+            }
+        });
+        
+        // 语言验证
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const originalLanguage = document.getElementById('original_language').value;
+            const targetLanguage = document.getElementById('target_language').value;
+            
+            if (originalLanguage === targetLanguage && originalLanguage !== '其他') {
+                e.preventDefault();
+                showNotificationCard("{{ get_message('validation_error') if get_message('validation_error') else '验证错误' }}", "{{ get_message('languages_cannot_be_same') }}", 'error');
+                return false;
+            }
+        });
+</script>
+{% endblock %}

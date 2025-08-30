@@ -1,0 +1,575 @@
+{% extends 'base.html' %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block head %}
+<style>
+    /* 确保按钮始终可见 */
+    .btn {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 确保所有按钮类型都可见 */
+    .btn-primary,
+    .btn-secondary,
+    .btn-success,
+    .btn-danger,
+    .btn-warning,
+    .btn-info,
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-warning,
+    .btn-outline-info {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 确保卡片中的按钮可见 */
+    .card .btn {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    /* 手机端优化样式 */
+    @media (max-width: 768px) {
+        /* 统计卡片优化 */
+        .stats-card {
+            margin-bottom: 1rem !important;
+        }
+        
+        .stats-card .card-body {
+            padding: 1.5rem 1rem !important;
+        }
+        
+        .stats-card .fa-2x {
+            font-size: 2.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .stats-card h3 {
+            font-size: 2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .stats-card small {
+            font-size: 0.9rem !important;
+            line-height: 1.2 !important;
+        }
+        
+        /* 统计卡片布局优化 - 手机端一行显示2个 */
+        .stats-row .col-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+        
+        .stats-row .col-12 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* 用户信息卡片优化 */
+        .user-info-card .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        .user-info-card img {
+            width: 100px !important;
+            height: 100px !important;
+        }
+        
+        .user-info-card h4 {
+            font-size: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .user-info-card p {
+            font-size: 0.95rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* 角色徽章优化 */
+        .user-info-card .badge {
+            font-size: 0.8rem !important;
+            padding: 0.5rem 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 快速操作卡片优化 */
+        .quick-actions-card .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .quick-actions-card .btn {
+            padding: 0.75rem 1rem !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 作品卡片优化 */
+        .work-card {
+            margin-bottom: 1rem !important;
+        }
+        
+        .work-card .card-body {
+            padding: 1.25rem !important;
+        }
+        
+        .work-card .card-title {
+            font-size: 1.1rem !important;
+            line-height: 1.3 !important;
+        }
+        
+        .work-card .card-text {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* 状态徽章优化 */
+        .status-badge {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.6rem !important;
+        }
+        
+        /* 点赞统计卡片优化 */
+        .like-stats-card {
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.8rem !important;
+        }
+        
+        /* 作者评价卡片优化 */
+        .author-evaluation-card .card-body {
+            padding: 1.25rem !important;
+        }
+        
+        .author-evaluation-card img {
+            width: 35px !important;
+            height: 35px !important;
+        }
+        
+        .author-evaluation-card .card-title {
+            font-size: 1rem !important;
+        }
+        
+        .author-evaluation-card .card-text {
+            font-size: 0.8rem !important;
+        }
+    }
+    
+    /* 超小屏幕优化 */
+    @media (max-width: 576px) {
+        .stats-card .card-body {
+            padding: 1.25rem 0.75rem !important;
+        }
+        
+        .stats-card .fa-2x {
+            font-size: 2rem !important;
+        }
+        
+        .stats-card h3 {
+            font-size: 1.75rem !important;
+        }
+        
+        /* 超小屏幕统计卡片布局 - 一行显示2个，但更紧凑 */
+        .stats-row .col-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding: 0 0.25rem !important;
+        }
+        
+        .user-info-card .card-body {
+            padding: 1.5rem 1rem !important;
+        }
+        
+        .user-info-card img {
+            width: 80px !important;
+            height: 80px !important;
+        }
+        
+        .work-card .card-body {
+            padding: 1rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 用户信息卡片 -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <div class="position-relative mb-3">
+                    <img src="{{ url_for('uploaded_file', filename=user.avatar) if user.avatar else url_for('static', filename='default_avatar.png') }}" 
+                         class="rounded-circle" style="width:120px;height:120px;object-fit:cover;" alt="{{ get_message('avatar') }}">
+                    {% if session.get('user_id') == user.id %}
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-sm btn-primary position-absolute" style="bottom:0;right:0;">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <h4 class="mb-1">{{ user.username }}</h4>
+                <p class="text-muted mb-3">{{ user.bio or get_message('no_bio') }}</p>
+                
+                <!-- 用户ID -->
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-id-card me-1"></i>
+                        {{ get_message('user_id') }}：{{ user.get_display_id() }}
+                    </small>
+                </div>
+                
+                <!-- 偏好语言 -->
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-language me-1"></i>
+                        {{ get_message('preferred_language') }}：{{ get_user_language_display_name(user) }}
+                    </small>
+                </div>
+                
+
+                
+                <!-- 用户角色徽章 -->
+                <div class="mb-3">
+                    {% if user.role == 'admin' %}
+                    <span class="badge bg-danger me-1">
+                        <i class="fas fa-crown me-1"></i>{{ get_message('admin') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_creator %}
+                    <span class="badge bg-primary me-1">
+                        <i class="fas fa-pen-fancy me-1"></i>{{ get_message('creator') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_translator %}
+                    <span class="badge bg-success me-1">
+                        <i class="fas fa-language me-1"></i>{{ get_message('translator') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_reviewer %}
+                    <span class="badge bg-info me-1">
+                        <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- 注册时间 -->
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}：{{ user.created_at.strftime('%Y-%m-%d') }}
+                </small>
+            </div>
+        </div>
+        
+        <!-- 快速操作 -->
+        {% if session.get('user_id') == user.id %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>{{ get_message('quick_actions') }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-edit me-2"></i>{{ get_message('edit_profile') }}
+                    </a>
+                    <a href="{{ url_for('change_password') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-key me-2"></i>{{ get_message('change_password') }}
+                    </a>
+                    {% if not user.is_translator %}
+                    <a href="{{ url_for('test_translator') }}" class="btn btn-outline-success">
+                        <i class="fas fa-language me-2"></i>{{ get_message('become_translator') }}
+                    </a>
+                    {% endif %}
+                    {% if not user.is_reviewer and user.is_translator %}
+                    <a href="{{ url_for('apply_reviewer') }}" class="btn btn-outline-info">
+                        <i class="fas fa-check-circle me-2"></i>{{ get_message('become_reviewer') }}
+                    </a>
+                    {% endif %}
+                    {% if user.role != 'admin' %}
+                    <a href="{{ url_for('apply_admin') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-crown me-2"></i>{{ get_message('apply_admin') }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="col-lg-8">
+        <!-- 统计数据 -->
+        <div class="row mb-4 stats-row">
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-thumbs-up text-primary fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-primary mb-0">{{ work_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_work_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-language text-success fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-success mb-0">{{ translation_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_translation_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-comment text-info fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-info mb-0">{{ comment_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_comment_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-star text-warning fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-warning mb-0">{{ author_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_author_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% if user.is_reviewer %}
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-check-circle text-info fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-info mb-0">{{ correction_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_correction_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 用户作品 -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-book me-2"></i>{{ get_message('section_works') }}
+                </h5>
+                {% if session.get('user_id') == user.id %}
+                <a href="{{ url_for('upload') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-2"></i>{{ get_message('btn_upload_work') }}
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if user.works %}
+                <div class="row">
+                    {% for work in user.works[:6] %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=work.id) }}';">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">
+                                        {{ work.title }}
+                                    </h6>
+                                    <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }} status-badge">
+                                        {{ {'pending': get_message('status_pending'), 'translating': get_message('status_translating'), 'completed': get_message('status_completed')}[work.status] }}
+                                    </span>
+                                </div>
+                                <p class="card-text small text-muted mb-2">
+                                    {{ work.content[:50] }}{% if work.content|length > 50 %}...{% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-language me-1"></i>{{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                                    </small>
+                                    <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if user.works|length > 6 %}
+                <div class="text-center mt-3">
+                    <a href="#" class="btn btn-outline-primary">
+                        {{ get_message('btn_view_all_works') }}
+                    </a>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-book fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">{{ get_message('no_works') }}</p>
+                    {% if session.get('user_id') == user.id %}
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>{{ get_message('btn_upload_first_work') }}
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 翻译作品 -->
+        {% if user.is_translator %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-language me-2"></i>{{ get_message('section_translations') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if user.translations %}
+                <div class="row">
+                    {% for translation in user.translations[:6] %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=translation.work.id) }}';">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">
+                                        {{ translation.work.title }}
+                                    </h6>
+                                    <span class="badge bg-{{ 'success' if translation.status == 'approved' else 'warning' if translation.status == 'submitted' else 'secondary' }} status-badge">
+                                        {{ {'draft': get_message('status_draft'), 'submitted': get_message('status_submitted'), 'approved': get_message('status_approved'), 'rejected': get_message('status_rejected')}[translation.status] }}
+                                    </span>
+                                </div>
+                                <p class="card-text small text-muted mb-2">
+                                    {{ translation.content[:50] }}{% if translation.content|length > 50 %}...{% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        {# 翻译点赞 #}
+                                        {% set translation_like_count = Like.query.filter_by(target_type='translation', target_id=translation.id).count() %}
+                                        {% if translation_like_count > 0 %}
+                                            <div class="like-stats-card me-2" style="padding: 0.25rem 0.5rem;">
+                                                <i class="fas fa-thumbs-up text-primary like-icon"></i>
+                                                <span class="like-count">{{ translation_like_count }}</span>
+                                            </div>
+                                        {% endif %}
+                                        {# 作者专属点赞 #}
+                                        {% set author_like_count = AuthorLike.query.filter_by(translation_id=translation.id).count() %}
+                                        {% if author_like_count > 0 %}
+                                            <div class="like-stats-card star me-2" style="padding: 0.25rem 0.5rem;">
+                                                <i class="fas fa-star text-warning like-icon"></i>
+                                                <span class="like-count">{{ author_like_count }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">{{ translation.updated_at.strftime('%m-%d') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if user.translations|length > 6 %}
+                <div class="text-center mt-3">
+                    <a href="#" class="btn btn-outline-primary">
+                        {{ get_message('btn_view_all_translations') }}
+                    </a>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-language fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">{{ get_message('no_translations') }}</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>{{ get_message('find_translations') }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 最近收到的作者评价 -->
+        {% if recent_author_likes %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-star me-2"></i>{{ get_message('author_evaluation') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for like in recent_author_likes %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 border-success">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=like.work.id) }}';">
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="{{ url_for('uploaded_file', filename=like.author.avatar) if like.author.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                         class="rounded-circle me-2" style="width:30px;height:30px;object-fit:cover;" alt="头像">
+                                    <div>
+                                        <small class="text-muted">{{ like.author.username }}</small>
+                                        <small class="text-success d-block">
+                                            <i class="fas fa-star me-1"></i>{{ get_message('author_evaluation') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <h6 class="card-title mb-2">
+                                    {{ like.work.title }}
+                                </h6>
+                                <p class="card-text small text-muted mb-2">
+                                    {% if like.type == 'translation' %}
+                                        {{ like.translation.content[:50] }}{% if like.translation.content|length > 50 %}...{% endif %}
+                                    {% else %}
+                                        {{ like.correction.content[:50] }}{% if like.correction.content|length > 50 %}...{% endif %}
+                                    {% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        {% if like.type == 'translation' %}
+                                            <i class="fas fa-language me-1"></i>{{ get_message('translation') }}
+                                        {% else %}
+                                            <i class="fas fa-check-circle me-1"></i>{{ get_message('correction') }}
+                                        {% endif %}
+                                    </small>
+                                    <small class="text-muted">{{ like.created_at.strftime('%m-%d %H:%M') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

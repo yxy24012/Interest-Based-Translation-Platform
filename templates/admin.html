@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block title %}{{ get_message('admin_panel_title') if get_message('admin_panel_title') else '管理面板' }} - {{ get_message('site_name') if get_message('site_name') else '基于兴趣的翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-cog me-2"></i>{{ get_message('admin_panel_title') if get_message('admin_panel_title') else '管理面板' }}</h3>
+            </div>
+            <div class="card-body">
+                <!-- 统计信息 -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ users|length }}</h4>
+                                <small>{{ get_message('total_users') if get_message('total_users') else '总用户数' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ works|length }}</h4>
+                                <small>{{ get_message('total_works') if get_message('total_works') else '总作品数' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ translations|length }}</h4>
+                                <small>{{ get_message('total_translations') if get_message('total_translations') else '总翻译数' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ comments|length }}</h4>
+                                <small>{{ get_message('total_comments') if get_message('total_comments') else '总评论数' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                
+                <!-- 用户管理 -->
+                {% if session.get('user_id') and current_user and current_user.username == 'admin' %}
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-users me-2"></i>{{ get_message('user_management') if get_message('user_management') else '用户管理' }}</h5>
+                        <a href="{{ url_for('admin_requests') }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-crown me-1"></i>{{ get_message('admin_requests_management') if get_message('admin_requests_management') else '管理员申请管理' }}
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ get_message('user_id') if get_message('user_id') else 'ID' }}</th>
+                                        <th>{{ get_message('username') if get_message('username') else '用户名' }}</th>
+                                        <th>{{ get_message('email') if get_message('email') else '邮箱' }}</th>
+                                        <th>{{ get_message('role') if get_message('role') else '角色' }}</th>
+                                        <th>{{ get_message('registration_date') if get_message('registration_date') else '注册时间' }}</th>
+                                        <th>{{ get_message('actions') if get_message('actions') else '操作' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'primary' if user.role == 'admin' else 'success' if user.role == 'creator' else 'info' if user.role == 'translator' else 'secondary' }}">
+                                                {{ {'admin': get_message('role_admin') if get_message('role_admin') else '管理员', 'creator': get_message('role_creator') if get_message('role_creator') else '创作者', 'translator': get_message('role_translator') if get_message('role_translator') else '翻译者', 'user': get_message('role_user') if get_message('role_user') else '普通用户'}[user.role] }}
+                                            </span>
+                                        </td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('toggle_user_role', user_id=user.id) }}" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-edit me-1"></i>{{ get_message('change_role') if get_message('change_role') else '切换角色' }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- 作品管理 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-book me-2"></i>{{ get_message('work_management') if get_message('work_management') else '作品管理' }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ get_message('user_id') if get_message('user_id') else 'ID' }}</th>
+                                        <th>{{ get_message('title') if get_message('title') else '标题' }}</th>
+                                        <th>{{ get_message('creator') if get_message('creator') else '创作者' }}</th>
+                                        <th>{{ get_message('language') if get_message('language') else '语言' }}</th>
+                                        <th>{{ get_message('status') if get_message('status') else '状态' }}</th>
+                                        <th>{{ get_message('creation_date') if get_message('creation_date') else '创建时间' }}</th>
+                                        <th>{{ get_message('actions') if get_message('actions') else '操作' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for work in works %}
+                                    <tr>
+                                        <td>{{ work.id }}</td>
+                                        <td>{{ work.title }}</td>
+                                        <td>{{ work.creator.username }}</td>
+                                        <td>{{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }}">
+                                                {{ {'pending': get_message('pending') if get_message('pending') else '待翻译', 'translating': get_message('translating') if get_message('translating') else '翻译中', 'completed': get_message('completed') if get_message('completed') else '已完成'}[work.status] }}
+                                            </span>
+                                        </td>
+                                        <td>{{ work.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i>{{ get_message('view') if get_message('view') else '查看' }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 翻译管理 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-language me-2"></i>{{ get_message('translation_management') if get_message('translation_management') else '翻译管理' }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ get_message('user_id') if get_message('user_id') else 'ID' }}</th>
+                                        <th>{{ get_message('work') if get_message('work') else '作品' }}</th>
+                                        <th>{{ get_message('translator') if get_message('translator') else '翻译者' }}</th>
+                                        <th>{{ get_message('status') if get_message('status') else '状态' }}</th>
+                                        <th>{{ get_message('creation_date') if get_message('creation_date') else '创建时间' }}</th>
+                                        <th>{{ get_message('actions') if get_message('actions') else '操作' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for translation in translations %}
+                                    <tr>
+                                        <td>{{ translation.id }}</td>
+                                        <td>{{ translation.work.title }}</td>
+                                        <td>{{ translation.translator.username }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if translation.status == 'approved' else 'warning' if translation.status == 'submitted' else 'secondary' }}">
+                                                {{ {'draft': get_message('status_draft') if get_message('status_draft') else '草稿', 'submitted': get_message('status_submitted') if get_message('status_submitted') else '已提交', 'approved': get_message('status_approved') if get_message('status_approved') else '已通过', 'rejected': get_message('status_rejected') if get_message('status_rejected') else '已拒绝'}[translation.status] }}
+                                            </span>
+                                        </td>
+                                        <td>{{ translation.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('work_detail', work_id=translation.work.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i>{{ get_message('view') if get_message('view') else '查看' }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function exportData() {
+    alert('{{ get_message("export_development") if get_message("export_development") else "导出功能开发中..." }}');
+}
+
+function clearData() {
+    if (confirm('{{ get_message("confirm_clear_all_data") if get_message("confirm_clear_all_data") else "确认清除所有数据？" }}')) {
+        alert('{{ get_message("clear_development") if get_message("clear_development") else "清理功能开发中..." }}');
+    }
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_message('edit_profile') if get_message('edit_profile') else '编辑资料' }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3 class="mb-0"><i class="fas fa-user-edit me-2"></i>{{ get_message('edit_profile') if get_message('edit_profile') else '编辑资料' }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-1"></i>{{ get_message('username') if get_message('username') else '用户名' }}
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               value="{{ user.username }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-1"></i>{{ get_message('email') if get_message('email') else '邮箱' }}
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ user.email }}" required>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="email_notifications_enabled" name="email_notifications_enabled" {% if user.email_notifications_enabled %}checked{% endif %}>
+                        <label class="form-check-label" for="email_notifications_enabled">
+                            <i class="fas fa-bell me-1"></i> {{ get_message('email_notifications_label') if get_message('email_notifications_label') else '邮件通知（收到消息时发送到邮箱）' }}
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">
+                            <i class="fas fa-info-circle me-1"></i>{{ get_message('bio') if get_message('bio') else '个人简介' }}
+                        </label>
+                        <textarea class="form-control" id="bio" name="bio" rows="4" 
+                                  placeholder="{{ get_message('bio_placeholder') if get_message('bio_placeholder') else '请输入个人简介（例如：翻译工作者，擅长中文、日文、英文翻译）' }}">{{ user.bio or '' }}</textarea>
+                        <div class="form-text">
+                            {{ get_message('bio_help_text') if get_message('bio_help_text') else '请描述您的语言能力和专业领域' }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">
+                            <i class="fas fa-image me-1"></i>{{ get_message('avatar') if get_message('avatar') else '头像' }}
+                        </label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                        <div class="form-text">
+                            {{ get_message('avatar_help_text') if get_message('avatar_help_text') else '请选择图片文件（JPG、PNG、GIF）' }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="preferred_language" class="form-label">
+                            <i class="fas fa-language me-1"></i>{{ get_message('preferred_language') if get_message('preferred_language') else '偏好语言' }}
+                        </label>
+                        <select class="form-control" id="preferred_language" name="preferred_language">
+                            <option value="zh" {% if user.preferred_language == 'zh' %}selected{% endif %}>
+                                {{ get_message('chinese') if get_message('chinese') else '中文' }}
+                            </option>
+                            <option value="ja" {% if user.preferred_language == 'ja' %}selected{% endif %}>
+                                {{ get_message('japanese') if get_message('japanese') else '日文' }}
+                            </option>
+                            <option value="en" {% if user.preferred_language == 'en' %}selected{% endif %}>
+                                {{ get_message('english') if get_message('english') else 'English' }}
+                            </option>
+                            <option value="ru" {% if user.preferred_language == 'ru' %}selected{% endif %}>
+                                {{ get_message('russian') if get_message('russian') else 'Русский' }}
+                            </option>
+                            <option value="ko" {% if user.preferred_language == 'ko' %}selected{% endif %}>
+                                {{ get_message('korean') if get_message('korean') else '한국어' }}
+                            </option>
+                            <option value="fr" {% if user.preferred_language == 'fr' %}selected{% endif %}>
+                                {{ get_message('french') if get_message('french') else 'Français' }}
+                            </option>
+                        </select>
+                        <div class="form-text">
+                            {{ get_message('preferred_language_help_text') if get_message('preferred_language_help_text') else '请选择网站显示语言' }}
+                        </div>
+                    </div>
+                    
+
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>{{ get_message('save_changes') if get_message('save_changes') else '保存修改' }}
+                        </button>
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

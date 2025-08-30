@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_message('my_friends') }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-user-friends me-2"></i>{{ get_message('my_friends') }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- 搜索和添加好友 -->
+                    <div class="mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-search me-2"></i>{{ get_message('search_and_add_friend') }}
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchInput" 
+                                           placeholder="{{ get_message('search_by_username_or_id') }}">
+                                    <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-primary" type="button" id="addFriendBtn">
+                                        <i class="fas fa-user-plus me-1"></i>{{ get_message('add_friend') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 搜索结果 -->
+                    <div id="searchResults" style="display: none;">
+                        <h6 class="mb-3">
+                            <i class="fas fa-search me-2"></i>{{ get_message('search_results') }}
+                        </h6>
+                        <div id="searchResultsList"></div>
+                        <hr class="my-4">
+                    </div>
+
+                    <!-- 好友列表 -->
+                    <div id="friendsList">
+                        {% if friends %}
+                            <div class="row">
+                                {% for f in friends %}
+                                    {% set friend_id = f.friend_id if f.user_id == user.id else f.user_id %}
+                                    {% set friend = get_username(friend_id) %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <a href="{{ url_for('user_profile', user_id=friend_id) }}" class="text-decoration-none">
+                                                        <img src="{{ url_for('uploaded_file', filename=get_user_by_id(friend_id).avatar) if get_user_by_id(friend_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                             class="rounded-circle shadow" 
+                                                             style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
+                                                    </a>
+                                                </div>
+                                                <h6 class="card-title">
+                                                    <a href="{{ url_for('user_profile', user_id=friend_id) }}" class="text-decoration-none">
+                                                        {{ friend }}
+                                                    </a>
+                                                </h6>
+                                                <!-- 偏好语言显示 -->
+                                                <div class="mb-2">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-language me-1"></i>
+                                                        {{ get_message('preferred_language') }}：
+                                                        {{ get_user_language_display_name(get_user_by_id(friend_id)) }}
+                                                    </small>
+                                                </div>
+                                                                                <div class="mt-2">
+                                    <a href="{{ url_for('conversation', user_id=friend_id) }}" class="btn btn-outline-primary btn-sm me-2">
+                                        <i class="fas fa-comment me-1"></i>{{ get_message('send_private_message') }}
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm" data-friend-name="{{ friend | safe }}" onclick="deleteFriend({{ friend_id }}, this.getAttribute('data-friend-name'))">
+                                        <i class="fas fa-user-minus me-1"></i>{{ get_message('delete_friend') if get_message('delete_friend') else '删除好友' }}
+                                    </button>
+                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-user-friends fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">{{ get_message('no_friends') }}</h5>
+                                <p class="text-muted">{{ get_message('you_have_no_friends') }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 自定义通知卡片 -->
+<div id="notificationCard" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050; display: none; max-width: 350px;">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-3">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 me-3">
+                    <div id="notificationIcon" class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i id="notificationIconClass" class="fas fa-2x"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="card-title mb-1" id="notificationTitle">{{ get_message('notice') }}</h6>
+                    <p class="card-text small mb-0" id="notificationMessage"></p>
+                </div>
+                <div class="flex-shrink-0 ms-2">
+                    <button type="button" class="btn-close btn-close-sm" onclick="hideNotificationCard()" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchResults = document.getElementById('searchResults');
+    const searchResultsList = document.getElementById('searchResultsList');
+    const friendsList = document.getElementById('friendsList');
+    
+    // 多语言消息
+    const messages = {
+        sending: "{{ get_message('sending') }}",
+        requestSent: "{{ get_message('request_sent') }}",
+        addFriend: "{{ get_message('add_friend') }}",
+        sendSuccess: "{{ get_message('send_success') }}",
+        sendFailed: "{{ get_message('send_failed') }}",
+        networkError: "{{ get_message('network_error') }}",
+        friendRequestSent: "{{ get_message('friend_request_sent_toast') }}",
+        sendRequestFailed: "{{ get_message('send_request_failed') }}",
+        deleteFriend: "{{ get_message('delete_friend') if get_message('delete_friend') else '删除好友' }}",
+        confirmDelete: "{{ get_message('confirm_delete_friend') if get_message('confirm_delete_friend') else '确认删除好友' }}",
+        deleteSuccess: "{{ get_message('friend_deleted') if get_message('friend_deleted') else '好友已删除' }}",
+        deleteFailed: "{{ get_message('delete_friend_failed') if get_message('delete_friend_failed') else '删除好友失败' }}",
+        confirmDeleteMessage: "{{ get_message('confirm_delete_friend_generic') if get_message('confirm_delete_friend_generic') else '确定要删除好友吗？此操作不可撤销。' }}",
+        deletingFriend: "{{ get_message('deleting_friend') if get_message('deleting_friend') else '删除中...' }}",
+        friendDeletedSuccess: "{{ get_message('friend_deleted_generic') if get_message('friend_deleted_generic') else '已成功删除好友' }}",
+        enterUserId: "{{ get_message('enter_user_id') }}",
+        invalidUserId: "{{ get_message('invalid_user_id') }}",
+        error: "{{ get_message('error') if get_message('error') else '错误' }}",
+        pleaseEnterUsernameOrId: "{{ get_message('pleaseEnterUsernameOrId') }}",
+        searching: "{{ get_message('searching') }}",
+        userNotFound: "{{ get_message('user_not_found') }}",
+        multipleUsersFound: "{{ get_message('multipleUsersFound') }}",
+        info: "{{ get_message('info') if get_message('info') else '提示' }}"
+    };
+    
+    let searchTimeout;
+    
+    // 显示通知卡片
+    function showNotificationCard(title, message, type = 'info') {
+
+        
+        try {
+            const card = document.getElementById('notificationCard');
+            const titleElement = document.getElementById('notificationTitle');
+            const messageElement = document.getElementById('notificationMessage');
+            const iconElement = document.getElementById('notificationIconClass');
+            const iconContainer = document.getElementById('notificationIcon');
+            
+            if (!card || !titleElement || !messageElement || !iconElement) {
+                console.error('通知卡片元素未找到');
+                alert(message); // 降级到浏览器弹窗
+                return;
+            }
+            
+            // 设置标题和内容
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            
+            // 设置图标和颜色
+            let iconClass, bgColor, textColor;
+            switch (type) {
+                case 'success':
+                    iconClass = 'fa-check-circle';
+                    bgColor = 'bg-success';
+                    textColor = 'text-white';
+                    break;
+                case 'error':
+                    iconClass = 'fa-exclamation-circle';
+                    bgColor = 'bg-danger';
+                    textColor = 'text-white';
+                    break;
+                case 'warning':
+                    iconClass = 'fa-exclamation-triangle';
+                    bgColor = 'bg-warning';
+                    textColor = 'text-dark';
+                    break;
+                default:
+                    iconClass = 'fa-info-circle';
+                    bgColor = 'bg-info';
+                    textColor = 'text-white';
+            }
+            
+            iconElement.className = `fas ${iconClass} ${textColor}`;
+            iconContainer.className = `rounded-circle d-flex align-items-center justify-content-center ${bgColor}`;
+            iconContainer.style.width = '40px';
+            iconContainer.style.height = '40px';
+            
+            // 显示卡片
+            card.style.display = 'block';
+            
+            // 添加淡入动画
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(100%)';
+            card.style.transition = 'all 0.3s ease-in-out';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // 自动隐藏（5秒后）
+            setTimeout(() => {
+                hideNotificationCard();
+            }, 5000);
+            
+        } catch (error) {
+            console.error('显示通知卡片时出错:', error);
+            alert(message); // 降级到浏览器弹窗
+        }
+    }
+    
+    // 隐藏通知卡片
+    function hideNotificationCard() {
+        const card = document.getElementById('notificationCard');
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(100%)';
+            
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300);
+        }
+    }
+    
+    // 搜索功能
+    function performSearch() {
+        const query = searchInput.value.trim();
+        
+        if (query.length === 0) {
+            searchResults.style.display = 'none';
+            friendsList.style.display = 'block';
+            return;
+        }
+        
+        fetch(`/api/search_users?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                displaySearchResults(data, query);
+            })
+            .catch(error => {
+                console.error('搜索出错:', error);
+            });
+    }
+    
+    // 显示搜索结果
+    function displaySearchResults(users, query) {
+        if (users.length === 0) {
+            const noResultsMessage = "{{ get_message('no_matching_users') }}";
+            searchResultsList.innerHTML = `
+                <div class="text-center py-3">
+                    <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                    <p class="text-muted">${noResultsMessage}</p>
+                </div>
+            `;
+        } else {
+            searchResultsList.innerHTML = users.map(user => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <a href="/user/${user.id}" class="text-decoration-none">
+                                    <img src="${user.avatar ? '/uploads/' + user.avatar : '/static/default_avatar.png'}" 
+                                         class="rounded-circle" 
+                                         style="width:50px;height:50px;object-fit:cover;cursor:pointer;">
+                                </a>
+                            </div>
+                            <div class="col">
+                                <h6 class="mb-1">
+                                    <a href="/user/${user.id}" class="text-decoration-none">${user.username}</a>
+                                    <small class="text-muted ms-2">ID: ${user.display_id || user.id}</small>
+                                </h6>
+                                <small class="text-muted">
+                                    ${getUserRoleDisplay(user)}
+                                </small>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary btn-sm" onclick="sendFriendRequest(${user.id})">
+                                    <i class="fas fa-user-plus me-1"></i>{{ get_message('add_friend') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        searchResults.style.display = 'block';
+        friendsList.style.display = 'none';
+    }
+    
+    // 获取用户角色显示
+    function getUserRoleDisplay(user) {
+        const roles = [];
+        const roleNames = {
+            translator: "{{ get_message('translator') }}",
+            reviewer: "{{ get_message('reviewer') }}",
+            creator: "{{ get_message('creator') }}",
+            admin: "{{ get_message('admin') }}",
+            user: "{{ get_message('user') }}"
+        };
+        
+        if (user.is_translator) roles.push(roleNames.translator);
+        if (user.is_reviewer) roles.push(roleNames.reviewer);
+        if (user.is_creator) roles.push(roleNames.creator);
+        if (user.role === 'admin') roles.push(roleNames.admin);
+        if (roles.length === 0) roles.push(roleNames.user);
+        return roles.join('、');
+    }
+    
+    // 发送好友请求
+    window.sendFriendRequest = function(userId) {
+        // 获取当前按钮
+        const btn = event.target.closest('button');
+        
+        // 禁用按钮防止重复点击
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>' + messages.sending;
+        
+        fetch(`/friend_request/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: ''
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // 成功发送好友请求
+                showNotificationCard(messages.sendSuccess, messages.friendRequestSent, 'success');
+                
+                // 更新按钮状态
+                btn.innerHTML = '<i class="fas fa-clock me-1"></i>' + messages.requestSent;
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            } else {
+                // 发送失败
+                showNotificationCard(messages.sendFailed, data.message || messages.sendRequestFailed, 'error');
+                
+                // 恢复按钮状态
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>' + messages.addFriend;
+            }
+        })
+        .catch(error => {
+            console.error('发送好友请求出错:', error);
+            showNotificationCard(messages.sendFailed, messages.networkError, 'error');
+            
+            // 恢复按钮状态
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>' + messages.addFriend;
+        });
+    };
+    
+    // 删除好友
+    window.deleteFriend = function(friendId, friendName) {
+        // 确认删除
+        if (!confirm(messages.confirmDeleteMessage)) {
+            return;
+        }
+        
+        // 获取当前按钮
+        const btn = event.target.closest('button');
+        
+        // 禁用按钮防止重复点击
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>' + messages.deletingFriend;
+        
+        fetch(`/delete_friend/${friendId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: ''
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success !== undefined) {
+                // 如果返回了JSON响应
+                if (data.success) {
+                    showNotificationCard(messages.deleteSuccess, messages.friendDeletedSuccess, 'success');
+                    // 刷新页面以更新好友列表
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotificationCard(messages.deleteFailed, data.message || messages.deleteFailed, 'error');
+                    // 恢复按钮状态
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-minus me-1"></i>' + messages.deleteFriend;
+                }
+            } else {
+                // 如果没有返回JSON，说明是重定向响应，刷新页面
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('删除好友出错:', error);
+            showNotificationCard(messages.deleteFailed, messages.networkError, 'error');
+            
+            // 恢复按钮状态
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-minus me-1"></i>' + messages.deleteFriend;
+        });
+    };
+    
+    // 搜索输入事件
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 300);
+    });
+    
+    // 添加好友按钮点击事件
+    document.getElementById('addFriendBtn').addEventListener('click', function() {
+        const input = document.getElementById('searchInput').value.trim();
+        if (!input) {
+            showNotificationCard(messages.error, messages.pleaseEnterUsernameOrId, 'error');
+            return;
+        }
+        
+        // 检查是否为数字（用户ID）
+        if (/^\d+$/.test(input)) {
+            // 直接通过ID添加好友
+            addFriendById(input);
+        } else {
+            // 先搜索用户，然后添加
+            performSearchAndAdd();
+        }
+    });
+    
+    // 通过ID添加好友
+    function addFriendById(userId) {
+        // 禁用按钮防止重复点击
+        const btn = document.getElementById('addFriendBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>' + messages.sending;
+        
+        // 发送请求
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        
+        fetch('/add_friend_by_id', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotificationCard(messages.sendSuccess, data.message, 'success');
+                // 清空输入框
+                document.getElementById('searchInput').value = '';
+            } else {
+                showNotificationCard(messages.sendFailed, data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('通过ID添加好友出错:', error);
+            showNotificationCard(messages.sendFailed, messages.networkError, 'error');
+        })
+        .finally(() => {
+            // 恢复按钮状态
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>' + messages.addFriend;
+        });
+    }
+    
+    // 搜索并添加好友
+    function performSearchAndAdd() {
+        const query = document.getElementById('searchInput').value.trim();
+        if (!query) {
+            showNotificationCard(messages.error, messages.pleaseEnterUsernameOrId, 'error');
+            return;
+        }
+        
+        // 禁用按钮防止重复点击
+        const btn = document.getElementById('addFriendBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>' + messages.searching;
+        
+        fetch(`/api/search_users?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(users => {
+            if (users.length === 0) {
+                showNotificationCard(messages.error, messages.userNotFound, 'error');
+            } else if (users.length === 1) {
+                // 只有一个用户，直接添加
+                sendFriendRequest(users[0].id);
+            } else {
+                // 多个用户，显示搜索结果
+                performSearch();
+                showNotificationCard(messages.info, messages.multipleUsersFound, 'info');
+            }
+        })
+        .catch(error => {
+            console.error('搜索用户出错:', error);
+            showNotificationCard(messages.error, messages.networkError, 'error');
+        })
+        .finally(() => {
+            // 恢复按钮状态
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>' + messages.addFriend;
+        });
+    }
+    
+    // 搜索按钮点击事件
+    searchBtn.addEventListener('click', performSearch);
+    
+    // 回车键搜索
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+});
+</script>
+{% endblock %} 

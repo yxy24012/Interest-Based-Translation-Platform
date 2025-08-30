@@ -1,0 +1,728 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block head %}
+<style>
+    /* 确保按钮始终可见 */
+    .btn {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 确保所有按钮类型都可见 */
+    .btn-primary,
+    .btn-secondary,
+    .btn-success,
+    .btn-danger,
+    .btn-warning,
+    .btn-info,
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-warning,
+    .btn-outline-info {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 确保卡片中的按钮可见 */
+    .card .btn {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* 手机端优化样式 */
+    @media (max-width: 768px) {
+        /* 统计卡片优化 */
+        .stats-card {
+            margin-bottom: 1rem !important;
+        }
+        
+        .stats-card .card-body {
+            padding: 1.5rem 1rem !important;
+        }
+        
+        .stats-card .fa-2x {
+            font-size: 2.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .stats-card h3 {
+            font-size: 2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .stats-card small {
+            font-size: 0.9rem !important;
+            line-height: 1.2 !important;
+        }
+        
+        /* 统计卡片布局优化 - 手机端一行显示2个 */
+        .stats-row .col-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+        
+        .stats-row .col-12 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* 用户信息卡片优化 */
+        .user-info-card .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        .user-info-card img {
+            width: 100px !important;
+            height: 100px !important;
+        }
+        
+        .user-info-card h4 {
+            font-size: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .user-info-card p {
+            font-size: 0.95rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* 角色徽章优化 */
+        .user-info-card .badge {
+            font-size: 0.8rem !important;
+            padding: 0.5rem 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 互动按钮优化 */
+        .interaction-buttons .btn {
+            padding: 0.75rem 1rem !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        /* 作品卡片优化 */
+        .work-card {
+            margin-bottom: 1rem !important;
+        }
+        
+        .work-card .card-body {
+            padding: 1.25rem !important;
+        }
+        
+        .work-card .card-title {
+            font-size: 1.1rem !important;
+            line-height: 1.3 !important;
+        }
+        
+        .work-card .card-text {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* 状态徽章优化 */
+        .status-badge {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.6rem !important;
+        }
+        
+        /* 点赞统计卡片优化 */
+        .like-stats-card {
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.8rem !important;
+        }
+    }
+    
+    /* 超小屏幕优化 */
+    @media (max-width: 576px) {
+        .stats-card .card-body {
+            padding: 1.25rem 0.75rem !important;
+        }
+        
+        .stats-card .fa-2x {
+            font-size: 2rem !important;
+        }
+        
+        .stats-card h3 {
+            font-size: 1.75rem !important;
+        }
+        
+        /* 超小屏幕统计卡片布局 - 一行显示2个，但更紧凑 */
+        .stats-row .col-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding: 0 0.25rem !important;
+        }
+        
+        .user-info-card .card-body {
+            padding: 1.5rem 1rem !important;
+        }
+        
+        .user-info-card img {
+            width: 80px !important;
+            height: 80px !important;
+        }
+        
+        .work-card .card-body {
+            padding: 1rem !important;
+        }
+        
+        .interaction-buttons .btn {
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.85rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{ user.username }} - 興味に基づいた翻訳プラットフォーム{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 用户信息 -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <div class="position-relative mb-3">
+                    <img src="{{ url_for('uploaded_file', filename=user.avatar) if user.avatar else url_for('static', filename='default_avatar.png') }}" 
+                         class="rounded-circle" style="width:120px;height:120px;object-fit:cover;" alt="{{ get_message('avatar') }}">
+                </div>
+                
+                <h4 class="mb-1">{{ user.username }}</h4>
+                <p class="text-muted mb-3">{{ user.bio or get_message('no_bio') }}</p>
+                
+                <!-- 用户ID -->
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-id-card me-1"></i>
+                        {{ get_message('user_id') }}：{{ user.get_display_id() }}
+                    </small>
+                </div>
+                
+                <!-- 偏好语言 -->
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-language me-1"></i>
+                        {{ get_message('preferred_language') }}：{{ get_user_language_display_name(user) }}
+                    </small>
+                </div>
+                
+                <!-- 用户角色徽章 -->
+                <div class="mb-3">
+                    {% if user.role == 'admin' %}
+                    <span class="badge bg-danger me-1">
+                        <i class="fas fa-crown me-1"></i>{{ get_message('admin') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_creator %}
+                    <span class="badge bg-primary me-1">
+                        <i class="fas fa-pen-fancy me-1"></i>{{ get_message('creator') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_translator %}
+                    <span class="badge bg-success me-1">
+                        <i class="fas fa-language me-1"></i>{{ get_message('translator') }}
+                    </span>
+                    {% endif %}
+                    {% if user.is_reviewer %}
+                    <span class="badge bg-info me-1">
+                        <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- 注册时间 -->
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}：{{ user.created_at.strftime('%Y-%m-%d') }}
+                </small>
+                
+                <!-- 互动按钮 -->
+                {% if session.get('user_id') and session.get('user_id') != user.id %}
+                <div class="mt-3">
+                    {% if user.is_translator %}
+                    {% set trusted = TrustedTranslator.query.filter_by(user_id=session.get('user_id'), translator_id=user.id).first() %}
+                    <form method="post" action="{{ url_for('untrust_translator' if trusted else 'trust_translator', translator_id=user.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-{{ 'outline-danger' if trusted else 'outline-success' }} btn-sm mb-2">
+                            {{ get_message('untrust_this_translator') if trusted else get_message('trust_this_translator') }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    {% set friend_req = Friend.query.filter_by(user_id=session.get('user_id'), friend_id=user.id).first() %}
+                    {% set friend_rev = Friend.query.filter_by(user_id=user.id, friend_id=session.get('user_id')).first() %}
+                    {% if friend_req and friend_req.status == 'accepted' or friend_rev and friend_rev.status == 'accepted' %}
+                        <!-- 已经是好友，显示删除好友按钮 -->
+                        <button type="button" class="btn btn-outline-danger btn-sm mb-2 me-2" data-friend-name="{{ get_username(user.id) | safe }}" onclick="deleteFriend({{ user.id }}, this.getAttribute('data-friend-name'))">
+                            <i class="fas fa-user-minus me-1"></i>{{ get_message('delete_friend') if get_message('delete_friend') else '删除好友' }}
+                        </button>
+                    {% elif friend_req and friend_req.status == 'pending' %}
+                        <!-- 已发送好友请求，等待对方同意 -->
+                        <button type="button" class="btn btn-outline-secondary btn-sm mb-2 me-2" disabled>
+                            <i class="fas fa-clock me-1"></i>{{ get_message('waiting_for_approval') }}
+                        </button>
+                    {% elif friend_rev and friend_rev.status == 'pending' %}
+                        <!-- 收到好友请求，显示同意/拒绝按钮 -->
+                        <form method="post" action="{{ url_for('accept_friend', friend_id=user.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm mb-2 me-1">{{ get_message('approve_friend_request') }}</button>
+                        </form>
+                        <form method="post" action="{{ url_for('reject_friend', friend_id=user.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger btn-sm mb-2">{{ get_message('reject') }}</button>
+                        </form>
+                    {% else %}
+                        <!-- 不是好友，显示添加好友按钮 -->
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-2 me-2" onclick="sendFriendRequest({{ user.id }})">
+                            <i class="fas fa-user-plus me-1"></i>{{ get_message('add_as_friend') }}
+                        </button>
+                    {% endif %}
+                    
+                    <a class="btn btn-primary btn-sm mb-2" href="{{ url_for('conversation', user_id=user.id) }}">{{ get_message('send_private_message') }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="col-lg-8">
+        <!-- 统计数据 -->
+        <div class="row mb-4 stats-row">
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-thumbs-up text-primary fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-primary mb-0">{{ work_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_work_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-language text-success fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-success mb-0">{{ translation_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_translation_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-comment text-info fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-info mb-0">{{ comment_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_comment_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-star text-warning fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-warning mb-0">{{ author_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_author_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% if user.is_reviewer %}
+            <div class="col-lg-2 col-md-3 col-6 mb-3">
+                <div class="card text-center stats-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="fas fa-check-circle text-info fa-2x me-2"></i>
+                        </div>
+                        <h3 class="text-info mb-0">{{ correction_likes }}</h3>
+                        <small class="text-muted">{{ get_message('label_correction_likes') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 用户作品 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-book me-2"></i>{{ get_message('section_recent_works') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if works %}
+                <div class="row">
+                    {% for work in works %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=work.id) }}';">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">
+                                        {{ work.title }}
+                                    </h6>
+                                    <span class="badge bg-{{ 'success' if work.status == 'completed' else 'warning' if work.status == 'translating' else 'secondary' }} status-badge">
+                                        {{ {'pending': get_message('status_pending'), 'translating': get_message('status_translating'), 'completed': get_message('status_completed')}[work.status] }}
+                                    </span>
+                                </div>
+                                <p class="card-text small text-muted mb-2">
+                                    {{ work.content[:50] }}{% if work.content|length > 50 %}...{% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-language me-1"></i>
+                                        {% set lang_code_map = {'zh':'chinese','ja':'japanese','en':'english','ru':'russian','ko':'korean','fr':'french'} %}
+                                        {{ get_message(lang_code_map.get(work.original_language, lang_code_map.get(session.get('lang','zh')))) }}
+                                        →
+                                        {{ get_message(lang_code_map.get(work.target_language, lang_code_map.get(session.get('lang','zh')))) }}
+                                    </small>
+                                    <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                                </div>
+                                {% if work.category %}
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-tags me-1"></i>
+                                        <span class="badge bg-info">
+                                                                                    {% if work.category == '投稿・文章' %}
+                                            {{ get_message('category_post_article') if get_message('category_post_article') else '投稿・文章' }}
+                                        {% elif work.category == '小说' %}
+                                            {{ get_message('category_novel') if get_message('category_novel') else '小说' }}
+                                        {% elif work.category == '图片' %}
+                                            {{ get_message('category_image') if get_message('category_image') else '图片' }}
+                                        {% elif work.category == '漫画' %}
+                                            {{ get_message('category_comic') if get_message('category_comic') else '漫画' }}
+                                        {% elif work.category == '音声' %}
+                                            {{ get_message('category_audio') if get_message('category_audio') else '音声' }}
+                                        {% elif work.category == '视频・动画' %}
+                                            {{ get_message('category_video_animation') if get_message('category_video_animation') else '视频・动画' }}
+                                        {% elif work.category == '闲聊' %}
+                                            {{ get_message('category_discussion') if get_message('category_discussion') else '闲聊' }}
+                                        {% elif work.category == '其他' %}
+                                            {{ get_message('category_other') if get_message('category_other') else '其他' }}
+                                        {% else %}
+                                            {{ work.category }}
+                                        {% endif %}
+                                        </span>
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-book fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">{{ get_message('no_works') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 翻译作品 -->
+        {% if user.is_translator %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-language me-2"></i>{{ get_message('recent_translations') if get_message('recent_translations') else '最近的翻译' }}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if translations %}
+                <div class="row">
+                    {% for t in translations %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=t.work.id) }}';">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">
+                                        {{ t.work.title }}
+                                    </h6>
+                                    <span class="badge bg-{{ 'success' if t.status == 'approved' else 'warning' if t.status == 'submitted' else 'secondary' }} status-badge">
+                                        {{ {'draft': get_message('status_draft'), 'submitted': get_message('status_submitted'), 'approved': get_message('status_approved'), 'rejected': get_message('status_rejected')}[t.status] }}
+                                    </span>
+                                </div>
+                                <p class="card-text small text-muted mb-2">
+                                    {{ t.content[:50] }}{% if t.content|length > 50 %}...{% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        {# 翻译点赞 #}
+                                        {% set translation_like_count = Like.query.filter_by(target_type='translation', target_id=t.id).count() %}
+                                        {% if translation_like_count > 0 %}
+                                            <div class="like-stats-card me-2" style="padding: 0.25rem 0.5rem;">
+                                                <i class="fas fa-thumbs-up text-primary like-icon"></i>
+                                                <span class="like-count">{{ translation_like_count }}</span>
+                                            </div>
+                                        {% endif %}
+                                        {# 作者专属点赞 #}
+                                        {% set author_like_count = AuthorLike.query.filter_by(translation_id=t.id).count() %}
+                                        {% if author_like_count > 0 %}
+                                            <div class="like-stats-card star me-2" style="padding: 0.25rem 0.5rem;">
+                                                <i class="fas fa-star text-warning like-icon"></i>
+                                                <span class="like-count">{{ author_like_count }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">{{ t.updated_at.strftime('%m-%d') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-language fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">{{ get_message('no_translations') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- 最近收到的作者评价 -->
+        {% if recent_author_likes %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-star me-2"></i>{{ get_message('author_evaluation') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for like in recent_author_likes %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 border-success">
+                            <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=like.work.id) }}';">
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="{{ url_for('uploaded_file', filename=like.author.avatar) if like.author.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                         class="rounded-circle me-2" style="width:30px;height:30px;object-fit:cover;" alt="头像">
+                                    <div>
+                                        <small class="text-muted">{{ like.author.username }}</small>
+                                        <small class="text-success d-block">
+                                            <i class="fas fa-star me-1"></i>{{ get_message('author_evaluation') if get_message('author_evaluation') else '作者评价' }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <h6 class="card-title mb-2">
+                                    {{ like.work.title }}
+                                </h6>
+                                <p class="card-text small text-muted mb-2">
+                                    {% if like.type == 'translation' %}
+                                        {{ like.translation.content[:50] }}{% if like.translation.content|length > 50 %}...{% endif %}
+                                    {% else %}
+                                        {{ like.correction.content[:50] }}{% if like.correction.content|length > 50 %}...{% endif %}
+                                    {% endif %}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        {% if like.type == 'translation' %}
+                                            <i class="fas fa-language me-1"></i>{{ get_message('translation') if get_message('translation') else '翻译' }}
+                                        {% else %}
+                                            <i class="fas fa-check-circle me-1"></i>{{ get_message('correction') if get_message('correction') else '校正' }}
+                                        {% endif %}
+                                    </small>
+                                    <small class="text-muted">{{ like.created_at.strftime('%m-%d %H:%M') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 自定义通知卡片 -->
+<div id="notificationCard" class="position-fixed" style="top: 20px; right: 20px; z-index: 1050; display: none; max-width: 350px;">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-3">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 me-3">
+                    <div id="notificationIcon" class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i id="notificationIconClass" class="fas fa-2x"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="card-title mb-1" id="notificationTitle">{{ get_message('notice') }}</h6>
+                    <p class="card-text small mb-0" id="notificationMessage"></p>
+                </div>
+                <div class="flex-shrink-0 ms-2">
+                    <button type="button" class="btn-close btn-close-sm" onclick="hideNotificationCard()" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 多语言消息
+const messages = {
+    confirmDeleteMessage: "{{ get_message('confirm_delete_friend_generic') if get_message('confirm_delete_friend_generic') else '确定要删除好友吗？此操作不可撤销。' }}",
+    deletingFriend: "{{ get_message('deleting_friend') if get_message('deleting_friend') else '删除中...' }}",
+    friendDeletedSuccess: "{{ get_message('friend_deleted_generic') if get_message('friend_deleted_generic') else '已成功删除好友' }}",
+    deleteFriendFailed: "{{ get_message('delete_friend_failed') if get_message('delete_friend_failed') else '删除好友失败' }}",
+    networkError: "{{ get_message('network_error') if get_message('network_error') else '网络错误' }}",
+    deleteFriend: "{{ get_message('delete_friend') if get_message('delete_friend') else '删除好友' }}"
+};
+
+// 显示通知卡片
+// 使用base.html中的通用showNotificationCard函数
+
+// 隐藏通知卡片
+function hideNotificationCard() {
+    const card = document.getElementById('notificationCard');
+    if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+            card.style.display = 'none';
+        }, 300);
+    }
+}
+
+// 发送好友请求
+function sendFriendRequest(userId) {
+    // 获取当前按钮
+    const btn = event.target.closest('button');
+    
+    // 禁用按钮防止重复点击
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{{ get_message("sending") }}';
+    
+    fetch(`/friend_request/${userId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: ''
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // 成功发送好友请求
+            showNotificationCard('{{ get_message("send_success") }}', '{{ get_message("friend_request_sent_toast") }}', 'success');
+            
+            // 更新按钮状态为"等待对方同意"
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-clock me-1"></i>{{ get_message("waiting_for_approval") }}';
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-outline-secondary');
+        } else {
+            // 发送失败
+            showNotificationCard('{{ get_message("send_failed") }}', data.message || '{{ get_message("send_request_failed") }}', 'error');
+            
+            // 恢复按钮状态
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>{{ get_message("add_as_friend") }}';
+        }
+    })
+    .catch(error => {
+        console.error('发送好友请求出错:', error);
+        showNotificationCard('{{ get_message("send_failed") }}', '{{ get_message("network_error") }}', 'error');
+        
+        // 恢复按钮状态
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>{{ get_message("add_as_friend") }}';
+    });
+}
+
+// 删除好友
+function deleteFriend(friendId, friendName) {
+    // 确认删除
+    if (!confirm(messages.confirmDeleteMessage)) {
+        return;
+    }
+    
+    // 获取当前按钮
+    const btn = event.target.closest('button');
+    
+    // 禁用按钮防止重复点击
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>' + messages.deletingFriend;
+    
+    fetch(`/delete_friend/${friendId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: ''
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data && data.success !== undefined) {
+            // 如果返回了JSON响应
+            if (data.success) {
+                showNotificationCard('{{ get_message("friend_deleted") if get_message("friend_deleted") else "好友已删除" }}', messages.friendDeletedSuccess, 'success');
+                // 动态更新按钮状态为"添加好友"
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus me-1"></i>{{ get_message("add_as_friend") }}';
+                btn.classList.remove('btn-outline-danger');
+                btn.classList.add('btn-outline-primary');
+                btn.onclick = function() { sendFriendRequest(friendId); };
+            } else {
+                showNotificationCard(messages.deleteFriendFailed, data.message || messages.deleteFriendFailed, 'error');
+                // 恢复按钮状态
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-minus me-1"></i>' + messages.deleteFriend;
+            }
+        } else {
+            // 如果没有返回JSON，说明是重定向响应，刷新页面
+            window.location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('删除好友出错:', error);
+        showNotificationCard(messages.deleteFriendFailed, messages.networkError, 'error');
+        
+        // 恢复按钮状态
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-minus me-1"></i>' + messages.deleteFriend;
+    });
+}
+</script>
+
+{% endblock %} 

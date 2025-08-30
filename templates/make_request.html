@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_message('make_request_title') if get_message('make_request_title') else '向作者提出要求' }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<style>
+/* 完全禁用所有过渡效果 */
+.make-request-page * {
+    transition: none !important;
+    animation: none !important;
+}
+
+.make-request-page .btn:hover,
+.make-request-page .card:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+}
+
+/* 确保按钮内容稳定 */
+#submit-button {
+    transition: none !important;
+}
+
+#submit-button:hover {
+    transform: none !important;
+}
+</style>
+
+<div class="make-request-page">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="mb-0"><i class="fas fa-comment-dots me-2"></i>{{ get_message('make_request_title') if get_message('make_request_title') else '向作者提出要求' }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ get_message('make_request_info') if get_message('make_request_info') else '您可以向作者表达您的期待或要求，这将帮助作者更好地了解您的需求。' }}
+                    </div>
+                    
+                    {% if submitted %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>{{ get_message('request_sent_success') if get_message('request_sent_success') else '您的要求已发送给作者，请等待作者回复。' }}
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- 作品信息 -->
+                        <div class="mb-4">
+                            <h5><i class="fas fa-file-text me-2 text-primary"></i>{{ get_message('work_info') if get_message('work_info') else '作品信息' }}</h5>
+                            <div class="border rounded p-3 bg-light">
+                                <h6 class="mb-2">{{ work.title }}</h6>
+                                <p class="mb-1"><small class="text-muted">{{ get_message('creator') if get_message('creator') else '作者' }}: 
+                                    <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                       class="text-decoration-none" 
+                                       style="color: #007bff; transition: color 0.2s ease;" 
+                                       onmouseover="this.style.color='#0056b3'" 
+                                       onmouseout="this.style.color='#007bff'">
+                                        {{ work.creator.username }}
+                                    </a>
+                                </small></p>
+                                <p class="mb-0"><small class="text-muted">{{ get_message('language') if get_message('language') else '语言' }}: {{ work.original_language }} → {{ work.target_language }}</small></p>
+                            </div>
+                        </div>
+                        
+                        <!-- 作者期待和要求 -->
+                        {% if work.translation_expectation %}
+                        <div class="mb-4">
+                            <h5><i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') if get_message('creator_expectation') else '作者期待' }}</h5>
+                            <div class="border rounded p-3 bg-light">
+                                <p class="mb-0">{{ work.translation_expectation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if work.translation_requirements %}
+                        <div class="mb-4">
+                            <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') if get_message('creator_requirements') else '翻译要求' }}</h5>
+                            <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
+                                <p class="mb-0">{{ work.translation_requirements }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="POST">
+                            <!-- 对作者的期待/要求 -->
+                            <div class="mb-4">
+                                <h5><i class="fas fa-heart me-2 text-danger"></i>{{ get_message('your_expectations_for_creator') if get_message('your_expectations_for_creator') else '您对作者的期待/要求' }}</h5>
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">{{ get_message('enter_expectations_for_creator') if get_message('enter_expectations_for_creator') else '请输入您对作者的期待或要求' }}</label>
+                                    <textarea class="form-control" id="content" name="content" rows="6" 
+                                              placeholder="{{ get_message('expectations_for_creator_placeholder') if get_message('expectations_for_creator_placeholder') else '例如：希望作者提供更多背景信息、希望作者对某些术语进行解释、希望作者提供参考材料等...' }}" required></textarea>
+                                    <div class="form-text">
+                                        {{ get_message('request_help_text') if get_message('request_help_text') else '请详细描述您的需求，这将帮助作者更好地理解您的期望。' }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-info btn-lg" id="submit-button">
+                                    <i class="fas fa-paper-plane me-2"></i>{{ get_message('send_request_to_creator') if get_message('send_request_to_creator') else '向作者发送要求' }}
+                                </button>
+                                <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>{{ get_message('back') if get_message('back') else '返回' }}
+                                </a>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.getElementById('submit-button');
+    const contentTextarea = document.getElementById('content');
+    
+    if (submitButton && contentTextarea) {
+        // 监听文本区域变化，实时更新按钮状态
+        contentTextarea.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                submitButton.disabled = false;
+                submitButton.classList.remove('btn-secondary');
+                submitButton.classList.add('btn-info');
+            } else {
+                submitButton.disabled = true;
+                submitButton.classList.remove('btn-info');
+                submitButton.classList.add('btn-secondary');
+            }
+        });
+        
+        // 初始化按钮状态
+        if (contentTextarea.value.trim().length === 0) {
+            submitButton.disabled = true;
+            submitButton.classList.remove('btn-info');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% macro translate_language(lang_name) %}
+    {% set lang_map = {
+        'zh': {'中文': '中文', '日文': '日文', '英文': '英文', '韩文': '韩文', '法文': '法文', '德文': '德文', '西班牙文': '西班牙文', '俄文': '俄文', '意大利文': '意大利文', '葡萄牙文': '葡萄牙文'},
+        'ja': {'中文': '中国語', '日文': '日本語', '英文': '英語', '韩文': '韓国語', '法文': 'フランス語', '德文': 'ドイツ語', '西班牙文': 'スペイン語', '俄文': 'ロシア語', '意大利文': 'イタリア語', '葡萄牙文': 'ポルトガル語'},
+        'en': {'中文': 'Chinese', '日文': 'Japanese', '英文': 'English', '韩文': 'Korean', '法文': 'French', '德文': 'German', '西班牙文': 'Spanish', '俄文': 'Russian', '意大利文': 'Italian', '葡萄牙文': 'Portuguese'},
+        'ru': {'中文': 'Китайский', '日文': 'Японский', '英文': 'Английский', '韩文': 'Корейский', '法文': 'Французский', '德文': 'Немецкий', '西班牙文': 'Испанский', '俄文': 'Русский', '意大利文': 'Итальянский', '葡萄牙文': 'Португальский'},
+        'ko': {'中文': '중국어', '日文': '일본어', '英文': '영어', '韩文': '한국어', '法文': '프랑스어', '德文': '독일어', '西班牙文': '스페인어', '俄文': '러시아어', '意大利文': '이탈리아어', '葡萄牙文': '포르투갈어'},
+        'fr': {'中文': 'Chinois', '日文': 'Japonais', '英文': 'Anglais', '韩文': 'Coréen', '法文': 'Français', '德文': 'Allemand', '西班牙文': 'Espagnol', '俄文': 'Russe', '意大利文': 'Italien', '葡萄牙文': 'Portugais'}
+    } %}
+    {% set current_lang = session.get('lang', 'zh') %}
+    {% set lang_dict = lang_map.get(current_lang, lang_map['zh']) %}
+    {{ lang_dict.get(lang_name, lang_name) }}
+{% endmacro %}
+
+{% block title %}{{ get_message('edit_translation_page_title') if get_message('edit_translation_page_title') else '编辑翻译' }} - {{ work.title }} - {{ get_message('site_name') if get_message('site_name') else '翻译平台' }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-edit me-2"></i>{{ get_message('edit_translation') if get_message('edit_translation') else '编辑翻译' }}</h4>
+            </div>
+            <div class="card-body">
+                <!-- 作品信息 -->
+                <div class="mb-4">
+                    <h5>{{ work.title }}</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <i class="fas fa-language me-1"></i>
+                                {{ translate_language(work.original_language) }} → {{ translate_language(work.target_language) }}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>
+                                <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
+                                   class="text-decoration-none" 
+                                   style="color: #007bff; transition: color 0.2s ease;" 
+                                   onmouseover="this.style.color='#0056b3'" 
+                                   onmouseout="this.style.color='#007bff'">
+                                    {{ work.creator.username }}
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 原文内容 -->
+                <div class="mb-4">
+                    <h6><i class="fas fa-file-text me-2"></i>{{ get_message('original_content') }}</h6>
+                    <div class="border rounded p-3 bg-light">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ work.content }}</pre>
+                    </div>
+                </div>
+                
+                <!-- 编辑翻译表单 -->
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="translation_content" class="form-label">
+                            <i class="fas fa-language me-2"></i>{{ get_message('translation_content_label') if get_message('translation_content_label') else '翻译内容' }}
+                        </label>
+                        <textarea class="form-control translation-area" id="translation_content" 
+                                  name="translation_content" rows="15" 
+                                  placeholder="{{ get_message('translation_content_placeholder') if get_message('translation_content_placeholder') else '请输入翻译内容...' }}" required>{{ translation.content }}</textarea>
+                        <div class="form-text">
+                            <small>
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ get_message('translation_quality_hint') if get_message('translation_quality_hint') else '请确保翻译准确、流畅，保持原文的语调和风格。' }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- 多媒体文件上传 -->
+                    <div class="mb-3">
+                        <label for="translation_media_file" class="form-label">
+                            <i class="fas fa-paperclip me-2"></i>{{ get_message('translation_attachment_label') if get_message('translation_attachment_label') else '多媒体文件（可选）' }}
+                        </label>
+                        <input type="file" class="form-control" id="translation_media_file" 
+                               name="translation_media_file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+                        <div class="form-text">
+                            <small>
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ get_message('translation_attachment_hint') if get_message('translation_attachment_hint') else '支持图片、视频、音频、PDF、Word文档等格式。最大文件大小：10MB。' }}
+                            </small>
+                        </div>
+                        {% if translation.media_filename %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ get_message('current_attachment') if get_message('current_attachment') else '当前附件：' }}{{ translation.media_filename }}
+                                <a href="{{ url_for('uploaded_file', filename=translation.media_filename) }}" target="_blank" class="ms-2">
+                                    <i class="fas fa-external-link-alt"></i>{{ get_message('view') if get_message('view') else '查看' }}
+                                </a>
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" name="update_translation" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>{{ get_message('save_changes') if get_message('save_changes') else '保存修改' }}
+                        </button>
+                        <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_message('back_to_details') if get_message('back_to_details') else (get_message('back') if get_message('back') else '返回') }}
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">
+                            <i class="fas fa-trash me-2"></i>{{ get_message('delete_translation') if get_message('delete_translation') else '删除翻译' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div class="col-lg-4">
+        <!-- 翻译提示 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>{{ get_message('edit_tips') if get_message('edit_tips') else '编辑提示' }}</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ get_message('edit_tip_1') if get_message('edit_tip_1') else '修改后翻译状态将重置为"草稿"' }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ get_message('edit_tip_2') if get_message('edit_tip_2') else '保持原文的语调和风格' }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ get_message('edit_tip_3') if get_message('edit_tip_3') else '确保翻译准确无误' }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ get_message('edit_tip_4') if get_message('edit_tip_4') else '注意文化差异和表达习惯' }}
+                    </li>
+                    <li class="mb-0">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ get_message('edit_tip_5') if get_message('edit_tip_5') else '保持段落结构和格式' }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 翻译工具 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-tools me-2"></i>{{ get_message('edit_tools') if get_message('edit_tools') else '编辑工具' }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="copyOriginal()">
+                        <i class="fas fa-copy me-2"></i>{{ get_message('copy_original') if get_message('copy_original') else '复制原文' }}
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="clearTranslation()">
+                        <i class="fas fa-eraser me-2"></i>{{ get_message('clear_translation') if get_message('clear_translation') else '清空翻译' }}
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="wordCount()">
+                        <i class="fas fa-calculator me-2"></i>{{ get_message('word_count') if get_message('word_count') else '字数统计' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 翻译统计 -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>{{ get_message('statistics') if get_message('statistics') else '统计信息' }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h5 class="text-primary mb-0">{{ work.content|length }}</h5>
+                        <small class="text-muted">{{ get_message('original_characters') if get_message('original_characters') else '原文字符' }}</small>
+                    </div>
+                    <div class="col-6">
+                        <h5 class="text-success mb-0" id="translation-count">{{ translation.content|length }}</h5>
+                        <small class="text-muted">{{ get_message('translation_characters') if get_message('translation_characters') else '翻译字符' }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认表单 -->
+<form id="deleteForm" method="POST" action="{{ url_for('delete_translation', work_id=work.id) }}" style="display: none;">
+</form>
+
+<script>
+// 复制原文
+function copyOriginal() {
+    const originalText = `{{ work.content|replace('\n', '\\n')|replace('"', '\\"') }}`;
+    window.copyOriginal(originalText);
+}
+
+// 清空翻译
+function clearTranslation() {
+    if (confirm('{{ get_message("confirm_clear_translation") }}')) {
+        document.getElementById('translation_content').value = '';
+        updateWordCount();
+    }
+}
+
+// 字数统计
+function wordCount() {
+    const text = document.getElementById('translation_content').value;
+    const charCount = text.length;
+    const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    alert('{{ get_message("char_count_label") if get_message("char_count_label") else "字符数：" }}' + charCount + '\n' + '{{ get_message("word_count_label") if get_message("word_count_label") else "词数：" }}' + wordCount);
+}
+
+// 更新字数统计
+function updateWordCount() {
+    const text = document.getElementById('translation_content').value;
+    document.getElementById('translation-count').textContent = text.length;
+}
+
+// 确认删除
+function confirmDelete() {
+    if (confirm('{{ get_message("confirm_delete_translation_irreversible") }}')) {
+        document.getElementById('deleteForm').submit();
+    }
+}
+
+// 监听输入事件
+document.getElementById('translation_content').addEventListener('input', updateWordCount);
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    updateWordCount();
+});
+</script>
+{% endblock %} 
