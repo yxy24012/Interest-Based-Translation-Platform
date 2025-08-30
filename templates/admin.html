@@ -26,7 +26,7 @@
             <div class="card-body">
                 <!-- 统计信息 -->
                 <div class="row mb-4">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card bg-primary text-white">
                             <div class="card-body text-center">
                                 <h4 class="mb-0">{{ users|length }}</h4>
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card bg-success text-white">
                             <div class="card-body text-center">
                                 <h4 class="mb-0">{{ works|length }}</h4>
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card bg-info text-white">
                             <div class="card-body text-center">
                                 <h4 class="mb-0">{{ translations|length }}</h4>
@@ -50,17 +50,66 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card bg-warning text-white">
                             <div class="card-body text-center">
-                                <h4 class="mb-0">{{ comments|length }}</h4>
+                                <h4 class="mb-0">{{ comments|length if comments else 0 }}</h4>
                                 <small>{{ get_message('total_comments') if get_message('total_comments') else '总评论数' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ stats.match_rate }}%</h4>
+                                <small>{{ get_message('match_rate') if get_message('match_rate') else '匹配率（已翻译比例）' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">{{ stats.avg_match_speed }}h</h4>
+                                <small>{{ get_message('avg_match_speed') if get_message('avg_match_speed') else '平均匹配速度' }}</small>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-
+                <!-- 匹配统计详情 -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>{{ get_message('match_stats_details') if get_message('match_stats_details') else '匹配统计详情' }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-info">{{ get_message('match_rate_stats') if get_message('match_rate_stats') else '匹配率统计' }}</h6>
+                                                <p class="mb-1">{{ get_message('total_works_exclude_seed') if get_message('total_works_exclude_seed') else '总作品数（排除种子数据）' }}：<strong>{{ stats.total_works }}</strong></p>
+                                                <p class="mb-1">{{ get_message('completed_translations') if get_message('completed_translations') else '已完成翻译' }}：<strong>{{ stats.completed_works }}</strong></p>
+                                                <p class="mb-0">{{ get_message('match_rate_percent') if get_message('match_rate_percent') else '匹配率' }}：<strong class="text-info">{{ stats.match_rate }}%</strong></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-secondary">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-secondary">{{ get_message('match_speed_stats') if get_message('match_speed_stats') else '匹配速度统计' }}</h6>
+                                                <p class="mb-1">{{ get_message('avg_match_speed_hours') if get_message('avg_match_speed_hours') else '平均匹配速度' }}：<strong class="text-secondary">{{ stats.avg_match_speed }}{{ get_message('hours') if get_message('hours') else '小时' }}</strong></p>
+                                                <p class="mb-1">{{ get_message('fastest_match') if get_message('fastest_match') else '最快匹配' }}：<strong>{{ (stats.match_speeds|min)|round(2) if stats.match_speeds else 0 }}{{ get_message('hours') if get_message('hours') else '小时' }}</strong></p>
+                                                <p class="mb-0">{{ get_message('slowest_match') if get_message('slowest_match') else '最慢匹配' }}：<strong>{{ (stats.match_speeds|max)|round(2) if stats.match_speeds else 0 }}{{ get_message('hours') if get_message('hours') else '小时' }}</strong></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- 用户管理 -->
                 {% if session.get('user_id') and current_user and current_user.username == 'admin' %}

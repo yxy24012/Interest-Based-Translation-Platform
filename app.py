@@ -3967,6 +3967,102 @@ def get_message(key, lang=None, **kwargs):
                    'ko': '총 댓글 수',
                    'fr': 'Total des commentaires'
                },
+               'match_rate': {
+                   'zh': '匹配率（已翻译比例）',
+                   'ja': 'マッチ率（翻訳済み比率）',
+                   'en': 'Match Rate (Translated %)',
+                   'ru': 'Коэффициент соответствия (%)',
+                   'ko': '매치율 (번역 완료 비율)',
+                   'fr': 'Taux de correspondance (%)'
+               },
+               'avg_match_speed': {
+                   'zh': '平均匹配速度',
+                   'ja': '平均マッチ速度',
+                   'en': 'Average Match Speed',
+                   'ru': 'Средняя скорость соответствия',
+                   'ko': '평균 매치 속도',
+                   'fr': 'Vitesse de correspondance moyenne'
+               },
+               'match_stats_details': {
+                   'zh': '匹配统计详情',
+                   'ja': 'マッチ統計詳細',
+                   'en': 'Match Statistics Details',
+                   'ru': 'Детали статистики соответствия',
+                   'ko': '매치 통계 상세',
+                   'fr': 'Détails des statistiques de correspondance'
+               },
+               'match_rate_stats': {
+                   'zh': '匹配率统计',
+                   'ja': 'マッチ率統計',
+                   'en': 'Match Rate Statistics',
+                   'ru': 'Статистика коэффициента соответствия',
+                   'ko': '매치율 통계',
+                   'fr': 'Statistiques du taux de correspondance'
+               },
+               'match_speed_stats': {
+                   'zh': '匹配速度统计',
+                   'ja': 'マッチ速度統計',
+                   'en': 'Match Speed Statistics',
+                   'ru': 'Статистика скорости соответствия',
+                   'ko': '매치 속도 통계',
+                   'fr': 'Statistiques de vitesse de correspondance'
+               },
+               'total_works_exclude_seed': {
+                   'zh': '总作品数（排除种子数据）',
+                   'ja': '総作品数（シードデータ除く）',
+                   'en': 'Total Works (Exclude Seed Data)',
+                   'ru': 'Всего работ (исключая тестовые данные)',
+                   'ko': '총 작품 수 (시드 데이터 제외)',
+                   'fr': 'Total des œuvres (hors données de test)'
+               },
+               'completed_translations': {
+                   'zh': '已完成翻译',
+                   'ja': '翻訳完了',
+                   'en': 'Completed Translations',
+                   'ru': 'Завершенные переводы',
+                   'ko': '번역 완료',
+                   'fr': 'Traductions terminées'
+               },
+               'match_rate_percent': {
+                   'zh': '匹配率',
+                   'ja': 'マッチ率',
+                   'en': 'Match Rate',
+                   'ru': 'Коэффициент соответствия',
+                   'ko': '매치율',
+                   'fr': 'Taux de correspondance'
+               },
+               'avg_match_speed_hours': {
+                   'zh': '平均匹配速度',
+                   'ja': '平均マッチ速度',
+                   'en': 'Average Match Speed',
+                   'ru': 'Средняя скорость соответствия',
+                   'ko': '평균 매치 속도',
+                   'fr': 'Vitesse de correspondance moyenne'
+               },
+               'fastest_match': {
+                   'zh': '最快匹配',
+                   'ja': '最速マッチ',
+                   'en': 'Fastest Match',
+                   'ru': 'Самое быстрое соответствие',
+                   'ko': '최고속 매치',
+                   'fr': 'Correspondance la plus rapide'
+               },
+               'slowest_match': {
+                   'zh': '最慢匹配',
+                   'ja': '最遅マッチ',
+                   'en': 'Slowest Match',
+                   'ru': 'Самое медленное соответствие',
+                   'ko': '최저속 매치',
+                   'fr': 'Correspondance la plus lente'
+               },
+               'hours': {
+                   'zh': '小时',
+                   'ja': '時間',
+                   'en': 'hours',
+                   'ru': 'часов',
+                   'ko': '시간',
+                   'fr': 'heures'
+               },
                'user_management': {
                    'zh': '用户管理',
                    'ja': 'ユーザー管理',
@@ -7229,7 +7325,43 @@ def admin_panel():
     works = Work.query.all()
     translations = Translation.query.all()
     
-    return render_template('admin.html', users=users, works=works, translations=translations, current_user=get_current_user())
+    # 计算匹配速度和匹配率统计（排除seed_data的帖子，ID为1和2）
+    # 排除seed_data的作品
+    non_seed_works = Work.query.filter(~Work.id.in_([1, 2])).all()
+    
+    # 计算匹配率：已翻译作品的比例
+    completed_works = [work for work in non_seed_works if work.status == 'completed']
+    match_rate = len(completed_works) / len(non_seed_works) * 100 if non_seed_works else 0
+    
+    # 计算匹配速度：从发帖到翻译完成的时间
+    match_speeds = []
+    for work in completed_works:
+        # 找到该作品最早的已通过翻译
+        earliest_translation = Translation.query.filter_by(
+            work_id=work.id, 
+            status='approved'
+        ).order_by(Translation.created_at.asc()).first()
+        
+        if earliest_translation:
+            # 计算从发帖到翻译完成的时间差（小时）
+            time_diff = earliest_translation.created_at - work.created_at
+            hours = time_diff.total_seconds() / 3600
+            match_speeds.append(hours)
+    
+    # 计算平均匹配速度
+    avg_match_speed = sum(match_speeds) / len(match_speeds) if match_speeds else 0
+    
+    # 统计信息
+    stats = {
+        'total_works': len(non_seed_works),
+        'completed_works': len(completed_works),
+        'match_rate': round(match_rate, 2),
+        'avg_match_speed': round(avg_match_speed, 2),
+        'match_speeds': match_speeds
+    }
+    
+    return render_template('admin.html', users=users, works=works, translations=translations, 
+                         current_user=get_current_user(), stats=stats)
 
 @app.route('/admin/user/<int:user_id>/toggle_role')
 def toggle_user_role(user_id):
