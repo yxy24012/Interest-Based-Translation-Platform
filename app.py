@@ -2,8 +2,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+import random
+import string
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_, and_, func
 from sqlalchemy import event
@@ -53,6 +55,44 @@ except Exception:
 
 # 支持的语言列表（用于自动检测和校验）
 SUPPORTED_LANGS = ['zh', 'ja', 'en', 'ru', 'ko', 'fr']
+
+# 验证码存储（在生产环境中应该使用Redis等缓存系统）
+verification_codes = {}
+
+def generate_verification_code():
+    """生成6位数字验证码"""
+    return ''.join(random.choices(string.digits, k=6))
+
+def store_verification_code(email, code):
+    """存储验证码，设置5分钟过期时间"""
+    verification_codes[email] = {
+        'code': code,
+        'expires_at': datetime.now() + timedelta(minutes=5)
+    }
+
+def verify_verification_code(email, code):
+    """验证验证码"""
+    if email not in verification_codes:
+        return False
+    
+    stored_data = verification_codes[email]
+    if datetime.now() > stored_data['expires_at']:
+        # 验证码已过期，删除
+        del verification_codes[email]
+        return False
+    
+    if stored_data['code'] == code:
+        # 验证成功，删除验证码
+        del verification_codes[email]
+        return True
+    
+    return False
+
+def send_verification_email(email, code, user_lang='zh'):
+    """发送验证码邮件"""
+    subject = get_message('email_verification_code', lang=user_lang)
+    content = f"{get_message('email_verification_code', lang=user_lang)}: {code}"
+    send_email(email, subject, content, message_type='system', user_lang=user_lang)
 
 
 def _normalize_lang_code(lang_code: str) -> str:
@@ -1043,14 +1083,6 @@ def get_message(key, lang=None, **kwargs):
             'ko': '이미 친구입니다',
             'fr': 'Vous êtes déjà amis'
         },
-        'friend_request_rejected': {
-            'zh': '好友请求已被拒绝',
-            'ja': '友達リクエストが拒否されました',
-            'en': 'Friend request rejected',
-            'ru': 'Запрос в друзья отклонен',
-            'ko': '친구 요청이 거부되었습니다',
-            'fr': 'Demande d\'ami rejetée'
-        },
         'friend_request_success': {
             'zh': '好友请求已发送',
             'ja': '友達リクエストが送信されました',
@@ -1378,22 +1410,6 @@ def get_message(key, lang=None, **kwargs):
             'ru': 'Ожидает перевода',
             'ko': '번역 대기',
             'fr': 'En attente de traduction'
-        },
-        'status_translating': {
-            'zh': '翻译中',
-            'ja': '翻訳中',
-            'en': 'Translating',
-            'ru': 'Переводится',
-            'ko': '번역 중',
-            'fr': 'En cours de traduction'
-        },
-        'status_completed': {
-            'zh': '已完成',
-            'ja': '完了',
-            'en': 'Completed',
-            'ru': 'Завершено',
-            'ko': '완료',
-            'fr': 'Terminé'
         },
         'status_draft': {
             'zh': '草稿', 'ja': '下書き', 'en': 'Draft', 'ru': 'Черновик', 'ko': '초안', 'fr': 'Brouillon'
@@ -2191,6 +2207,94 @@ def get_message(key, lang=None, **kwargs):
             'ru': 'Уведомления по почте (отправлять письмо при получении сообщений)',
             'ko': '이메일 알림 (메시지 수신 시 메일 발송)',
             'fr': 'Notifications par e-mail (envoyer un mail lors de la réception de messages)'
+        },
+        'email_verification_code': {
+            'zh': '邮箱验证码',
+            'ja': 'メール認証コード',
+            'en': 'Email verification code',
+            'ru': 'Код подтверждения email',
+            'ko': '이메일 인증 코드',
+            'fr': 'Code de vérification email'
+        },
+        'send_verification_code': {
+            'zh': '发送验证码',
+            'ja': '認証コードを送信',
+            'en': 'Send verification code',
+            'ru': 'Отправить код подтверждения',
+            'ko': '인증 코드 보내기',
+            'fr': 'Envoyer le code de vérification'
+        },
+        'verification_code_sent': {
+            'zh': '验证码已发送到您的邮箱',
+            'ja': '認証コードをメールで送信しました',
+            'en': 'Verification code sent to your email',
+            'ru': 'Код подтверждения отправлен на ваш email',
+            'ko': '인증 코드가 이메일로 전송되었습니다',
+            'fr': 'Code de vérification envoyé à votre email'
+        },
+        'verification_code_required': {
+            'zh': '请输入验证码',
+            'ja': '認証コードを入力してください',
+            'en': 'Please enter verification code',
+            'ru': 'Пожалуйста, введите код подтверждения',
+            'ko': '인증 코드를 입력해 주세요',
+            'fr': 'Veuillez entrer le code de vérification'
+        },
+        'verification_code_invalid': {
+            'zh': '验证码无效或已过期',
+            'ja': '認証コードが無効または期限切れです',
+            'en': 'Verification code is invalid or expired',
+            'ru': 'Код подтверждения недействителен или истек',
+            'ko': '인증 코드가 유효하지 않거나 만료되었습니다',
+            'fr': 'Le code de vérification est invalide ou expiré'
+        },
+        'verification_code_success': {
+            'zh': '邮箱验证成功',
+            'ja': 'メール認証が成功しました',
+            'en': 'Email verification successful',
+            'ru': 'Подтверждение email успешно',
+            'ko': '이메일 인증 성공',
+            'fr': 'Vérification email réussie'
+        },
+        'enter_verification_code': {
+            'zh': '请输入验证码',
+            'ja': '認証コードを入力',
+            'en': 'Enter verification code',
+            'ru': 'Введите код подтверждения',
+            'ko': '인증 코드 입력',
+            'fr': 'Entrez le code de vérification'
+        },
+        'resend_verification_code': {
+            'zh': '重新发送验证码',
+            'ja': '認証コードを再送信',
+            'en': 'Resend verification code',
+            'ru': 'Отправить код подтверждения повторно',
+            'ko': '인증 코드 재전송',
+            'fr': 'Renvoyer le code de vérification'
+        },
+        'invalid_email': {
+            'zh': '邮箱格式无效',
+            'ja': 'メールアドレスの形式が無効です',
+            'en': 'Invalid email format',
+            'ru': 'Неверный формат email',
+            'ko': '이메일 형식이 유효하지 않습니다',
+            'fr': 'Format d\'email invalide'
+        },
+        'email_send_failed': {
+            'zh': '邮件发送失败，请稍后重试',
+            'ja': 'メール送信に失敗しました。後でもう一度お試しください',
+            'en': 'Email sending failed, please try again later',
+            'ru': 'Ошибка отправки email, попробуйте позже',
+            'ko': '이메일 전송에 실패했습니다. 나중에 다시 시도해 주세요',
+            'fr': 'Échec de l\'envoi de l\'email, veuillez réessayer plus tard'
+        },
+        'please_enter_email': {
+            'zh': '请输入邮箱',
+            'ja': 'メールアドレスを入力してください',
+            'en': 'Please enter email',
+            'ru': 'Пожалуйста, введите email',
+            'ko': '이메일을 입력해 주세요',
+            'fr': 'Veuillez entrer l\'email'
         },
         'work': {
             'zh': '作品',
@@ -3789,14 +3893,6 @@ def get_message(key, lang=None, **kwargs):
                    'ko': '상태',
                    'fr': 'Statut'
                },
-               'all_status': {
-                   'zh': '所有状态',
-                   'ja': 'すべてのステータス',
-                   'en': 'All Status',
-                   'ru': 'Все статусы',
-                   'ko': '모든 상태',
-                   'fr': 'Tous les statuts'
-               },
                'pending': {
                    'zh': '待翻译',
                    'ja': '翻訳待ち',
@@ -4134,14 +4230,6 @@ def get_message(key, lang=None, **kwargs):
                    'ru': 'Администратор',
                    'ko': '관리자',
                    'fr': 'Administrateur'
-               },
-               'role_translator': {
-                   'zh': '翻译者',
-                   'ja': '翻訳者',
-                   'en': 'Translator',
-                   'ru': 'Переводчик',
-                   'ko': '번역가',
-                   'fr': 'Traducteur'
                },
                'role_user': {
                    'zh': '普通用户',
@@ -6329,12 +6417,39 @@ def works():
     
     return render_template('works.html', works=works, categories=categories, search=search, category=category, original_language=original_language, target_language=target_language, status=status, tags=tags, AuthorLike=AuthorLike, Like=Like)
 
+@app.route('/send_verification_code', methods=['POST'])
+def send_verification_code():
+    """发送验证码API"""
+    data = request.get_json()
+    email = data.get('email', '').strip()
+    user_lang = session.get('lang', 'zh')
+    
+    if not email:
+        return jsonify({'success': False, 'message': get_message('please_enter_email', lang=user_lang)})
+    
+    # 检查邮箱格式
+    if '@' not in email or '.' not in email:
+        return jsonify({'success': False, 'message': get_message('invalid_email', lang=user_lang)})
+    
+    # 生成验证码
+    code = generate_verification_code()
+    store_verification_code(email, code)
+    
+    # 发送验证码邮件
+    try:
+        send_verification_email(email, code, user_lang)
+        return jsonify({'success': True, 'message': get_message('verification_code_sent', lang=user_lang)})
+    except Exception as e:
+        return jsonify({'success': False, 'message': get_message('email_send_failed', lang=user_lang)})
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        verification_code = request.form.get('verification_code', '')
+        email_notifications_enabled = request.form.get('email_notifications_enabled')
         
         # 检查用户是否已存在
         if User.query.filter_by(username=username).first():
@@ -6345,6 +6460,16 @@ def register():
         if email != 'lafengnidaye@gmail.com' and User.query.filter_by(email=email).first():
             flash(get_message('email_exists'), 'error')
             return render_template('register.html')
+        
+        # 如果启用了邮件通知，需要验证验证码
+        if email_notifications_enabled:
+            if not verification_code:
+                flash(get_message('verification_code_required'), 'error')
+                return render_template('register.html')
+            
+            if not verify_verification_code(email, verification_code):
+                flash(get_message('verification_code_invalid'), 'error')
+                return render_template('register.html')
         
         # 获取当前会话中的语言设置，如果没有则默认为中文
         current_lang = session.get('lang', 'zh')
@@ -6366,7 +6491,7 @@ def register():
             password_hash=generate_password_hash(password),
             role='user',
             preferred_language=current_lang,  # 使用当前选择的语言
-            email_notifications_enabled=True if request.form.get('email_notifications_enabled') else False
+            email_notifications_enabled=True if email_notifications_enabled else False
         )
         db.session.add(user)
         db.session.commit()
@@ -6537,7 +6662,20 @@ def edit_profile():
         
         # 处理邮件通知开关
         email_flag = request.form.get('email_notifications_enabled')
-        user.email_notifications_enabled = True if email_flag else False
+        new_email_notifications_enabled = True if email_flag else False
+        
+        # 如果启用了邮件通知且邮箱发生变化，需要验证验证码
+        if new_email_notifications_enabled and new_email and new_email != user.email:
+            verification_code = request.form.get('verification_code', '')
+            if not verification_code:
+                flash(get_message('verification_code_required'), 'error')
+                return render_template('edit_profile.html', user=user)
+            
+            if not verify_verification_code(new_email, verification_code):
+                flash(get_message('verification_code_invalid'), 'error')
+                return render_template('edit_profile.html', user=user)
+        
+        user.email_notifications_enabled = new_email_notifications_enabled
 
         # 处理语言设置
         preferred_language = request.form.get('preferred_language', 'zh')

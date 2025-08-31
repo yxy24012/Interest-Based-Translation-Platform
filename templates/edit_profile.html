@@ -33,6 +33,28 @@
                             <i class="fas fa-bell me-1"></i> {{ get_message('email_notifications_label') if get_message('email_notifications_label') else '邮件通知（收到消息时发送到邮箱）' }}
                         </label>
                     </div>
+
+                    <!-- 验证码区域（默认隐藏） -->
+                    <div id="verification_code_section" class="mb-3" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label for="verification_code" class="form-label">
+                                    <i class="fas fa-shield-alt me-1"></i>{{ get_message('email_verification_code') }}
+                                </label>
+                                <input type="text" class="form-control" id="verification_code" name="verification_code" 
+                                       placeholder="{{ get_message('enter_verification_code') }}" maxlength="6">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="button" class="btn btn-outline-primary w-100" id="send_verification_code">
+                                    <i class="fas fa-paper-plane me-1"></i>{{ get_message('send_verification_code') }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>{{ get_message('verification_code_required') }}
+                        </div>
+                    </div>
                     
                     <div class="mb-3">
                         <label for="bio" class="form-label">
@@ -99,4 +121,110 @@
         </div>
     </div>
 </div>
+
+<script>
+// 邮件通知开关处理
+document.getElementById('email_notifications_enabled').addEventListener('change', function() {
+    const verificationSection = document.getElementById('verification_code_section');
+    const emailInput = document.getElementById('email');
+    const currentEmail = '{{ user.email }}';
+    
+    if (this.checked) {
+        // 检查邮箱是否发生变化
+        if (emailInput.value !== currentEmail) {
+            verificationSection.style.display = 'block';
+        }
+    } else {
+        verificationSection.style.display = 'none';
+        // 清空验证码输入框
+        document.getElementById('verification_code').value = '';
+    }
+});
+
+// 邮箱输入变化处理
+document.getElementById('email').addEventListener('input', function() {
+    const emailNotificationsEnabled = document.getElementById('email_notifications_enabled').checked;
+    const verificationSection = document.getElementById('verification_code_section');
+    const currentEmail = '{{ user.email }}';
+    
+    if (emailNotificationsEnabled && this.value !== currentEmail) {
+        verificationSection.style.display = 'block';
+    } else {
+        verificationSection.style.display = 'none';
+        document.getElementById('verification_code').value = '';
+    }
+});
+
+// 发送验证码
+document.getElementById('send_verification_code').addEventListener('click', function() {
+    const email = document.getElementById('email').value.trim();
+    const button = this;
+    const originalText = button.innerHTML;
+    
+    if (!email) {
+        alert('{{ get_message("please_enter_email") }}');
+        return;
+    }
+    
+    // 检查邮箱格式
+    if (!email.includes('@') || !email.includes('.')) {
+        alert('{{ get_message("invalid_email") }}');
+        return;
+    }
+    
+    // 禁用按钮并显示加载状态
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{{ get_message("send_verification_code") }}';
+    
+    fetch('/send_verification_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // 开始倒计时
+            let countdown = 60;
+            const countdownInterval = setInterval(() => {
+                button.innerHTML = `<i class="fas fa-clock me-1"></i>${countdown}s`;
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }, 1000);
+        } else {
+            alert(data.message);
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ get_message("email_send_failed") }}');
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+});
+
+// 表单验证
+document.querySelector('form').addEventListener('submit', function(e) {
+    const emailNotificationsEnabled = document.getElementById('email_notifications_enabled').checked;
+    const verificationCode = document.getElementById('verification_code').value.trim();
+    const emailInput = document.getElementById('email');
+    const currentEmail = '{{ user.email }}';
+    
+    // 如果启用了邮件通知且邮箱发生变化，检查验证码
+    if (emailNotificationsEnabled && emailInput.value !== currentEmail && !verificationCode) {
+        e.preventDefault();
+        alert('{{ get_message("verification_code_required") }}');
+        return;
+    }
+});
+</script>
 {% endblock %} 
