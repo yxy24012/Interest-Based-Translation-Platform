@@ -54,7 +54,7 @@ except Exception:
 
 
 # 支持的语言列表（用于自动检测和校验）
-SUPPORTED_LANGS = ['zh', 'ja', 'en', 'ru', 'ko', 'fr']
+SUPPORTED_LANGS = ['zh', 'zh-TW', 'ja', 'en', 'ru', 'ko', 'fr', 'es']
 
 # 验证码存储（在生产环境中应该使用Redis等缓存系统）
 verification_codes = {}
@@ -150,187 +150,233 @@ def get_message(key, lang=None, **kwargs):
     messages = {
         'username_exists': {
             'zh': '用户名已存在',
+            'zh-TW': '用戶名已存在',
             'ja': 'ユーザー名は既に存在します',
             'en': 'Username already exists',
             'ru': 'Имя пользователя уже существует',
             'ko': '사용자명이 이미 존재합니다',
-            'fr': 'Le nom d\'utilisateur existe déjà'
+            'fr': 'Le nom d\'utilisateur existe déjà',
+            'es': 'El nombre de usuario ya existe'
         },
         'email_exists': {
             'zh': '邮箱已被注册',
+            'zh-TW': '郵箱已被註冊',
             'ja': 'メールアドレスは既に登録されています',
             'en': 'Email has already been registered',
             'ru': 'Электронная почта уже зарегистрирована',
             'ko': '이메일이 이미 등록되어 있습니다',
-            'fr': 'L\'email a déjà été enregistré'
+            'fr': 'L\'email a déjà été enregistré',
+            'es': 'El correo electrónico ya ha sido registrado'
         },
         'register_success': {
             'zh': '注册成功，已自动登录',
+            'zh-TW': '註冊成功，已自動登錄',
             'ja': '登録成功、自動ログインしました',
             'en': 'Registration successful, automatically logged in',
             'ru': 'Регистрация успешна, автоматический вход выполнен',
             'ko': '등록 성공, 자동 로그인되었습니다',
-            'fr': 'Inscription réussie, connexion automatique effectuée'
+            'fr': 'Inscription réussie, connexion automatique effectuée',
+            'es': 'Registro exitoso, inicio de sesión automático realizado'
         },
         'welcome_back': {
             'zh': '欢迎回来，{}！',
+            'zh-TW': '歡迎回來，{}！',
             'ja': 'おかえりなさい、{}さん！',
             'en': 'Welcome back, {}!',
             'ru': 'Добро пожаловать обратно, {}!',
             'ko': '다시 오신 것을 환영합니다, {}!',
-            'fr': 'Bon retour, {}!'
+            'fr': 'Bon retour, {}!',
+            'es': '¡Bienvenido de vuelta, {}!'
         },
         'login': {
             'zh': '登录',
+            'zh-TW': '登錄',
             'ja': 'ログイン',
             'en': 'Login',
             'ru': 'Вход',
             'ko': '로그인',
-            'fr': 'Connexion'
+            'fr': 'Connexion',
+            'es': 'Iniciar sesión'
         },
         'username': {
             'zh': '用户名',
+            'zh-TW': '用戶名',
             'ja': 'ユーザー名',
             'en': 'Username',
             'ru': 'Имя пользователя',
             'ko': '사용자 이름',
-            'fr': 'Nom d\'utilisateur'
+            'fr': 'Nom d\'utilisateur',
+            'es': 'Nombre de usuario'
         },
         'password': {
             'zh': '密码',
+            'zh-TW': '密碼',
             'ja': 'パスワード',
             'en': 'Password',
             'ru': 'Пароль',
             'ko': '비밀번호',
-            'fr': 'Mot de passe'
+            'fr': 'Mot de passe',
+            'es': 'Contraseña'
         },
         'enter_username': {
             'zh': '请输入用户名',
+            'zh-TW': '請輸入用戶名',
             'ja': 'ユーザー名を入力',
             'en': 'Enter username',
             'ru': 'Введите имя пользователя',
             'ko': '사용자 이름 입력',
-            'fr': 'Entrez le nom d\'utilisateur'
+            'fr': 'Entrez le nom d\'utilisateur',
+            'es': 'Ingrese nombre de usuario'
         },
         'enter_password': {
             'zh': '请输入密码',
+            'zh-TW': '請輸入密碼',
             'ja': 'パスワードを入力',
             'en': 'Enter password',
             'ru': 'Введите пароль',
             'ko': '비밀번호 입력',
-            'fr': 'Entrez le mot de passe'
+            'fr': 'Entrez le mot de passe',
+            'es': 'Ingrese contraseña'
         },
         'no_account': {
             'zh': '还没有账户？',
+            'zh-TW': '還沒有帳戶？',
             'ja': 'アカウントをお持ちでない場合',
             'en': 'Don\'t have an account?',
             'ru': 'Нет аккаунта?',
             'ko': '계정이 없으신가요?',
-            'fr': 'Vous n\'avez pas de compte?'
+            'fr': 'Vous n\'avez pas de compte?',
+            'es': '¿No tienes una cuenta?'
         },
         'register_now': {
             'zh': '立即注册',
+            'zh-TW': '立即註冊',
             'ja': '新規登録',
             'en': 'Register Now',
             'ru': 'Зарегистрироваться',
             'ko': '지금 등록',
-            'fr': 'S\'inscrire maintenant'
+            'fr': 'S\'inscrire maintenant',
+            'es': 'Registrarse ahora'
         },
         'please_enter_username': {
             'zh': '请输入用户名',
+            'zh-TW': '請輸入用戶名',
             'ja': 'ユーザー名を入力してください',
             'en': 'Please enter username',
             'ru': 'Пожалуйста, введите имя пользователя',
             'ko': '사용자 이름을 입력해 주세요',
-            'fr': 'Veuillez entrer le nom d\'utilisateur'
+            'fr': 'Veuillez entrer le nom d\'utilisateur',
+            'es': 'Por favor ingrese nombre de usuario'
         },
         'please_enter_password': {
             'zh': '请输入密码',
+            'zh-TW': '請輸入密碼',
             'ja': 'パスワードを入力してください',
             'en': 'Please enter password',
             'ru': 'Пожалуйста, введите пароль',
             'ko': '비밀번호를 입력해 주세요',
-            'fr': 'Veuillez entrer le mot de passe'
+            'fr': 'Veuillez entrer le mot de passe',
+            'es': 'Por favor ingrese contraseña'
         },
         'login_error': {
             'zh': '用户名或密码错误',
+            'zh-TW': '用戶名或密碼錯誤',
             'ja': 'ユーザー名またはパスワードが間違っています',
             'en': 'Incorrect username or password',
             'ru': 'Неверное имя пользователя или пароль',
             'ko': '잘못된 사용자명 또는 비밀번호',
-            'fr': 'Nom d\'utilisateur ou mot de passe incorrect'
+            'fr': 'Nom d\'utilisateur ou mot de passe incorrect',
+            'es': 'Nombre de usuario o contraseña incorrectos'
         },
         'logout_success': {
             'zh': '已成功登出',
+            'zh-TW': '已成功登出',
             'ja': 'ログアウトしました',
             'en': 'Successfully logged out',
             'ru': 'Успешно вышли из системы',
             'ko': '성공적으로 로그아웃되었습니다',
-            'fr': 'Déconnexion réussie'
+            'fr': 'Déconnexion réussie',
+            'es': 'Sesión cerrada exitosamente'
         },
         'profile_updated': {
             'zh': '资料已更新',
+            'zh-TW': '資料已更新',
             'ja': 'プロフィールが更新されました',
             'en': 'Profile has been updated',
             'ru': 'Профиль обновлен',
             'ko': '프로필이 업데이트되었습니다',
-            'fr': 'Le profil a été mis à jour'
+            'fr': 'Le profil a été mis à jour',
+            'es': 'Perfil ha sido actualizado'
         },
         'please_login': {
             'zh': '请先登录',
+            'zh-TW': '請先登錄',
             'ja': '先にログインしてください',
             'en': 'Please log in first',
             'ru': 'Пожалуйста, сначала войдите в систему',
             'ko': '먼저 로그인해 주세요',
-            'fr': 'Veuillez d\'abord vous connecter'
+            'fr': 'Veuillez d\'abord vous connecter',
+            'es': 'Por favor inicie sesión primero'
         },
         'upload_success': {
             'zh': '作品上传成功！',
+            'zh-TW': '作品上傳成功！',
             'ja': '作品のアップロードが成功しました！',
             'en': 'Work uploaded successfully!',
             'ru': 'Работа успешно загружена!',
             'ko': '작품이 성공적으로 업로드되었습니다!',
-            'fr': 'Travail téléchargé avec succès!'
+            'fr': 'Travail téléchargé avec succès!',
+            'es': '¡Trabajo subido exitosamente!'
         },
         'comment_success': {
             'zh': '评论添加成功！',
+            'zh-TW': '評論添加成功！',
             'ja': 'コメントが追加されました！',
             'en': 'Comment added successfully!',
             'ru': 'Комментарий успешно добавлен!',
             'ko': '댓글이 성공적으로 추가되었습니다!',
-            'fr': 'Commentaire ajouté avec succès!'
+            'fr': 'Commentaire ajouté avec succès!',
+            'es': '¡Comentario agregado exitosamente!'
         },
         'comment_notification': {
             'zh': '您收到了新的评论通知',
+            'zh-TW': '您收到了新的評論通知',
             'ja': '新しいコメント通知を受信しました',
             'en': 'You have received a new comment notification',
             'ru': 'Вы получили новое уведомление о комментарии',
             'ko': '새로운 댓글 알림을 받았습니다',
-            'fr': 'Vous avez reçu une nouvelle notification de commentaire'
+            'fr': 'Vous avez reçu une nouvelle notification de commentaire',
+            'es': 'Has recibido una nueva notificación de comentario'
         },
         'no_permission_translate': {
             'zh': '您没有权限提交翻译',
+            'zh-TW': '您沒有權限提交翻譯',
             'ja': '翻訳を提出する権限がありません',
             'en': 'You do not have permission to submit translations',
             'ru': 'У вас нет разрешения на отправку переводов',
             'ko': '번역을 제출할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de soumettre des traductions'
+            'fr': 'Vous n\'avez pas la permission de soumettre des traductions',
+            'es': 'No tienes permiso para enviar traducciones'
         },
         'translate_success': {
             'zh': '翻译提交成功！',
+            'zh-TW': '翻譯提交成功！',
             'ja': '翻訳が提出されました！',
             'en': 'Translation submitted successfully!',
             'ru': 'Перевод успешно отправлен!',
             'ko': '번역이 성공적으로 제출되었습니다!',
-            'fr': 'Traduction soumise avec succès!'
+            'fr': 'Traduction soumise avec succès!',
+            'es': '¡Traducción enviada exitosamente!'
         },
         'only_translator': {
             'zh': '只有翻译者可以翻译',
+            'zh-TW': '只有翻譯者可以翻譯',
             'ja': '翻訳者のみが翻訳できます',
             'en': 'Only translators can translate',
             'ru': 'Только переводчики могут переводить',
             'ko': '번역가만 번역할 수 있습니다',
-            'fr': 'Seuls les traducteurs peuvent traduire'
+            'fr': 'Seuls les traducteurs peuvent traduire',
+            'es': 'Solo los traductores pueden traducir'
         },
         'wait_author_approval': {
             'zh': '请等待作者同意你的期待/要求',
@@ -338,7 +384,8 @@ def get_message(key, lang=None, **kwargs):
             'ru': 'Пожалуйста, дождитесь одобрения ваших ожиданий/требований автором',
             'ko': '작가가 귀하의 기대/요구사항을 승인할 때까지 기다려 주세요',
             'ja': '作者の承認をお待ちください',
-            'fr': 'Veuillez attendre que l\'auteur approuve vos attentes/exigences'
+            'fr': 'Veuillez attendre que l\'auteur approuve vos attentes/exigences',
+            'es': 'Por favor espere a que el autor apruebe sus expectativas/requisitos'
         },
         'contact_author_first': {
             'zh': '本作品要求翻译前请先私信作者，或获得作者信任。',
@@ -346,7 +393,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'This work requires contacting the author before translation, or gaining the author\'s trust.',
             'ru': 'Эта работа требует связи с автором перед переводом или получения доверия автора.',
             'ko': '이 작품은 번역 전에 작가에게 연락하거나 작가의 신뢰를 얻어야 합니다.',
-            'fr': 'Cette œuvre nécessite de contacter l\'auteur avant la traduction, ou d\'obtenir la confiance de l\'auteur.'
+            'fr': 'Cette œuvre nécessite de contacter l\'auteur avant la traduction, ou d\'obtenir la confiance de l\'auteur.',
+            'es': 'Esta obra requiere contactar al autor antes de la traducción, o ganar la confianza del autor.'
         },
         'work_already_translating': {
             'zh': '该作品正在翻译中，其他翻译者无法进行翻译。',
@@ -354,7 +402,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'This work is currently being translated. Other translators cannot translate it.',
             'ru': 'Эта работа в настоящее время переводится. Другие переводчики не могут её переводить.',
             'ko': '이 작품은 현재 번역 중입니다. 다른 번역가는 번역할 수 없습니다.',
-            'fr': 'Cette œuvre est actuellement en cours de traduction. D\'autres traducteurs ne peuvent pas la traduire.'
+            'fr': 'Cette œuvre est actuellement en cours de traduction. D\'autres traducteurs ne peuvent pas la traduire.',
+            'es': 'Esta obra está siendo traducida actualmente. Otros traductores no pueden traducirla.'
         },
         'approved_translator': {
             'zh': '您已获得作者同意，可以开始翻译。',
@@ -362,7 +411,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'You have been approved by the author and can start translating.',
             'ru': 'Вы получили одобрение автора и можете начать перевод.',
             'ko': '작가의 승인을 받았습니다. 번역을 시작할 수 있습니다.',
-            'fr': 'Vous avez été approuvé par l\'auteur et pouvez commencer à traduire.'
+            'fr': 'Vous avez été approuvé par l\'auteur et pouvez commencer à traduire.',
+            'es': 'Has sido aprobado por el autor y puedes comenzar a traducir.'
         },
         'need_translator_qualification': {
             'zh': '只有通过翻译者资格的用户才能翻译',
@@ -370,7 +420,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Only users with translator qualification can translate',
             'ru': 'Только пользователи с квалификацией переводчика могут переводить',
             'ko': '번역가 자격을 갖춘 사용자만 번역할 수 있습니다',
-            'fr': 'Seuls les utilisateurs ayant une qualification de traducteur peuvent traduire'
+            'fr': 'Seuls les utilisateurs ayant une qualification de traducteur peuvent traduire',
+            'es': 'Solo los usuarios con calificación de traductor pueden traducir'
         },
         'no_permission_request': {
             'zh': '您没有权限处理此请求',
@@ -378,7 +429,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'You do not have permission to process this request',
             'ru': 'У вас нет разрешения на обработку этого запроса',
             'ko': '이 요청을 처리할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de traiter cette demande'
+            'fr': 'Vous n\'avez pas la permission de traiter cette demande',
+            'es': 'No tienes permiso para procesar esta solicitud'
         },
         'request_processed': {
             'zh': '此请求已被处理',
@@ -386,7 +438,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'This request has already been processed',
             'ru': 'Этот запрос уже обработан',
             'ko': '이 요청은 이미 처리되었습니다',
-            'fr': 'Cette demande a déjà été traitée'
+            'fr': 'Cette demande a déjà été traitée',
+            'es': 'Esta solicitud ya ha sido procesada'
         },
         'request_approved': {
             'zh': '翻译请求已同意',
@@ -394,7 +447,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Translation request approved',
             'ru': 'Запрос на перевод одобрен',
             'ko': '번역 요청이 승인되었습니다',
-            'fr': 'Demande de traduction approuvée'
+            'fr': 'Demande de traduction approuvée',
+            'es': 'Solicitud de traducción aprobada'
         },
         'correction_success': {
             'zh': '校正提交成功！',
@@ -402,7 +456,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Correction submitted successfully!',
             'ru': 'Исправление успешно отправлено!',
             'ko': '교정이 성공적으로 제출되었습니다!',
-            'fr': 'Correction soumise avec succès!'
+            'fr': 'Correction soumise avec succès!',
+            'es': '¡Corrección enviada exitosamente!'
         },
         'correction_submitted_to_creator': {
             'zh': '校正提交通知',
@@ -410,7 +465,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Correction Submission Notification',
             'ru': 'Уведомление об отправке исправления',
             'ko': '교정 제출 알림',
-            'fr': 'Notification de soumission de correction'
+            'fr': 'Notification de soumission de correction',
+            'es': 'Notificación de envío de corrección'
         },
         'correction_submitted_to_translator': {
             'zh': '校正提交通知',
@@ -418,7 +474,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Correction Submission Notification',
             'ru': 'Уведомление об отправке исправления',
             'ko': '교정 제출 알림',
-            'fr': 'Notification de soumission de correction'
+            'fr': 'Notification de soumission de correction',
+            'es': 'Notificación de envío de corrección'
         },
         'correction_deleted': {
             'zh': '校正已删除',
@@ -426,7 +483,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Correction deleted',
             'ru': 'Исправление удалено',
             'ko': '교정이 삭제되었습니다',
-            'fr': 'Correction supprimée'
+            'fr': 'Correction supprimée',
+            'es': 'Corrección eliminada'
         },
         'no_permission_correct': {
             'zh': '您没有权限进行校正',
@@ -434,7 +492,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'You do not have permission to make corrections',
             'ru': 'У вас нет разрешения на внесение исправлений',
             'ko': '교정할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de faire des corrections'
+            'fr': 'Vous n\'avez pas la permission de faire des corrections',
+            'es': 'No tienes permiso para hacer correcciones'
         },
         'only_reviewer': {
             'zh': '只有校正者可以进行校正',
@@ -442,7 +501,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Only reviewers can make corrections',
             'ru': 'Только рецензенты могут вносить исправления',
             'ko': '검토자만 교정할 수 있습니다',
-            'fr': 'Seuls les correcteurs peuvent faire des corrections'
+            'fr': 'Seuls les correcteurs peuvent faire des corrections',
+            'es': 'Solo los revisores pueden hacer correcciones'
         },
         'request_rejected': {
             'zh': '翻译请求已拒绝',
@@ -450,7 +510,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Translation request rejected',
             'ru': 'Запрос на перевод отклонен',
             'ko': '번역 요청이 거부되었습니다',
-            'fr': 'Demande de traduction rejetée'
+            'fr': 'Demande de traduction rejetée',
+            'es': 'Solicitud de traducción rechazada'
         },
         'password_changed': {
             'zh': '密码修改成功',
@@ -458,7 +519,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Password changed successfully',
             'ru': 'Пароль успешно изменен',
             'ko': '비밀번호가 성공적으로 변경되었습니다',
-            'fr': 'Mot de passe modifié avec succès'
+            'fr': 'Mot de passe modifié avec succès',
+            'es': 'Contraseña cambiada exitosamente'
         },
         'current_password_incorrect': {
             'zh': '当前密码不正确',
@@ -466,7 +528,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Current password is incorrect',
             'ru': 'Текущий пароль неверен',
             'ko': '현재 비밀번호가 올바르지 않습니다',
-            'fr': 'Le mot de passe actuel est incorrect'
+            'fr': 'Le mot de passe actuel est incorrect',
+            'es': 'La contraseña actual es incorrecta'
         },
         'password_too_short': {
             'zh': '新密码长度至少为8位',
@@ -474,15 +537,17 @@ def get_message(key, lang=None, **kwargs):
             'en': 'New password must be at least 8 characters long',
             'ru': 'Новый пароль должен содержать не менее 8 символов',
             'ko': '새 비밀번호는 최소 8자 이상이어야 합니다',
-            'fr': 'Le nouveau mot de passe doit contenir au moins 8 caractères'
+            'fr': 'Le nouveau mot de passe doit contenir au moins 8 caractères',
+            'es': 'La nueva contraseña debe tener al menos 8 caracteres'
         },
         'password_mismatch': {
             'zh': '新密码和确认密码不匹配',
-            'ja': '新しいパスワードと確認パスワードが一致しません',
+            'ja': '新しいパスワードと確認パ스ワードが一致しません',
             'en': 'New password and confirmation password do not match',
             'ru': 'Новый пароль и подтверждение пароля не совпадают',
             'ko': '새 비밀번호와 확인 비밀번호가 일치하지 않습니다',
-            'fr': 'Le nouveau mot de passe et la confirmation ne correspondent pas'
+            'fr': 'Le nouveau mot de passe et la confirmation ne correspondent pas',
+            'es': 'La nueva contraseña y la confirmación no coinciden'
         },
         'no_admin_permission': {
             'zh': '您没有管理员权限',
@@ -490,7 +555,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'You do not have administrator privileges',
             'ru': 'У вас нет прав администратора',
             'ko': '관리자 권한이 없습니다',
-            'fr': 'Vous n\'avez pas de privilèges d\'administrateur'
+            'fr': 'Vous n\'avez pas de privilèges d\'administrateur',
+            'es': 'No tienes privilegios de administrador'
         },
         'role_updated': {
             'zh': '用户 {} 的角色已更新',
@@ -498,7 +564,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'User {} role has been updated',
             'ru': 'Роль пользователя {} обновлена',
             'ko': '사용자 {}의 역할이 업데이트되었습니다',
-            'fr': 'Le rôle de l\'utilisateur {} a été mis à jour'
+            'fr': 'Le rôle de l\'utilisateur {} a été mis à jour',
+            'es': 'El rol del usuario {} ha sido actualizado'
         },
         'message_sent': {
             'zh': '消息发送成功',
@@ -506,7 +573,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Message sent successfully',
             'ru': 'Сообщение успешно отправлено',
             'ko': '메시지가 성공적으로 전송되었습니다',
-            'fr': 'Message envoyé avec succès'
+            'fr': 'Message envoyé avec succès',
+            'es': 'Mensaje enviado exitosamente'
         },
         'invalid_image_format': {
             'zh': '不支持的图片格式，请使用 PNG、JPG、JPEG、GIF 或 WEBP 格式',
@@ -514,7 +582,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Unsupported image format. Please use PNG, JPG, JPEG, GIF, or WEBP format',
             'ru': 'Неподдерживаемый формат изображения. Используйте формат PNG, JPG, JPEG, GIF или WEBP',
             'ko': '지원되지 않는 이미지 형식입니다. PNG, JPG, JPEG, GIF 또는 WEBP 형식을 사용하세요',
-            'fr': 'Format d\'image non pris en charge. Veuillez utiliser le format PNG, JPG, JPEG, GIF ou WEBP'
+            'fr': 'Format d\'image non pris en charge. Veuillez utiliser le format PNG, JPG, JPEG, GIF ou WEBP',
+            'es': 'Formato de imagen no soportado. Por favor use formato PNG, JPG, JPEG, GIF o WEBP'
         },
         'message_content_required': {
             'zh': '请输入消息内容或上传图片',
@@ -522,7 +591,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Please enter message content or upload an image',
             'ru': 'Пожалуйста, введите содержимое сообщения или загрузите изображение',
             'ko': '메시지 내용을 입력하거나 이미지를 업로드하세요',
-            'fr': 'Veuillez saisir le contenu du message ou télécharger une image'
+            'fr': 'Veuillez saisir le contenu du message ou télécharger une image',
+            'es': 'Por favor ingrese el contenido del mensaje o suba una imagen'
         },
         'image_upload_hint': {
             'zh': '支持 PNG、JPG、JPEG、GIF、WEBP 格式，最大5MB',
@@ -530,7 +600,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Supports PNG, JPG, JPEG, GIF, WEBP format, max 5MB',
             'ru': 'Поддерживает форматы PNG, JPG, JPEG, GIF, WEBP, макс. 5MB',
             'ko': 'PNG, JPG, JPEG, GIF, WEBP 형식 지원, 최대 5MB',
-            'fr': 'Prend en charge les formats PNG, JPG, JPEG, GIF, WEBP, max 5MB'
+            'fr': 'Prend en charge les formats PNG, JPG, JPEG, GIF, WEBP, max 5MB',
+            'es': 'Soporta formato PNG, JPG, JPEG, GIF, WEBP, máximo 5MB'
         },
         'view_image': {
             'zh': '查看图片',
@@ -538,7 +609,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'View Image',
             'ru': 'Просмотр изображения',
             'ko': '이미지 보기',
-            'fr': 'Voir l\'image'
+            'fr': 'Voir l\'image',
+            'es': 'Ver imagen'
         },
         'file_too_large': {
             'zh': '文件大小不能超过5MB',
@@ -546,7 +618,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'File size cannot exceed 5MB',
             'ru': 'Размер файла не может превышать 5MB',
             'ko': '파일 크기는 5MB를 초과할 수 없습니다',
-            'fr': 'La taille du fichier ne peut pas dépasser 5MB'
+            'fr': 'La taille du fichier ne peut pas dépasser 5MB',
+            'es': 'El tamaño del archivo no puede exceder 5MB'
         },
         'message_read': {
             'zh': '消息已标记为已读',
@@ -554,7 +627,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Message marked as read',
             'ru': 'Сообщение отмечено как прочитанное',
             'ko': '메시지가 읽음으로 표시되었습니다',
-            'fr': 'Message marqué comme lu'
+            'fr': 'Message marqué comme lu',
+            'es': 'Mensaje marcado como leído'
         },
         'admin_work_deleted': {
             'zh': '管理员删除了您的作品',
@@ -562,7 +636,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Administrator deleted your work',
             'ru': 'Администратор удалил вашу работу',
             'ko': '관리자가 귀하의 작품을 삭제했습니다',
-            'fr': 'L\'administrateur a supprimé votre œuvre'
+            'fr': 'L\'administrateur a supprimé votre œuvre',
+            'es': 'El administrador eliminó tu trabajo'
         },
         'admin_work_edited': {
             'zh': '管理员编辑了您的作品',
@@ -570,7 +645,8 @@ def get_message(key, lang=None, **kwargs):
             'en': 'Administrator edited your work',
             'ru': 'Администратор отредактировал вашу работу',
             'ko': '관리자가 귀하의 작품을 편집했습니다',
-            'fr': 'L\'administrateur a modifié votre œuvre'
+            'fr': 'L\'administrateur a modifié votre œuvre',
+            'es': 'El administrador editó tu trabajo'
         },
         'already_translator': {
             'zh': '你已经是翻译者，无需重复申请。',
@@ -578,1246 +654,1285 @@ def get_message(key, lang=None, **kwargs):
             'en': 'You are already a translator, no need to apply again.',
             'ru': 'Вы уже переводчик, нет необходимости подавать заявку снова.',
             'ko': '이미 번역가입니다. 다시 신청할 필요가 없습니다.',
-            'fr': 'Vous êtes déjà traducteur, pas besoin de postuler à nouveau.'
+            'fr': 'Vous êtes déjà traducteur, pas besoin de postuler à nouveau.',
+            'es': 'Ya eres traductor, no necesitas aplicar de nuevo.'
         },
         'become_translator': {
             'zh': '恭喜你成为翻译者！',
+            'zh-TW': '恭喜你成為翻譯者！',
             'ja': '翻訳者になりました！おめでとうございます！',
             'en': 'Congratulations on becoming a translator!',
-            'ru': 'Поздравляем с тем, что стали переводчиком!',
-            'ko': '번역가가 되신 것을 축하합니다!',
-            'fr': 'Félicitations pour être devenu traducteur!'
+            'ru': 'Поздравляем с получением статуса переводчика!',
+            'ko': '번역가가 되었습니다! 축하합니다!',
+            'fr': 'Félicitations pour être devenu traducteur!',
+            'es': '¡Felicitaciones por convertirte en traductor!'
         },
         'need_translator_first': {
             'zh': '请先成为翻译者后再申请校正者。',
+            'zh-TW': '請先成為翻譯者後再申請校正者。',
             'ja': '先に翻訳者になってから校正者を申請してください。',
             'en': 'Please become a translator first before applying to be a reviewer.',
             'ru': 'Пожалуйста, сначала станьте переводчиком, прежде чем подавать заявку на рецензента.',
             'ko': '검토자 신청 전에 먼저 번역가가 되어 주세요.',
-            'fr': 'Veuillez d\'abord devenir traducteur avant de postuler pour être correcteur.'
+            'fr': 'Veuillez d\'abord devenir traducteur avant de postuler pour être correcteur.',
+            'es': 'Por favor conviértete en traductor primero antes de solicitar ser revisor.'
         },
         'already_reviewer': {
             'zh': '你已经是校正者，无需重复申请。',
+            'zh-TW': '你已經是校正者，無需重複申請。',
             'ja': '既に校正者です。重複申請は不要です。',
             'en': 'You are already a reviewer, no need to apply again.',
             'ru': 'Вы уже рецензент, нет необходимости подавать заявку снова.',
             'ko': '이미 검토자입니다. 다시 신청할 필요가 없습니다.',
-            'fr': 'Vous êtes déjà correcteur, pas besoin de postuler à nouveau.'
+            'fr': 'Vous êtes déjà correcteur, pas besoin de postuler à nouveau.',
+            'es': 'Ya eres revisor, no necesitas aplicar de nuevo.'
         },
         'become_reviewer': {
             'zh': '恭喜你成为校正者！',
+            'zh-TW': '恭喜你成為校正者！',
             'ja': '校正者になりました！おめでとうございます！',
             'en': 'Congratulations on becoming a reviewer!',
             'ru': 'Поздравляем с тем, что стали рецензентом!',
             'ko': '검토자가 되신 것을 축하합니다!',
-            'fr': 'Félicitations pour être devenu correcteur!'
+            'fr': 'Félicitations pour être devenu correcteur!',
+            'es': '¡Felicitaciones por convertirte en revisor!'
         },
         'no_edit_permission': {
             'zh': '您没有权限编辑该作品',
+            'zh-TW': '您沒有權限編輯該作品',
             'ja': 'この作品を編集する権限がありません',
             'en': 'You do not have permission to edit this work',
             'ru': 'У вас нет разрешения на редактирование этой работы',
             'ko': '이 작품을 편집할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de modifier cette œuvre'
+            'fr': 'Vous n\'avez pas la permission de modifier cette œuvre',
+            'es': 'No tienes permiso para editar esta obra'
         },
         'edit_success': {
             'zh': '作品编辑成功！',
+            'zh-TW': '作品編輯成功！',
             'ja': '作品の編集が成功しました！',
             'en': 'Work edited successfully!',
             'ru': 'Работа успешно отредактирована!',
             'ko': '작품이 성공적으로 편집되었습니다!',
-            'fr': 'Œuvre modifiée avec succès!'
+            'fr': 'Œuvre modifiée avec succès!',
+            'es': '¡Obra editada exitosamente!'
         },
         'no_delete_permission': {
             'zh': '您没有权限删除该作品',
+            'zh-TW': '您沒有權限刪除該作品',
             'ja': 'この作品を削除する権限がありません',
             'en': 'You do not have permission to delete this work',
             'ru': 'У вас нет разрешения на удаление этой работы',
             'ko': '이 작품을 삭제할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de supprimer cette œuvre'
+            'fr': 'Vous n\'avez pas la permission de supprimer cette œuvre',
+            'es': 'No tienes permiso para eliminar esta obra'
         },
         'delete_success': {
             'zh': '作品已删除',
+            'zh-TW': '作品已刪除',
             'ja': '作品が削除されました',
             'en': 'Work deleted',
             'ru': 'Работа удалена',
             'ko': '작품이 삭제되었습니다',
-            'fr': 'Œuvre supprimée'
+            'fr': 'Œuvre supprimée',
+            'es': 'Obra eliminada'
         },
         'cannot_trust_self': {
             'zh': '不能信赖自己',
+            'zh-TW': '不能信賴自己',
             'ja': '自分を信頼することはできません',
             'en': 'Cannot trust yourself',
             'ru': 'Нельзя доверять самому себе',
             'ko': '자신을 신뢰할 수 없습니다',
-            'fr': 'Ne peut pas se faire confiance'
+            'fr': 'Ne peut pas se faire confiance',
+            'es': 'No puedes confiar en ti mismo'
         },
         'message_center': {
             'zh': '消息中心',
+            'zh-TW': '消息中心',
             'ja': 'メッセージセンター',
             'en': 'Message Center',
             'ru': 'Центр сообщений',
             'ko': '메시지 센터',
-            'fr': 'Centre de messages'
+            'fr': 'Centre de messages',
+            'es': 'Centro de mensajes'
         },
         'system_notifications': {
             'zh': '系统通知',
+            'zh-TW': '系統通知',
             'ja': 'システム通知',
             'en': 'System Notifications',
             'ru': 'Системные уведомления',
             'ko': '시스템 알림',
-            'fr': 'Notifications système'
+            'fr': 'Notifications système',
+            'es': 'Notificaciones del sistema'
         },
         'mark_as_read': {
             'zh': '标记已读',
+            'zh-TW': '標記已讀',
             'ja': '既読にする',
             'en': 'Mark as Read',
             'ru': 'Отметить как прочитанное',
             'ko': '읽음으로 표시',
-            'fr': 'Marquer comme lu'
+            'fr': 'Marquer comme lu',
+            'es': 'Marcar como leído'
         },
         'friend_requests': {
             'zh': '好友请求',
+            'zh-TW': '好友請求',
             'ja': '友達リクエスト',
             'en': 'Friend Requests',
             'ru': 'Запросы в друзья',
             'ko': '친구 요청',
-            'fr': 'Demandes d\'ami'
+            'fr': 'Demandes d\'ami',
+            'es': 'Solicitudes de amistad'
         },
         'requests_to_add_friend': {
             'zh': '请求添加您为好友',
+            'zh-TW': '請求添加您為好友',
             'ja': 'があなたを友達に追加することをリクエストしました',
             'en': 'requests to add you as a friend',
             'ru': 'запрашивает добавить вас в друзья',
             'ko': '가 당신을 친구로 추가하려고 요청했습니다',
-            'fr': 'demande à vous ajouter comme ami'
+            'fr': 'demande à vous ajouter comme ami',
+            'es': 'solicita agregarte como amigo'
         },
         'agree': {
             'zh': '同意',
+            'zh-TW': '同意',
             'ja': '同意',
             'en': 'Agree',
             'ru': 'Согласиться',
             'ko': '동의',
-            'fr': 'Accepter'
+            'fr': 'Accepter',
+            'es': 'Aceptar'
         },
         'reject': {
             'zh': '拒绝',
+            'zh-TW': '拒絕',
             'ja': '拒否',
             'en': 'Reject',
             'ru': 'Отклонить',
             'ko': '거부',
-            'fr': 'Rejeter'
+            'fr': 'Rejeter',
+            'es': 'Rechazar'
         },
         'site_name': {
-            'zh': '翻译平台', 'ja': '興味に基づいた翻訳プラットフォーム', 'en': 'Interest-driven Translation Platform', 'ru': 'Платформа перевода по интересам', 'ko': '관심 기반 번역 플랫폼', 'fr': 'Plateforme de traduction basée sur les intérêts'
+            'zh': '翻译平台', 'zh-TW': '翻譯平台', 'ja': '興味に基づいた翻訳プラットフォーム', 'en': 'Interest-driven Translation Platform', 'ru': 'Платформа перевода по интересам', 'ko': '관심 기반 번역 플랫폼', 'fr': 'Plateforme de traduction basée sur les intérêts', 'es': 'Plataforma de traducción basada en intereses'
         },
         'send_private_message': {
-            'zh': '发送私信', 'ja': 'メッセージを送信', 'en': 'Send Message', 'ru': 'Отправить сообщение', 'ko': '쪽지 보내기', 'fr': 'Envoyer un message'
+            'zh': '发送私信', 'zh-TW': '發送私信', 'ja': 'メッセージを送信', 'en': 'Send Message', 'ru': 'Отправить сообщение', 'ko': '쪽지 보내기', 'fr': 'Envoyer un message', 'es': 'Enviar mensaje'
         },
         'notice': {
-            'zh': '提示', 'ja': 'お知らせ', 'en': 'Notice', 'ru': 'Уведомление', 'ko': '알림', 'fr': 'Avis'
+            'zh': '提示', 'zh-TW': '提示', 'ja': 'お知らせ', 'en': 'Notice', 'ru': 'Уведомление', 'ko': '알림', 'fr': 'Avis', 'es': 'Aviso'
         },
         'confirm': {
-            'zh': '确定', 'ja': '確定', 'en': 'Confirm', 'ru': 'Подтвердить', 'ko': '확인', 'fr': 'Confirmer'
+            'zh': '确定', 'zh-TW': '確定', 'ja': '確定', 'en': 'Confirm', 'ru': 'Подтвердить', 'ko': '확인', 'fr': 'Confirmer', 'es': 'Confirmar'
         },
         'sending': {
-            'zh': '发送中...', 'ja': '送信中...', 'en': 'Sending...', 'ru': 'Отправка...', 'ko': '전송 중...', 'fr': 'Envoi...'
+            'zh': '发送中...', 'zh-TW': '發送中...', 'ja': '送信中...', 'en': 'Sending...', 'ru': 'Отправка...', 'ko': '전송 중...', 'fr': 'Envoi...', 'es': 'Enviando...'
         },
         'request_sent': {
-            'zh': '已发送请求', 'ja': 'リクエストを送信済み', 'en': 'Request Sent', 'ru': 'Запрос отправлен', 'ko': '요청 전송됨', 'fr': 'Demande envoyée'
+            'zh': '已发送请求', 'zh-TW': '已發送請求', 'ja': 'リクエストを送信済み', 'en': 'Request Sent', 'ru': 'Запрос отправлен', 'ko': '요청 전송됨', 'fr': 'Demande envoyée', 'es': 'Solicitud enviada'
         },
         'add_friend': {
-            'zh': '添加好友', 'ja': '友達を追加', 'en': 'Add Friend', 'ru': 'Добавить в друзья', 'ko': '친구 추가', 'fr': 'Ajouter un ami'
+            'zh': '添加好友', 'zh-TW': '添加好友', 'ja': '友達を追加', 'en': 'Add Friend', 'ru': 'Добавить в друзья', 'ko': '친구 추가', 'fr': 'Ajouter un ami', 'es': 'Agregar amigo'
         },
         'send_success': {
-            'zh': '发送成功', 'ja': '送信成功', 'en': 'Sent successfully', 'ru': 'Отправлено успешно', 'ko': '전송 성공', 'fr': 'Envoyé avec succès'
+            'zh': '发送成功', 'zh-TW': '發送成功', 'ja': '送信成功', 'en': 'Sent successfully', 'ru': 'Отправлено успешно', 'ko': '전송 성공', 'fr': 'Envoyé avec succès', 'es': 'Enviado exitosamente'
         },
         'send_failed': {
-            'zh': '发送失败', 'ja': '送信失敗', 'en': 'Send failed', 'ru': 'Не удалось отправить', 'ko': '전송 실패', 'fr': 'Échec de l\'envoi'
+            'zh': '发送失败', 'zh-TW': '發送失敗', 'ja': '送信失敗', 'en': 'Send failed', 'ru': 'Не удалось отправить', 'ko': '전송 실패', 'fr': 'Échec de l\'envoi', 'es': 'Envío fallido'
         },
         'network_error': {
-            'zh': '网络错误，请检查网络连接后重试', 'ja': 'ネットワークエラー、接続を確認して再試行してください', 'en': 'Network error, please check your connection and try again', 'ru': 'Ошибка сети, проверьте подключение и попробуйте снова', 'ko': '네트워크 오류, 연결을 확인하고 다시 시도하세요', 'fr': 'Erreur réseau, veuillez vérifier votre connexion et réessayer'
+            'zh': '网络错误，请检查网络连接后重试', 'zh-TW': '網路錯誤，請檢查網路連接後重試', 'ja': 'ネットワークエラー、接続を確認して再試行してください', 'en': 'Network error, please check your connection and try again', 'ru': 'Ошибка сети, проверьте подключение и попробуйте снова', 'ko': '네트워크 오류, 연결을 확인하고 다시 시도하세요', 'fr': 'Erreur réseau, veuillez vérifier votre connexion et réessayer', 'es': 'Error de red, por favor verifica tu conexión e intenta de nuevo'
         },
         'friend_request_sent_toast': {
-            'zh': '好友请求已发送！等待对方同意。', 'ja': '友達リクエストが送信されました！相手の同意をお待ちください。', 'en': 'Friend request sent! Please wait for approval.', 'ru': 'Заявка в друзья отправлена! Ожидайте подтверждения.', 'ko': '친구 요청이 전송되었습니다! 승인을 기다려주세요.', 'fr': 'Demande d\'ami envoyée ! Veuillez attendre l\'approbation.'
+            'zh': '好友请求已发送！等待对方同意。', 'zh-TW': '好友請求已發送！等待對方同意。', 'ja': '友達リクエストが送信されました！相手の同意をお待ちください。', 'en': 'Friend request sent! Please wait for approval.', 'ru': 'Заявка в друзья отправлена! Ожидайте подтверждения.', 'ko': '친구 요청이 전송되었습니다! 승인을 기다려주세요.', 'fr': 'Demande d\'ami envoyée ! Veuillez attendre l\'approbation.', 'es': '¡Solicitud de amistad enviada! Por favor espera la aprobación.'
         },
         'send_request_failed': {
-            'zh': '发送好友请求失败，请稍后重试。', 'ja': '友達リクエストの送信に失敗しました。後でもう一度お試しください。', 'en': 'Failed to send friend request. Please try again later.', 'ru': 'Не удалось отправить запрос в друзья. Попробуйте позже.', 'ko': '친구 요청 전송에 실패했습니다. 나중에 다시 시도하세요.', 'fr': 'Échec de l\'envoi de la demande d\'ami. Veuillez réessayer plus tard.'
+            'zh': '发送好友请求失败，请稍后重试。', 'zh-TW': '發送好友請求失敗，請稍後重試。', 'ja': '友達リクエストの送信に失敗しました。後でもう一度お試しください。', 'en': 'Failed to send friend request. Please try again later.', 'ru': 'Не удалось отправить запрос в друзья. Попробуйте позже.', 'ko': '친구 요청 전송에 실패했습니다. 나중에 다시 시도하세요.', 'fr': 'Échec de l\'envoi de la demande d\'ami. Veuillez réessayer plus tard.', 'es': 'Error al enviar solicitud de amistad. Por favor intenta de nuevo más tarde.'
         },
         'no_matching_users': {
-            'zh': '未找到匹配的用户', 'ja': 'ユーザーが見つかりません', 'en': 'No matching users found', 'ru': 'Подходящие пользователи не найдены', 'ko': '일치하는 사용자를 찾을 수 없습니다', 'fr': 'Aucun utilisateur correspondant trouvé'
+            'zh': '未找到匹配的用户', 'zh-TW': '未找到匹配的用戶', 'ja': 'ユーザーが見つかりません', 'en': 'No matching users found', 'ru': 'Подходящие пользователи не найдены', 'ko': '일치하는 사용자를 찾을 수 없습니다', 'fr': 'Aucun utilisateur correspondant trouvé', 'es': 'No se encontraron usuarios coincidentes'
         },
         'user': {
-            'zh': '用户', 'ja': 'ユーザー', 'en': 'User', 'ru': 'Пользователь', 'ko': '사용자', 'fr': 'Utilisateur'
+            'zh': '用户', 'zh-TW': '用戶', 'ja': 'ユーザー', 'en': 'User', 'ru': 'Пользователь', 'ko': '사용자', 'fr': 'Utilisateur', 'es': 'Usuario'
         },
         'label_work_likes': {
-            'zh': '作品点赞', 'ja': '作品いいね', 'en': 'Work Likes', 'ru': 'Лайки работ', 'ko': '작품 좋아요', 'fr': 'J\'aime de l\'œuvre'
+            'zh': '作品点赞', 'zh-TW': '作品點讚', 'ja': '作品いいね', 'en': 'Work Likes', 'ru': 'Лайки работ', 'ko': '작품 좋아요', 'fr': 'J\'aime de l\'œuvre', 'es': 'Me gusta de la obra'
         },
         'label_translation_likes': {
-            'zh': '翻译点赞', 'ja': '翻訳いいね', 'en': 'Translation Likes', 'ru': 'Лайки переводов', 'ko': '번역 좋아요', 'fr': 'J\'aime des traductions'
+            'zh': '翻译点赞', 'zh-TW': '翻譯點讚', 'ja': '翻訳いいね', 'en': 'Translation Likes', 'ru': 'Лайки переводов', 'ko': '번역 좋아요', 'fr': 'J\'aime des traductions', 'es': 'Me gusta de las traducciones'
         },
         'label_comment_likes': {
-            'zh': '评论点赞', 'ja': 'コメントいいね', 'en': 'Comment Likes', 'ru': 'Лайки комментариев', 'ko': '댓글 좋아요', 'fr': 'J\'aime des commentaires'
+            'zh': '评论点赞', 'zh-TW': '評論點讚', 'ja': 'コメントいいね', 'en': 'Comment Likes', 'ru': 'Лайки комментариев', 'ko': '댓글 좋아요', 'fr': 'J\'aime des commentaires', 'es': 'Me gusta de los comentarios'
         },
         'label_author_likes': {
-            'zh': '作者点赞', 'ja': '作者いいね', 'en': 'Author Likes', 'ru': 'Лайки автора', 'ko': '작가 좋아요', 'fr': 'J\'aime de l\'auteur'
+            'zh': '作者点赞', 'zh-TW': '作者點讚', 'ja': '作者いいね', 'en': 'Author Likes', 'ru': 'Лайки автора', 'ko': '작가 좋아요', 'fr': 'J\'aime de l\'auteur', 'es': 'Me gusta del autor'
         },
         'label_correction_likes': {
-            'zh': '校正点赞', 'ja': '校正いいね', 'en': 'Correction Likes', 'ru': 'Лайки исправлений', 'ko': '교정 좋아요', 'fr': 'J\'aime des corrections'
+            'zh': '校正点赞', 'zh-TW': '校正點讚', 'ja': '校正いいね', 'en': 'Correction Likes', 'ru': 'Лайки исправлений', 'ko': '교정 좋아요', 'fr': 'J\'aime des corrections', 'es': 'Me gusta de las correcciones'
         },
         'label_translator_likes': {
-            'zh': '翻译者点赞', 'ja': '翻訳者いいね', 'en': 'Translator Likes', 'ru': 'Лайки переводчика', 'ko': '번역가 좋아요', 'fr': 'J\'aime du traducteur'
+            'zh': '翻译者点赞', 'zh-TW': '翻譯者點讚', 'ja': '翻訳者いいね', 'en': 'Translator Likes', 'ru': 'Лайки переводчика', 'ko': '번역가 좋아요', 'fr': 'J\'aime du traducteur', 'es': 'Me gusta del traductor'
         },
         'label_reviewer_likes': {
-            'zh': '校正者点赞', 'ja': '校正者いいね', 'en': 'Reviewer Likes', 'ru': 'Лайки рецензента', 'ko': '검토자 좋아요', 'fr': 'J\'aime du correcteur'
+            'zh': '校正者点赞', 'zh-TW': '校正者點讚', 'ja': '校正者いいね', 'en': 'Reviewer Likes', 'ru': 'Лайки рецензента', 'ko': '검토자 좋아요', 'fr': 'J\'aime du correcteur', 'es': 'Me gusta del revisor'
         },
         'like_translator': {
-            'zh': '为翻译者点赞', 'ja': '翻訳者にいいね', 'en': 'Like Translator', 'ru': 'Лайк переводчику', 'ko': '번역가 좋아요', 'fr': 'Aimer le traducteur'
+            'zh': '为翻译者点赞', 'zh-TW': '為翻譯者點讚', 'ja': '翻訳者にいいね', 'en': 'Like Translator', 'ru': 'Лайк переводчику', 'ko': '번역가 좋아요', 'fr': 'Aimer le traducteur', 'es': 'Me gusta del traductor'
         },
         'like_reviewer': {
-            'zh': '为校正者点赞', 'ja': '校正者にいいね', 'en': 'Like Reviewer', 'ru': 'Лайк рецензенту', 'ko': '검토자 좋아요', 'fr': 'Aimer le correcteur'
+            'zh': '为校正者点赞', 'zh-TW': '為校正者點讚', 'ja': '校正者にいいね', 'en': 'Like Reviewer', 'ru': 'Лайк рецензенту', 'ko': '검토자 좋아요', 'fr': 'Aimer le correcteur', 'es': 'Me gusta del revisor'
         },
         'cannot_like_self': {
-            'zh': '不能给自己点赞', 'ja': '自分にいいねはできません', 'en': 'Cannot like yourself', 'ru': 'Нельзя лайкать себя', 'ko': '자신에게 좋아요를 할 수 없습니다', 'fr': 'Ne peut pas s\'aimer soi-même'
+            'zh': '不能给自己点赞', 'zh-TW': '不能給自己點讚', 'ja': '自分にいいねはできません', 'en': 'Cannot like yourself', 'ru': 'Нельзя лайкать себя', 'ko': '자신에게 좋아요를 할 수 없습니다', 'fr': 'Ne peut pas s\'aimer soi-même', 'es': 'No puedes darte me gusta a ti mismo'
         },
         'user_not_translated': {
-            'zh': '该用户没有翻译这个作品', 'ja': 'このユーザーはこの作品を翻訳していません', 'en': 'This user has not translated this work', 'ru': 'Этот пользователь не переводил эту работу', 'ko': '이 사용자는 이 작품을 번역하지 않았습니다', 'fr': 'Cet utilisateur n\'a pas traduit cette œuvre'
+            'zh': '该用户没有翻译这个作品', 'zh-TW': '該用戶沒有翻譯這個作品', 'ja': 'このユーザーはこの作品を翻訳していません', 'en': 'This user has not translated this work', 'ru': 'Этот пользователь не переводил эту работу', 'ko': '이 사용자는 이 작품을 번역하지 않았습니다', 'fr': 'Cet utilisateur n\'a pas traduit cette œuvre', 'es': 'Este usuario no ha traducido esta obra'
         },
         'user_not_reviewed': {
-            'zh': '该用户没有校正这个作品', 'ja': 'このユーザーはこの作品を校正していません', 'en': 'This user has not reviewed this work', 'ru': 'Этот пользователь не рецензировал эту работу', 'ko': '이 사용자는 이 작품을 검토하지 않았습니다', 'fr': 'Cet utilisateur n\'a pas révisé cette œuvre'
+            'zh': '该用户没有校正这个作品', 'zh-TW': '該用戶沒有校正這個作品', 'ja': 'このユーザーはこの作品を校正していません', 'en': 'This user has not reviewed this work', 'ru': 'Этот пользователь не рецензировал эту работу', 'ko': '이 사용자는 이 작품을 검토하지 않았습니다', 'fr': 'Cet utilisateur n\'a pas révisé cette œuvre', 'es': 'Este usuario no ha revisado esta obra'
         },
         'section_recent_works': {
-            'zh': '最近上传的作品', 'ja': '最近アップロードした作品', 'en': 'Recently Uploaded Works', 'ru': 'Недавно загруженные работы', 'ko': '최근 업로드한 작품', 'fr': 'Œuvres récemment téléchargées'
+            'zh': '最近上传的作品', 'zh-TW': '最近上傳的作品', 'ja': '最近アップロードした作品', 'en': 'Recently Uploaded Works', 'ru': 'Недавно загруженные работы', 'ko': '최근 업로드한 작품', 'fr': 'Œuvres récemment téléchargées', 'es': 'Obras subidas recientemente'
         },
         'section_works': {
-            'zh': '作品', 'ja': '作品', 'en': 'Works', 'ru': 'Работы', 'ko': '작품', 'fr': 'Œuvres'
+            'zh': '作品', 'zh-TW': '作品', 'ja': '作品', 'en': 'Works', 'ru': 'Работы', 'ko': '작품', 'fr': 'Œuvres', 'es': 'Obras'
         },
         'btn_upload_work': {
-            'zh': '上传作品', 'ja': '作品をアップロード', 'en': 'Upload Work', 'ru': 'Загрузить работу', 'ko': '작품 업로드', 'fr': 'Téléverser une œuvre'
+            'zh': '上传作品', 'zh-TW': '上傳作品', 'ja': '作品をアップロード', 'en': 'Upload Work', 'ru': 'Загрузить работу', 'ko': '작품 업로드', 'fr': 'Téléverser une œuvre', 'es': 'Subir obra'
         },
         'btn_view_all_works': {
-            'zh': '查看所有作品', 'ja': 'すべての作品を見る', 'en': 'View All Works', 'ru': 'Посмотреть все работы', 'ko': '모든 작품 보기', 'fr': 'Voir toutes les œuvres'
+            'zh': '查看所有作品', 'zh-TW': '查看所有作品', 'ja': 'すべての作品を見る', 'en': 'View All Works', 'ru': 'Посмотреть все работы', 'ko': '모든 작품 보기', 'fr': 'Voir toutes les œuvres', 'es': 'Ver todas las obras'
         },
         'view_works': {
-            'zh': '查看作品', 'ja': '作品を見る', 'en': 'View Works', 'ru': 'Посмотреть работы', 'ko': '작품 보기', 'fr': 'Voir les œuvres'
+            'zh': '查看作品', 'zh-TW': '查看作品', 'ja': '作品を見る', 'en': 'View Works', 'ru': 'Посмотреть работы', 'ko': '작품 보기', 'fr': 'Voir les œuvres', 'es': 'Ver obras'
         },
         'filtered': {
-            'zh': '已筛选', 'ja': '絞り込み済み', 'en': 'Filtered', 'ru': 'Отфильтровано', 'ko': '필터 적용됨', 'fr': 'Filtré'
+            'zh': '已筛选', 'zh-TW': '已篩選', 'ja': '絞り込み済み', 'en': 'Filtered', 'ru': 'Отфильтровано', 'ko': '필터 적용됨', 'fr': 'Filtré', 'es': 'Filtrado'
         },
         'no_works': {
-            'zh': '暂无作品', 'ja': '作品なし', 'en': 'No works yet', 'ru': 'Пока нет работ', 'ko': '작품이 없습니다', 'fr': 'Pas encore d\'œuvres'
+            'zh': '暂无作品', 'zh-TW': '暫無作品', 'ja': '作品なし', 'en': 'No works yet', 'ru': 'Пока нет работ', 'ko': '작품이 없습니다', 'fr': 'Pas encore d\'œuvres', 'es': 'Aún no hay obras'
         },
         'btn_upload_first_work': {
-            'zh': '上传第一个作品', 'ja': '最初の作品をアップロード', 'en': 'Upload First Work', 'ru': 'Загрузить первую работу', 'ko': '첫 작품 업로드', 'fr': 'Téléverser la première œuvre'
+            'zh': '上传第一个作品', 'zh-TW': '上傳第一個作品', 'ja': '最初の作品をアップロード', 'en': 'Upload First Work', 'ru': 'Загрузить первую работу', 'ko': '첫 작품 업로드', 'fr': 'Téléverser la première œuvre', 'es': 'Subir primera obra'
         },
         'section_translations': {
-            'zh': '翻译作品', 'ja': '翻訳作品', 'en': 'Translations', 'ru': 'Переводы', 'ko': '번역 작품', 'fr': 'Traductions'
+            'zh': '翻译作品', 'zh-TW': '翻譯作品', 'ja': '翻訳作品', 'en': 'Translations', 'ru': 'Переводы', 'ko': '번역 작품', 'fr': 'Traductions', 'es': 'Traducciones'
         },
         'section_recent_translations': {
-            'zh': '最近的翻译', 'ja': '最近の翻訳', 'en': 'Recent Translations', 'ru': 'Недавние переводы', 'ko': '최근 번역', 'fr': 'Traductions récentes'
+            'zh': '最近的翻译', 'zh-TW': '最近的翻譯', 'ja': '最近の翻訳', 'en': 'Recent Translations', 'ru': 'Недавние переводы', 'ko': '최근 번역', 'fr': 'Traductions récentes', 'es': 'Traducciones recientes'
         },
         'btn_view_all_translations': {
-            'zh': '查看所有翻译', 'ja': 'すべての翻訳を見る', 'en': 'View All Translations', 'ru': 'Посмотреть все переводы', 'ko': '모든 번역 보기', 'fr': 'Voir toutes les traductions'
+            'zh': '查看所有翻译', 'zh-TW': '查看所有翻譯', 'ja': 'すべての翻訳を見る', 'en': 'View All Translations', 'ru': 'Посмотреть все переводы', 'ko': '모든 번역 보기', 'fr': 'Voir toutes les traductions', 'es': 'Ver todas las traducciones'
         },
         'no_translations': {
-            'zh': '暂无翻译', 'ja': '翻訳なし', 'en': 'No translations yet', 'ru': 'Пока нет переводов', 'ko': '번역이 없습니다', 'fr': 'Pas encore de traductions'
+            'zh': '暂无翻译', 'zh-TW': '暫無翻譯', 'ja': '翻訳なし', 'en': 'No translations yet', 'ru': 'Пока нет переводов', 'ko': '번역이 없습니다', 'fr': 'Pas encore de traductions', 'es': 'Aún no hay traducciones'
         },
         'find_translations': {
-            'zh': '寻找翻译作品', 'ja': '翻訳する作品を探す', 'en': 'Find Works to Translate', 'ru': 'Найти работы для перевода', 'ko': '번역할 작품 찾기', 'fr': 'Trouver des œuvres à traduire'
+            'zh': '寻找翻译作品', 'zh-TW': '尋找翻譯作品', 'ja': '翻訳する作品を探す', 'en': 'Find Works to Translate', 'ru': 'Найти работы для перевода', 'ko': '번역할 작품 찾기', 'fr': 'Trouver des œuvres à traduire', 'es': 'Encontrar obras para traducir'
         },
         'author_evaluation': {
-            'zh': '作者评价', 'ja': '作者評価', 'en': "Author's Evaluation", 'ru': 'Оценка автора', 'ko': '작가 평가', 'fr': "Évaluation de l'auteur"
+            'zh': '作者评价', 'zh-TW': '作者評價', 'ja': '作者評価', 'en': "Author's Evaluation", 'ru': 'Оценка автора', 'ko': '작가 평가', 'fr': "Évaluation de l'auteur", 'es': 'Evaluación del autor'
         },
         'translation': {
-            'zh': '翻译', 'ja': '翻訳', 'en': 'Translation', 'ru': 'Перевод', 'ko': '번역', 'fr': 'Traduction'
+            'zh': '翻译', 'zh-TW': '翻譯', 'ja': '翻訳', 'en': 'Translation', 'ru': 'Перевод', 'ko': '번역', 'fr': 'Traduction', 'es': 'Traducción'
         },
         'correction': {
-            'zh': '校正', 'ja': '校正', 'en': 'Correction', 'ru': 'Исправление', 'ko': '교정', 'fr': 'Correction'
+            'zh': '校正', 'zh-TW': '校正', 'ja': '校正', 'en': 'Correction', 'ru': 'Исправление', 'ko': '교정', 'fr': 'Correction', 'es': 'Corrección'
         },
         'already_friends': {
-            'zh': '已是好友', 'ja': '既に友達', 'en': 'Already friends', 'ru': 'Уже друзья', 'ko': '이미 친구', 'fr': 'Déjà amis'
+            'zh': '已是好友', 'zh-TW': '已是好友', 'ja': '既に友達', 'en': 'Already friends', 'ru': 'Уже друзья', 'ko': '이미 친구', 'fr': 'Déjà amis', 'es': 'Ya son amigos'
         },
         'waiting_for_approval': {
-            'zh': '等待对方同意', 'ja': '相手の承認待ち', 'en': 'Waiting for approval', 'ru': 'Ожидание подтверждения', 'ko': '승인 대기 중', 'fr': "En attente d\'approbation"
+            'zh': '等待对方同意', 'zh-TW': '等待對方同意', 'ja': '相手の承認待ち', 'en': 'Waiting for approval', 'ru': 'Ожидание подтверждения', 'ko': '승인 대기 중', 'fr': "En attente d\'approbation", 'es': 'Esperando aprobación'
         },
         'approve_friend_request': {
-            'zh': '同意好友请求', 'ja': '友達リクエスト承認', 'en': 'Approve friend request', 'ru': 'Одобрить заявку в друзья', 'ko': '친구 요청 승인', 'fr': 'Approuver la demande d\'ami'
+            'zh': '同意好友请求', 'zh-TW': '同意好友請求', 'ja': '友達リクエスト承認', 'en': 'Approve friend request', 'ru': 'Одобрить заявку в друзья', 'ko': '친구 요청 승인', 'fr': 'Approuver la demande d\'ami', 'es': 'Aprobar solicitud de amistad'
         },
         'add_as_friend': {
-            'zh': '加为好友', 'ja': '友達追加', 'en': 'Add as friend', 'ru': 'Добавить в друзья', 'ko': '친구로 추가', 'fr': 'Ajouter comme ami'
+            'zh': '加为好友', 'zh-TW': '加為好友', 'ja': '友達追加', 'en': 'Add as friend', 'ru': 'Добавить в друзья', 'ko': '친구로 추가', 'fr': 'Ajouter comme ami', 'es': 'Agregar como amigo'
         },
         'apply_admin': {
-            'zh': '申请管理员', 'ja': '管理者申請', 'en': 'Apply for Admin', 'ru': 'Подать заявку на администратора', 'ko': '관리자 신청', 'fr': 'Postuler en tant qu\'administrateur'
+            'zh': '申请管理员', 'zh-TW': '申請管理員', 'ja': '管理者申請', 'en': 'Apply for Admin', 'ru': 'Подать заявку на администратора', 'ko': '관리자 신청', 'fr': 'Postuler en tant qu\'administrateur', 'es': 'Solicitar administrador'
         },
         'language_zh': {
-            'zh': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois'
+            'zh': '中文', 'zh-TW': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois', 'es': 'Chino'
         },
         'language_ja': {
-            'zh': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais'
+            'zh': '日文', 'zh-TW': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais', 'es': 'Japonés'
         },
         'language_en': {
-            'zh': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais'
+            'zh': '英文', 'zh-TW': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais', 'es': 'Inglés'
         },
         'language_ru': {
-            'zh': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe'
+            'zh': '俄文', 'zh-TW': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe', 'es': 'Ruso'
         },
         'language_ko': {
-            'zh': '韩文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen'
+            'zh': '韩文', 'zh-TW': '韓文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen', 'es': 'Coreano'
         },
         'language_fr': {
-            'zh': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français'
+            'zh': '法文', 'zh-TW': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français', 'es': 'Francés'
+        },
+        'language_zh_tw': {
+            'zh': '中文繁体', 'zh-TW': '中文繁體', 'ja': '繁体中国語', 'en': 'Traditional Chinese', 'ru': 'Традиционный китайский', 'ko': '번체 중국어', 'fr': 'Chinois traditionnel', 'es': 'Chino tradicional'
+        },
+        'language_es': {
+            'zh': '西班牙文', 'zh-TW': '西班牙文', 'ja': 'スペイン語', 'en': 'Spanish', 'ru': 'Испанский', 'ko': '스페인어', 'fr': 'Espagnol', 'es': 'Español'
         },
         'translation_requests': {
-            'zh': '翻译请求',
+            'zh': '翻译请求', 'zh-TW': '翻譯請求',
             'ja': '翻訳リクエスト',
             'en': 'Translation Requests',
             'ru': 'Запросы на перевод',
             'ko': '번역 요청',
-            'fr': 'Demandes de traduction'
+            'fr': 'Demandes de traduction', 'es': 'Solicitudes de traducción'
         },
         'new_translation_request': {
-            'zh': '新的翻译请求',
+            'zh': '新的翻译请求', 'zh-TW': '新的翻譯請求',
             'ja': '新しい翻訳リクエスト',
             'en': 'New Translation Request',
             'ru': 'Новый запрос на перевод',
             'ko': '새로운 번역 요청',
-            'fr': 'Nouvelle demande de traduction'
+            'fr': 'Nouvelle demande de traduction', 'es': 'Nueva solicitud de traducción'
         },
         'new_translator_request': {
-            'zh': '新的翻译者请求',
+            'zh': '新的翻译者请求', 'zh-TW': '新的翻譯者請求',
             'ja': '新しい翻訳者リクエスト',
             'en': 'New Translator Request',
             'ru': 'Новый запрос переводчика',
             'ko': '새로운 번역가 요청',
-            'fr': 'Nouvelle demande de traducteur'
+            'fr': 'Nouvelle demande de traducteur', 'es': 'Nueva solicitud de traductor'
         },
         'new_translation_submitted': {
-            'zh': '新的翻译提交',
+            'zh': '新的翻译提交', 'zh-TW': '新的翻譯提交',
             'ja': '新しい翻訳提出',
             'en': 'New Translation Submitted',
             'ru': 'Новый перевод отправлен',
             'ko': '새로운 번역 제출',
-            'fr': 'Nouvelle traduction soumise'
+            'fr': 'Nouvelle traduction soumise', 'es': 'Nueva traducción enviada'
         },
         'translation_accepted_notification': {
-            'zh': '翻译已被接受',
+            'zh': '翻译已被接受', 'zh-TW': '翻譯已被接受',
             'ja': '翻訳が承認されました',
             'en': 'Translation Accepted',
             'ru': 'Перевод принят',
             'ko': '번역 승인됨',
-            'fr': 'Traduction acceptée'
+            'fr': 'Traduction acceptée', 'es': 'Traducción aceptada'
         },
         'translation_rejected_notification': {
-            'zh': '翻译已被拒绝',
+            'zh': '翻译已被拒绝', 'zh-TW': '翻譯已被拒絕',
             'ja': '翻訳が拒否されました',
             'en': 'Translation Rejected',
             'ru': 'Перевод отклонен',
             'ko': '번역 거부됨',
-            'fr': 'Traduction rejetée'
+            'fr': 'Traduction rejetée', 'es': 'Traducción rechazada'
         },
         'requests_to_translate_work': {
-            'zh': '请求翻译您的作品',
+            'zh': '请求翻译您的作品', 'zh-TW': '請求翻譯您的作品',
             'ja': 'があなたの作品の翻訳をリクエストしました',
             'en': 'requests to translate your work',
             'ru': 'запрашивает перевести вашу работу',
             'ko': '가 당신의 작품을 번역하려고 요청했습니다',
-            'fr': 'demande à traduire votre travail'
+            'fr': 'demande à traduire votre travail', 'es': 'solicita traducir tu obra'
         },
         'expectation_requirement': {
-            'zh': '期待/要求：',
+            'zh': '期待/要求：', 'zh-TW': '期待/要求：',
             'ja': '期待/要求：',
             'en': 'Expectation/Requirement: ',
             'ru': 'Ожидание/Требование: ',
             'ko': '기대/요구사항: ',
-            'fr': 'Attente/Exigence: '
+            'fr': 'Attente/Exigence: ', 'es': 'Expectativa/Requisito: '
         },
         'private_messages': {
-            'zh': '私信列表',
+            'zh': '私信列表', 'zh-TW': '私信列表',
             'ja': 'プライベートメッセージ',
             'en': 'Private Messages',
             'ru': 'Личные сообщения',
             'ko': '개인 메시지',
-            'fr': 'Messages privés'
+            'fr': 'Messages privés', 'es': 'Mensajes privados'
         },
         'enter_conversation': {
-            'zh': '进入对话',
+            'zh': '进入对话', 'zh-TW': '進入對話',
             'ja': '会話に入る',
             'en': 'Enter Conversation',
             'ru': 'Войти в разговор',
             'ko': '대화 참여',
-            'fr': 'Entrer dans la conversation'
+            'fr': 'Entrer dans la conversation', 'es': 'Entrar en conversación'
         },
         'no_private_messages': {
-            'zh': '暂无私信',
+            'zh': '暂无私信', 'zh-TW': '暫無私信',
             'ja': 'プライベートメッセージはありません',
             'en': 'No private messages',
             'ru': 'Нет личных сообщений',
             'ko': '개인 메시지 없음',
-            'fr': 'Aucun message privé'
+            'fr': 'Aucun message privé', 'es': 'Sin mensajes privados'
         },
         'no_private_messages_desc': {
-            'zh': '您还没有与任何用户进行私信交流',
+            'zh': '您还没有与任何用户进行私信交流', 'zh-TW': '您還沒有與任何用戶進行私信交流',
             'ja': 'まだどのユーザーともプライベートメッセージのやり取りをしていません',
             'en': 'You have not had private message exchanges with any users yet',
             'ru': 'У вас пока нет обмена личными сообщениями с пользователями',
             'ko': '아직 어떤 사용자와도 개인 메시지를 주고받지 않았습니다',
-            'fr': 'Vous n\'avez pas encore échangé de messages privés avec des utilisateurs'
+            'fr': 'Vous n\'avez pas encore échangé de messages privés avec des utilisateurs', 'es': 'Aún no has tenido intercambios de mensajes privados con ningún usuario'
         },
         'unread_messages': {
-            'zh': '未读消息',
+            'zh': '未读消息', 'zh-TW': '未讀消息',
             'ja': '未読メッセージ',
             'en': 'Unread Messages',
             'ru': 'Непрочитанные сообщения',
             'ko': '읽지 않은 메시지',
-            'fr': 'Messages non lus'
+            'fr': 'Messages non lus', 'es': 'Mensajes no leídos'
         },
         'conversation_with': {
-            'zh': '与 {} 的私信',
+            'zh': '与 {} 的私信', 'zh-TW': '與 {} 的私信',
             'ja': '{}とのメッセージ',
             'en': 'Private messages with {}',
             'ru': 'Личные сообщения с {}',
             'ko': '{}와의 개인 메시지',
-            'fr': 'Messages privés avec {}'
+            'fr': 'Messages privés avec {}', 'es': 'Mensajes privados con {}'
         },
         'avatar': {
-            'zh': '头像',
+            'zh': '头像', 'zh-TW': '頭像',
             'ja': 'アバター',
             'en': 'Avatar',
             'ru': 'Аватар',
             'ko': '아바타',
-            'fr': 'Avatar'
+            'fr': 'Avatar', 'es': 'Avatar'
         },
         'input_message': {
-            'zh': '输入消息...',
+            'zh': '输入消息...', 'zh-TW': '輸入消息...',
             'ja': 'メッセージを入力...',
             'en': 'Enter message...',
             'ru': 'Введите сообщение...',
             'ko': '메시지 입력...',
-            'fr': 'Entrez le message...'
+            'fr': 'Entrez le message...', 'es': 'Ingresa mensaje...'
         },
         'send': {
-            'zh': '发送',
+            'zh': '发送', 'zh-TW': '發送',
             'ja': '送信',
             'en': 'Send',
             'ru': 'Отправить',
             'ko': '보내기',
-            'fr': 'Envoyer'
+            'fr': 'Envoyer', 'es': 'Enviar'
         },
         'back_to_message_list': {
-            'zh': '返回私信列表',
+            'zh': '返回私信列表', 'zh-TW': '返回私信列表',
             'ja': 'メッセージリストに戻る',
             'en': 'Back to Message List',
             'ru': 'Вернуться к списку сообщений',
             'ko': '메시지 목록으로 돌아가기',
-            'fr': 'Retour à la liste des messages'
+            'fr': 'Retour à la liste des messages', 'es': 'Volver a la lista de mensajes'
         },
         'trusted_translator': {
-            'zh': '已信任该翻译者',
+            'zh': '已信任该翻译者', 'zh-TW': '已信任該翻譯者',
             'ja': 'この翻訳者を信頼しました',
             'en': 'Translator trusted',
             'ru': 'Переводчик проверен',
             'ko': '번역가를 신뢰함',
-            'fr': 'Traducteur approuvé'
+            'fr': 'Traducteur approuvé', 'es': 'Traductor confiado'
         },
         'already_trusted': {
-            'zh': '已信任该翻译者',
+            'zh': '已信任该翻译者', 'zh-TW': '已信任該翻譯者',
             'ja': '既にこの翻訳者を信頼しています',
             'en': 'Translator trusted',
             'ru': 'Переводчик проверен',
             'ko': '번역가를 신뢰함',
-            'fr': 'Traducteur approuvé'
+            'fr': 'Traducteur approuvé', 'es': 'Traductor ya confiado'
         },
         'untrusted': {
-            'zh': '已取消信任',
+            'zh': '已取消信任', 'zh-TW': '已取消信任',
             'ja': '信頼を解除しました',
             'en': 'Trust removed',
             'ru': 'Доверие снято',
             'ko': '신뢰를 해제했습니다',
-            'fr': 'Confiance retirée'
+            'fr': 'Confiance retirée', 'es': 'Confianza removida'
         },
         'not_trusted': {
-            'zh': '未信任该翻译者',
+            'zh': '未信任该翻译者', 'zh-TW': '未信任該翻譯者',
             'ja': 'この翻訳者を信頼していません',
             'en': 'Not trusting this translator',
             'ru': 'Не доверяем этому переводчику',
             'ko': '이 번역가를 신뢰하지 않습니다',
-            'fr': 'Ne fait pas confiance à ce traducteur'
+            'fr': 'Ne fait pas confiance à ce traducteur', 'es': 'No confía en este traductor'
         },
         'trust_this_translator': {
-            'zh': '信任该翻译者',
+            'zh': '信任该翻译者', 'zh-TW': '信任該翻譯者',
             'ja': 'この翻訳者を信頼',
             'en': 'Trust this translator',
             'ru': 'Доверять этому переводчику',
             'ko': '이 번역가 신뢰하기',
-            'fr': 'Faire confiance à ce traducteur'
+            'fr': 'Faire confiance à ce traducteur', 'es': 'Confiar en este traductor'
         },
         'untrust_this_translator': {
-            'zh': '取消信任',
+            'zh': '取消信任', 'zh-TW': '取消信任',
             'ja': '信頼解除',
             'en': 'Remove trust',
             'ru': 'Снять доверие',
             'ko': '신뢰 해제',
-            'fr': 'Retirer la confiance'
+            'fr': 'Retirer la confiance', 'es': 'Remover confianza'
         },
         'invalid_operation': {
-            'zh': '操作无效',
+            'zh': '操作无效', 'zh-TW': '操作無效',
             'ja': '操作が無効です',
             'en': 'Invalid operation',
             'ru': 'Недопустимая операция',
             'ko': '잘못된 작업입니다',
-            'fr': 'Opération invalide'
+            'fr': 'Opération invalide', 'es': 'Operación inválida'
         },
         'friend_request_sent': {
-            'zh': '已发送好友请求，等待对方同意',
+            'zh': '已发送好友请求，等待对方同意', 'zh-TW': '已發送好友請求，等待對方同意',
             'ja': '友達リクエストを送信しました。相手の承認をお待ちください',
             'en': 'Friend request sent, waiting for approval',
             'ru': 'Запрос в друзья отправлен, ожидание одобрения',
             'ko': '친구 요청을 보냈습니다. 승인을 기다리고 있습니다',
-            'fr': 'Demande d\'ami envoyée, en attente d\'approbation'
+            'fr': 'Demande d\'ami envoyée, en attente d\'approbation', 'es': 'Solicitud de amistad enviada, esperando aprobación'
         },
         'already_friends': {
-            'zh': '你们已经是好友',
+            'zh': '你们已经是好友', 'zh-TW': '你們已經是好友',
             'ja': '既に友達です',
             'en': 'You are already friends',
             'ru': 'Вы уже друзья',
             'ko': '이미 친구입니다',
-            'fr': 'Vous êtes déjà amis'
+            'fr': 'Vous êtes déjà amis', 'es': 'Ya son amigos'
         },
         'friend_request_success': {
-            'zh': '好友请求已发送',
+            'zh': '好友请求已发送', 'zh-TW': '好友請求已發送',
             'ja': '友達リクエストが送信されました',
             'en': 'Friend request sent',
             'ru': 'Запрос в друзья отправлен',
             'ko': '친구 요청이 전송되었습니다',
-            'fr': 'Demande d\'ami envoyée'
+            'fr': 'Demande d\'ami envoyée', 'es': 'Solicitud de amistad enviada'
         },
         'invalid_friend_request': {
-            'zh': '无效的好友请求',
+            'zh': '无效的好友请求', 'zh-TW': '無效的好友請求',
             'ja': '無効な友達リクエストです',
             'en': 'Invalid friend request',
             'ru': 'Недействительный запрос в друзья',
             'ko': '잘못된 친구 요청입니다',
-            'fr': 'Demande d\'ami invalide'
+            'fr': 'Demande d\'ami invalide', 'es': 'Solicitud de amistad inválida'
         },
         'friend_accepted': {
-            'zh': '已同意好友请求',
+            'zh': '已同意好友请求', 'zh-TW': '已同意好友請求',
             'ja': '友達リクエストを承認しました',
             'en': 'Friend request accepted',
             'ru': 'Запрос в друзья принят',
             'ko': '친구 요청을 승인했습니다',
-            'fr': 'Demande d\'ami acceptée'
+            'fr': 'Demande d\'ami acceptée', 'es': 'Solicitud de amistad aceptada'
         },
         'friend_request_not_found': {
-            'zh': '好友请求不存在或已被处理',
+            'zh': '好友请求不存在或已被处理', 'zh-TW': '好友請求不存在或已被處理',
             'ja': '友達リクエストが存在しないか、既に処理されています',
             'en': 'Friend request not found or already processed',
             'ru': 'Запрос в друзья не найден или уже обработан',
             'ko': '친구 요청이 존재하지 않거나 이미 처리되었습니다',
-            'fr': 'Demande d\'ami introuvable ou déjà traitée'
+            'fr': 'Demande d\'ami introuvable ou déjà traitée', 'es': 'Solicitud de amistad no encontrada o ya procesada'
         },
         'friend_rejected': {
-            'zh': '已拒绝好友请求',
+            'zh': '已拒绝好友请求', 'zh-TW': '已拒絕好友請求',
             'ja': '友達リクエストを拒否しました',
             'en': 'Friend request rejected',
             'ru': 'Запрос в друзья отклонен',
             'ko': '친구 요청을 거부했습니다',
-            'fr': 'Demande d\'ami rejetée'
+            'fr': 'Demande d\'ami rejetée', 'es': 'Solicitud de amistad rechazada'
         },
         'friend_deleted': {
-            'zh': '好友已删除',
+            'zh': '好友已删除', 'zh-TW': '好友已刪除',
             'ja': '友達を削除しました',
             'en': 'Friend deleted',
             'ru': 'Друг удален',
             'ko': '친구가 삭제되었습니다',
-            'fr': 'Ami supprimé'
+            'fr': 'Ami supprimé', 'es': 'Amigo eliminado'
         },
         'friend_not_found': {
-            'zh': '好友关系不存在',
+            'zh': '好友关系不存在', 'zh-TW': '好友關係不存在',
             'ja': '友達関係が存在しません',
             'en': 'Friend relationship not found',
             'ru': 'Дружеские отношения не найдены',
             'ko': '친구 관계가 존재하지 않습니다',
-            'fr': 'Relation d\'ami introuvable'
+            'fr': 'Relation d\'ami introuvable', 'es': 'Relación de amistad no encontrada'
         },
         'delete_friend': {
-            'zh': '删除好友',
+            'zh': '删除好友', 'zh-TW': '刪除好友',
             'ja': '友達を削除',
             'en': 'Delete Friend',
             'ru': 'Удалить друга',
             'ko': '친구 삭제',
-            'fr': 'Supprimer l\'ami'
+            'fr': 'Supprimer l\'ami', 'es': 'Eliminar amigo'
         },
         'confirm_delete_friend': {
-            'zh': '确认删除好友',
+            'zh': '确认删除好友', 'zh-TW': '確認刪除好友',
             'ja': '友達削除の確認',
             'en': 'Confirm Delete Friend',
             'ru': 'Подтвердить удаление друга',
             'ko': '친구 삭제 확인',
-            'fr': 'Confirmer la suppression de l\'ami'
+            'fr': 'Confirmer la suppression de l\'ami', 'es': 'Confirmar eliminar amigo'
         },
         'confirm_delete_friend_generic': {
-            'zh': '确定要删除好友吗？此操作不可撤销。',
+            'zh': '确定要删除好友吗？此操作不可撤销。', 'zh-TW': '確定要刪除好友嗎？此操作不可撤銷。',
             'ja': '友達を削除してもよろしいですか？この操作は取り消せません。',
             'en': 'Are you sure you want to delete friend? This action cannot be undone.',
             'ru': 'Вы уверены, что хотите удалить друга? Это действие нельзя отменить.',
             'ko': '친구를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
-            'fr': 'Êtes-vous sûr de vouloir supprimer l\'ami? Cette action ne peut pas être annulée.'
+            'fr': 'Êtes-vous sûr de vouloir supprimer l\'ami? Cette action ne peut pas être annulée.', 'es': '¿Estás seguro de que quieres eliminar al amigo? Esta acción no se puede deshacer.'
         },
         'delete_friend_failed': {
-            'zh': '删除好友失败',
+            'zh': '删除好友失败', 'zh-TW': '刪除好友失敗',
             'ja': '友達削除に失敗しました',
             'en': 'Failed to delete friend',
             'ru': 'Не удалось удалить друга',
             'ko': '친구 삭제 실패',
-            'fr': 'Échec de la suppression de l\'ami'
+            'fr': 'Échec de la suppression de l\'ami', 'es': 'Error al eliminar amigo'
         },
         'confirm_delete_friend_message': {
-            'zh': '确定要删除好友 "{friend_name}" 吗？此操作不可撤销。',
+            'zh': '确定要删除好友 "{friend_name}" 吗？此操作不可撤销。', 'zh-TW': '確定要刪除好友 "{friend_name}" 嗎？此操作不可撤銷。',
             'ja': '友達 "{friend_name}" を削除してもよろしいですか？この操作は取り消せません。',
             'en': 'Are you sure you want to delete friend "{friend_name}"? This action cannot be undone.',
             'ru': 'Вы уверены, что хотите удалить друга "{friend_name}"? Это действие нельзя отменить.',
             'ko': '친구 "{friend_name}"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
-            'fr': 'Êtes-vous sûr de vouloir supprimer l\'ami "{friend_name}" ? Cette action ne peut pas être annulée.'
+            'fr': 'Êtes-vous sûr de vouloir supprimer l\'ami "{friend_name}" ? Cette action ne peut pas être annulée.', 'es': '¿Estás seguro de que quieres eliminar al amigo "{friend_name}"? Esta acción no se puede deshacer.'
         },
         'deleting_friend': {
-            'zh': '删除中...',
+            'zh': '删除中...', 'zh-TW': '刪除中...',
             'ja': '削除中...',
             'en': 'Deleting...',
             'ru': 'Удаление...',
             'ko': '삭제 중...',
-            'fr': 'Suppression...'
+            'fr': 'Suppression...', 'es': 'Eliminando...'
         },
         'friend_deleted_success': {
-            'zh': '已成功删除好友 "{friend_name}"',
+            'zh': '已成功删除好友 "{friend_name}"', 'zh-TW': '已成功刪除好友 "{friend_name}"',
             'ja': '友達 "{friend_name}" を正常に削除しました',
             'en': 'Successfully deleted friend "{friend_name}"',
             'ru': 'Друг "{friend_name}" успешно удален',
             'ko': '친구 "{friend_name}"이(가) 성공적으로 삭제되었습니다',
-            'fr': 'Ami "{friend_name}" supprimé avec succès'
+            'fr': 'Ami "{friend_name}" supprimé avec succès', 'es': 'Amigo "{friend_name}" eliminado exitosamente'
         },
         'friend_deleted_generic': {
-            'zh': '已成功删除好友',
+            'zh': '已成功删除好友', 'zh-TW': '已成功刪除好友',
             'ja': '友達を正常に削除しました',
             'en': 'Successfully deleted friend',
             'ru': 'Друг успешно удален',
             'ko': '친구가 성공적으로 삭제되었습니다',
-            'fr': 'Ami supprimé avec succès'
+            'fr': 'Ami supprimé avec succès', 'es': 'Amigo eliminado exitosamente'
         },
         'no_translation': {
-            'zh': '您没有翻译过这个作品',
+            'zh': '您没有翻译过这个作品', 'zh-TW': '您沒有翻譯過這個作品',
             'ja': 'この作品を翻訳していません',
             'en': 'You have not translated this work',
             'ru': 'Вы не переводили эту работу',
             'ko': '이 작품을 번역하지 않았습니다',
-            'fr': 'Vous n\'avez pas traduit cette œuvre'
+            'fr': 'Vous n\'avez pas traduit cette œuvre', 'es': 'No has traducido esta obra'
         },
         'translation_updated': {
-            'zh': '翻译已更新',
+            'zh': '翻译已更新', 'zh-TW': '翻譯已更新',
             'ja': '翻訳が更新されました',
             'en': 'Translation updated',
             'ru': 'Перевод обновлен',
             'ko': '번역이 업데이트되었습니다',
-            'fr': 'Traduction mise à jour'
+            'fr': 'Traduction mise à jour', 'es': 'Traducción actualizada'
         },
         'translation_deleted': {
-            'zh': '翻译已删除',
+            'zh': '翻译已删除', 'zh-TW': '翻譯已刪除',
             'ja': '翻訳が削除されました',
             'en': 'Translation deleted',
             'ru': 'Перевод удален',
             'ko': '번역이 삭제되었습니다',
-            'fr': 'Traduction supprimée'
+            'fr': 'Traduction supprimée', 'es': 'Traducción eliminada'
         },
         'only_author_accept': {
-            'zh': '只有作品作者可以接受翻译',
+            'zh': '只有作品作者可以接受翻译', 'zh-TW': '只有作品作者可以接受翻譯',
             'ja': '作品の作者のみが翻訳を承認できます',
             'en': 'Only the work author can accept translation',
             'ru': 'Только автор работы может принять перевод',
             'ko': '작품 작가만 번역을 승인할 수 있습니다',
-            'fr': 'Seul l\'auteur de l\'œuvre peut accepter la traduction'
+            'fr': 'Seul l\'auteur de l\'œuvre peut accepter la traduction', 'es': 'Solo el autor de la obra puede aceptar la traducción'
         },
         'no_translation_for_work': {
-            'zh': '该作品还没有翻译',
+            'zh': '该作品还没有翻译', 'zh-TW': '該作品還沒有翻譯',
             'ja': 'この作品にはまだ翻訳がありません',
             'en': 'No translation for this work',
             'ru': 'Нет перевода для этой работы',
             'ko': '이 작품에 대한 번역이 없습니다',
-            'fr': 'Aucune traduction pour ce travail'
+            'fr': 'Aucune traduction pour ce travail', 'es': 'No hay traducción para esta obra'
         },
         'home': {
-            'zh': '首页',
+            'zh': '首页', 'zh-TW': '首頁',
             'ja': 'ホーム',
             'en': 'Home',
             'ru': 'Главная',
             'ko': '홈',
-            'fr': 'Accueil'
+            'fr': 'Accueil', 'es': 'Inicio'
         },
         'me': {
-            'zh': '我',
+            'zh': '我', 'zh-TW': '我',
             'ja': '私',
             'en': 'Me',
             'ru': 'Я',
             'ko': '나',
-            'fr': 'Moi'
+            'fr': 'Moi', 'es': 'Yo'
         },
         'edit': {
-            'zh': '编辑',
+            'zh': '编辑', 'zh-TW': '編輯',
             'ja': '編集',
             'en': 'Edit',
             'ru': 'Редактировать',
             'ko': '편집',
-            'fr': 'Modifier'
+            'fr': 'Modifier', 'es': 'Editar'
         },
         'delete': {
-            'zh': '删除',
+            'zh': '删除', 'zh-TW': '刪除',
             'ja': '削除',
             'en': 'Delete',
             'ru': 'Удалить',
             'ko': '삭제',
-            'fr': 'Supprimer'
+            'fr': 'Supprimer', 'es': 'Eliminar'
         },
         'translate': {
-            'zh': '翻译',
+            'zh': '翻译', 'zh-TW': '翻譯',
             'ja': '翻訳',
             'en': 'Translate',
             'ru': 'Перевести',
             'ko': '번역',
-            'fr': 'Traduire'
+            'fr': 'Traduire', 'es': 'Traducir'
         },
         'comment': {
-            'zh': '评论',
+            'zh': '评论', 'zh-TW': '評論',
             'ja': 'コメント',
             'en': 'Comment',
             'ru': 'Комментарий',
             'ko': '댓글',
-            'fr': 'Commentaire'
+            'fr': 'Commentaire', 'es': 'Comentario'
         },
         'like': {
-            'zh': '点赞',
+            'zh': '点赞', 'zh-TW': '點讚',
             'ja': 'いいね',
             'en': 'Like',
             'ru': 'Нравится',
             'ko': '좋아요',
-            'fr': 'J\'aime'
+            'fr': 'J\'aime', 'es': 'Me gusta'
         },
         'unlike': {
-            'zh': '取消点赞',
+            'zh': '取消点赞', 'zh-TW': '取消點讚',
             'ja': 'いいねを取り消す',
             'en': 'Unlike',
             'ru': 'Не нравится',
             'ko': '좋아요 취소',
-            'fr': 'Je n\'aime plus'
+            'fr': 'Je n\'aime plus', 'es': 'No me gusta'
         },
         'submit': {
-            'zh': '提交',
+            'zh': '提交', 'zh-TW': '提交',
             'ja': '提出',
             'en': 'Submit',
             'ru': 'Отправить',
             'ko': '제출',
-            'fr': 'Soumettre'
+            'fr': 'Soumettre', 'es': 'Enviar'
         },
         'cancel': {
-            'zh': '取消',
+            'zh': '取消', 'zh-TW': '取消',
             'ja': 'キャンセル',
             'en': 'Cancel',
             'ru': 'Отмена',
             'ko': '취소',
-            'fr': 'Annuler'
+            'fr': 'Annuler', 'es': 'Cancelar'
         },
         'save': {
-            'zh': '保存',
+            'zh': '保存', 'zh-TW': '保存',
             'ja': '保存',
             'en': 'Save',
             'ru': 'Сохранить',
             'ko': '저장',
-            'fr': 'Enregistrer'
+            'fr': 'Enregistrer', 'es': 'Guardar'
         },
         'back': {
-            'zh': '返回',
+            'zh': '返回', 'zh-TW': '返回',
             'ja': '戻る',
             'en': 'Back',
             'ru': 'Назад',
             'ko': '뒤로',
-            'fr': 'Retour'
+            'fr': 'Retour', 'es': 'Volver'
         },
         'next': {
-            'zh': '下一页',
+            'zh': '下一页', 'zh-TW': '下一頁',
             'ja': '次へ',
             'en': 'Next',
             'ru': 'Следующая',
             'ko': '다음',
-            'fr': 'Suivant'
+            'fr': 'Suivant', 'es': 'Siguiente'
         },
         'previous': {
-            'zh': '上一页',
+            'zh': '上一页', 'zh-TW': '上一頁',
             'ja': '前へ',
             'en': 'Previous',
             'ru': 'Предыдущая',
             'ko': '이전',
-            'fr': 'Précédent'
+            'fr': 'Précédent', 'es': 'Anterior'
         },
         'loading': {
-            'zh': '加载中...',
+            'zh': '加载中...', 'zh-TW': '載入中...',
             'ja': '読み込み中...',
             'en': 'Loading...',
             'ru': 'Загрузка...',
             'ko': '로딩 중...',
-            'fr': 'Chargement...'
+            'fr': 'Chargement...', 'es': 'Cargando...'
         },
         'no_data': {
-            'zh': '暂无数据',
+            'zh': '暂无数据', 'zh-TW': '暫無數據',
             'ja': 'データがありません',
             'en': 'No data',
             'ru': 'Нет данных',
             'ko': '데이터 없음',
-            'fr': 'Aucune donnée'
+            'fr': 'Aucune donnée', 'es': 'Sin datos'
         },
         'error': {
-            'zh': '错误',
+            'zh': '错误', 'zh-TW': '錯誤',
             'ja': 'エラー',
             'en': 'Error',
             'ru': 'Ошибка',
             'ko': '오류',
-            'fr': 'Erreur'
+            'fr': 'Erreur', 'es': 'Error'
         },
         'success': {
-            'zh': '成功',
+            'zh': '成功', 'zh-TW': '成功',
             'ja': '成功',
             'en': 'Success',
             'ru': 'Успех',
             'ko': '성공',
-            'fr': 'Succès'
+            'fr': 'Succès', 'es': 'Éxito'
         },
         'warning': {
-            'zh': '警告',
+            'zh': '警告', 'zh-TW': '警告',
             'ja': '警告',
             'en': 'Warning',
             'ru': 'Предупреждение',
             'ko': '경고',
-            'fr': 'Avertissement'
+            'fr': 'Avertissement', 'es': 'Advertencia'
         },
         'info': {
-            'zh': '信息',
+            'zh': '信息', 'zh-TW': '資訊',
             'ja': '情報',
             'en': 'Info',
             'ru': 'Информация',
             'ko': '정보',
-            'fr': 'Info'
+            'fr': 'Info', 'es': 'Información'
         },
         'status_pending': {
-            'zh': '待翻译',
+            'zh': '待翻译', 'zh-TW': '待翻譯',
             'ja': '翻訳待ち',
             'en': 'Pending Translation',
             'ru': 'Ожидает перевода',
             'ko': '번역 대기',
-            'fr': 'En attente de traduction'
+            'fr': 'En attente de traduction', 'es': 'Traducción pendiente'
         },
         'status_draft': {
-            'zh': '草稿', 'ja': '下書き', 'en': 'Draft', 'ru': 'Черновик', 'ko': '초안', 'fr': 'Brouillon'
+            'zh': '草稿', 'zh-TW': '草稿', 'ja': '下書き', 'en': 'Draft', 'ru': 'Черновик', 'ko': '초안', 'fr': 'Brouillon', 'es': 'Borrador'
         },
         'status_submitted': {
-            'zh': '已提交', 'ja': '提出済み', 'en': 'Submitted', 'ru': 'Отправлено', 'ko': '제출됨', 'fr': 'Soumis'
+            'zh': '已提交', 'zh-TW': '已提交', 'ja': '提出済み', 'en': 'Submitted', 'ru': 'Отправлено', 'ko': '제출됨', 'fr': 'Soumis', 'es': 'Enviado'
         },
         'status_approved': {
-            'zh': '已通过', 'ja': '承認済み', 'en': 'Approved', 'ru': 'Одобрено', 'ko': '승인됨', 'fr': 'Approuvé'
+            'zh': '已通过', 'zh-TW': '已通過', 'ja': '承認済み', 'en': 'Approved', 'ru': 'Одобрено', 'ko': '승인됨', 'fr': 'Approuvé', 'es': 'Aprobado'
         },
         'status_rejected': {
-            'zh': '已拒绝', 'ja': '却下', 'en': 'Rejected', 'ru': 'Отклонено', 'ko': '거부됨', 'fr': 'Rejeté'
+            'zh': '已拒绝', 'zh-TW': '已拒絕', 'ja': '却下', 'en': 'Rejected', 'ru': 'Отклонено', 'ko': '거부됨', 'fr': 'Rejeté', 'es': 'Rechazado'
         },
         'category_post_article': {
-            'zh': '投稿・文章',
+            'zh': '投稿・文章', 'zh-TW': '投稿・文章',
             'ja': '投稿・文章',
             'en': 'Post/Article',
             'ru': 'Пост/Статья',
             'ko': '게시물/기사',
-            'fr': 'Publication/Article'
+            'fr': 'Publication/Article', 'es': 'Publicación/Artículo'
         },
         'category_novel': {
-            'zh': '小说',
+            'zh': '小说', 'zh-TW': '小說',
             'ja': '小説',
             'en': 'Novel',
             'ru': 'Роман',
             'ko': '소설',
-            'fr': 'Roman'
+            'fr': 'Roman', 'es': 'Novela'
         },
         'category_image': {
-            'zh': '图片',
+            'zh': '图片', 'zh-TW': '圖片',
             'ja': '画像',
             'en': 'Image',
             'ru': 'Изображение',
             'ko': '이미지',
-            'fr': 'Image'
+            'fr': 'Image', 'es': 'Imagen'
         },
         'category_comic': {
-            'zh': '漫画',
+            'zh': '漫画', 'zh-TW': '漫畫',
             'ja': '漫画',
             'en': 'Comic',
             'ru': 'Комикс',
             'ko': '만화',
-            'fr': 'Bande dessinée'
+            'fr': 'Bande dessinée', 'es': 'Cómic'
         },
         'admin_edit': {
-            'zh': '管理员编辑',
+            'zh': '管理员编辑', 'zh-TW': '管理員編輯',
             'ja': '管理者編集',
             'en': 'Admin Edit',
             'ru': 'Редактировать (админ)',
             'ko': '관리자 편집',
-            'fr': 'Modifier (admin)'
+            'fr': 'Modifier (admin)', 'es': 'Editar (admin)'
         },
         'admin_delete': {
-            'zh': '管理员删除',
+            'zh': '管理员删除', 'zh-TW': '管理員刪除',
             'ja': '管理者削除',
             'en': 'Admin Delete',
             'ru': 'Удалить (админ)',
             'ko': '관리자 삭제',
-            'fr': 'Supprimer (admin)'
+            'fr': 'Supprimer (admin)', 'es': 'Eliminar (admin)'
         },
         'category_audio': {
-            'zh': '音声', 'ja': '音声', 'en': 'Audio', 'ru': 'Аудио', 'ko': '오디오', 'fr': 'Audio'
+            'zh': '音声', 'zh-TW': '音聲', 'ja': '音声', 'en': 'Audio', 'ru': 'Аудио', 'ko': '오디오', 'fr': 'Audio', 'es': 'Audio'
         },
         'category_video_animation': {
-            'zh': '视频・动画', 'ja': '動画・アニメ', 'en': 'Video/Animation', 'ru': 'Видео/Анимация', 'ko': '비디오/애니메이션', 'fr': 'Vidéo/Animation'
+            'zh': '视频・动画', 'zh-TW': '視頻・動畫', 'ja': '動画・アニメ', 'en': 'Video/Animation', 'ru': 'Видео/Анимация', 'ko': '비디오/애니메이션', 'fr': 'Vidéo/Animation', 'es': 'Vídeo/Animación'
         },
         'category_chat': {
-            'zh': '闲聊', 'ja': '雑談', 'en': 'Chat', 'ru': 'Чат', 'ko': '잡담', 'fr': 'Discussion'
+            'zh': '闲聊', 'zh-TW': '閒聊', 'ja': '雑談', 'en': 'Chat', 'ru': 'Чат', 'ko': '잡담', 'fr': 'Discussion', 'es': 'Chat'
         },
         'category_other': {
-            'zh': '其他', 'ja': 'その他', 'en': 'Other', 'ru': 'Другое', 'ko': '기타', 'fr': 'Autre'
+            'zh': '其他', 'zh-TW': '其他', 'ja': 'その他', 'en': 'Other', 'ru': 'Другое', 'ko': '기타', 'fr': 'Autre', 'es': 'Otro'
         },
         'all_languages': {
-            'zh': '所有语言', 'ja': 'すべての言語', 'en': 'All Languages', 'ru': 'Все языки', 'ko': '모든 언어', 'fr': 'Toutes les langues'
+            'zh': '所有语言', 'zh-TW': '所有語言', 'ja': 'すべての言語', 'en': 'All Languages', 'ru': 'Все языки', 'ko': '모든 언어', 'fr': 'Toutes les langues', 'es': 'Todos los idiomas'
         },
         'language_other': {
-            'zh': '其他', 'ja': 'その他', 'en': 'Other', 'ru': 'Другое', 'ko': '기타', 'fr': 'Autre'
+            'zh': '其他', 'zh-TW': '其他', 'ja': 'その他', 'en': 'Other', 'ru': 'Другое', 'ko': '기타', 'fr': 'Autre', 'es': 'Otro'
         },
         'creator': {
-            'zh': '创作者', 'ja': 'クリエイター', 'en': 'Creator', 'ru': 'Создатель', 'ko': '창작자', 'fr': 'Créateur'
+            'zh': '创作者', 'zh-TW': '創作者', 'ja': 'クリエイター', 'en': 'Creator', 'ru': 'Создатель', 'ko': '창작자', 'fr': 'Créateur', 'es': 'Creador'
         },
         'edit_work': {
-            'zh': '编辑作品', 'ja': '作品編集', 'en': 'Edit Work', 'ru': 'Редактировать работу', 'ko': '작품 편집', 'fr': "Modifier l'œuvre"
+            'zh': '编辑作品', 'zh-TW': '編輯作品', 'ja': '作品編集', 'en': 'Edit Work', 'ru': 'Редактировать работу', 'ko': '작품 편집', 'fr': "Modifier l'œuvre", 'es': 'Editar obra'
         },
         'admin_edit_reason': {
-            'zh': '管理员编辑理由：', 'ja': '管理者編集理由：', 'en': 'Admin edit reason: ', 'ru': 'Причина правки администратором: ', 'ko': '관리자 편집 사유: ', 'fr': "Raison de modification par admin : "
+            'zh': '管理员编辑理由：', 'zh-TW': '管理員編輯理由：', 'ja': '管理者編集理由：', 'en': 'Admin edit reason: ', 'ru': 'Причина правки администратором: ', 'ko': '관리자 편집 사유: ', 'fr': "Raison de modification par admin : ", 'es': 'Razón de edición del administrador: '
         },
         'label_title': {
-            'zh': '标题', 'ja': '作品タイトル', 'en': 'Title', 'ru': 'Заголовок', 'ko': '제목', 'fr': 'Titre'
+            'zh': '标题', 'zh-TW': '標題', 'ja': '作品タイトル', 'en': 'Title', 'ru': 'Заголовок', 'ko': '제목', 'fr': 'Titre', 'es': 'Título'
         },
         'label_category': {
-            'zh': '分类', 'ja': 'カテゴリー', 'en': 'Category', 'ru': 'Категория', 'ko': '카테고리', 'fr': 'Catégorie'
+            'zh': '分类', 'zh-TW': '分類', 'ja': 'カテゴリー', 'en': 'Category', 'ru': 'Категория', 'ko': '카테고리', 'fr': 'Catégorie', 'es': 'Categoría'
         },
         'choose_category': {
-            'zh': '选择分类', 'ja': 'カテゴリーを選択', 'en': 'Choose category', 'ru': 'Выберите категорию', 'ko': '카테고리 선택', 'fr': 'Choisir une catégorie'
+            'zh': '选择分类', 'zh-TW': '選擇分類', 'ja': 'カテゴリーを選択', 'en': 'Choose category', 'ru': 'Выберите категорию', 'ko': '카테고리 선택', 'fr': 'Choisir une catégorie', 'es': 'Elegir categoría'
         },
         'original_language': {
-            'zh': '原文语言', 'ja': '原文言語', 'en': 'Original Language', 'ru': 'Исходный язык', 'ko': '원본 언어', 'fr': 'Langue originale'
+            'zh': '原文语言', 'zh-TW': '原文語言', 'ja': '原文言語', 'en': 'Original Language', 'ru': 'Исходный язык', 'ko': '원본 언어', 'fr': 'Langue originale', 'es': 'Idioma original'
         },
         'target_language': {
-            'zh': '目标语言', 'ja': '目標言語', 'en': 'Target Language', 'ru': 'Целевой язык', 'ko': '목표 언어', 'fr': 'Langue cible'
+            'zh': '目标语言', 'zh-TW': '目標語言', 'ja': '目標言語', 'en': 'Target Language', 'ru': 'Целевой язык', 'ko': '목표 언어', 'fr': 'Langue cible', 'es': 'Idioma objetivo'
         },
         'body_content': {
-            'zh': '正文内容', 'ja': '本文内容', 'en': 'Body Content', 'ru': 'Содержимое текста', 'ko': '본문 내용', 'fr': 'Contenu du texte'
+            'zh': '正文内容', 'zh-TW': '正文內容', 'ja': '本文内容', 'en': 'Body Content', 'ru': 'Содержимое текста', 'ko': '본문 내용', 'fr': 'Contenu du texte', 'es': 'Contenido del texto'
         },
         'enter_work_content_placeholder': {
-            'zh': '请输入作品内容...', 'ja': '作品の内容を入力してください...', 'en': 'Please enter the work content...', 'ru': 'Введите содержимое работы...', 'ko': '작품 내용을 입력하세요...', 'fr': "Veuillez saisir le contenu de l'œuvre..."
+            'zh': '请输入作品内容...', 'zh-TW': '請輸入作品內容...', 'ja': '作品の内容を入力してください...', 'en': 'Please enter the work content...', 'ru': 'Введите содержимое работы...', 'ko': '작품 내용을 입력하세요...', 'fr': "Veuillez saisir le contenu de l'œuvre...", 'es': 'Por favor ingrese el contenido de la obra...'
         },
         'content_hint': {
-            'zh': '请提供清晰、结构化的内容，以便翻译者更好地理解', 'ja': '翻訳者が理解しやすいように、明確で構造化された内容を提供してください', 'en': 'Provide clear, structured content to help translators understand better', 'ru': 'Предоставьте четкое, структурированное содержимое, чтобы переводчикам было легче понять', 'ko': '번역가가 잘 이해할 수 있도록 명확하고 구조화된 내용을 제공하세요', 'fr': 'Fournissez un contenu clair et structuré pour faciliter la compréhension des traducteurs'
+            'zh': '请提供清晰、结构化的内容，以便翻译者更好地理解', 'zh-TW': '請提供清晰、結構化的內容，以便翻譯者更好地理解', 'ja': '翻訳者が理解しやすいように、明確で構造化された内容を提供してください', 'en': 'Provide clear, structured content to help translators understand better', 'ru': 'Предоставьте четкое, структурированное содержимое, чтобы переводчикам было легче понять', 'ko': '번역가가 잘 이해할 수 있도록 명확하고 구조화된 내용을 제공하세요', 'fr': 'Fournissez un contenu clair et structuré pour faciliter la compréhension des traducteurs', 'es': 'Proporcione contenido claro y estructurado para ayudar a los traductores a entender mejor'
         },
         'upload_media': {
-            'zh': '上传多媒体文件（图片、音频、视频，选填）', 'ja': 'マルチメディアファイルをアップロード（画像、音声、動画、オプション）', 'en': 'Upload media files (images, audio, video, optional)', 'ru': 'Загрузите медиафайлы (изображения, аудио, видео, необязательно)', 'ko': '미디어 파일 업로드 (이미지, 오디오, 비디오, 선택 사항)', 'fr': 'Téléverser des fichiers média (images, audio, vidéo, optionnel)'
+            'zh': '上传多媒体文件（图片、音频、视频，选填）', 'zh-TW': '上傳多媒體文件（圖片、音頻、視頻，選填）', 'ja': 'マルチメディアファイルをアップロード（画像、音声、動画、オプション）', 'en': 'Upload media files (images, audio, video, optional)', 'ru': 'Загрузите медиафайлы (изображения, аудио, видео, необязательно)', 'ko': '미디어 파일 업로드 (이미지, 오디오, 비디오, 선택 사항)', 'fr': 'Téléverser des fichiers média (images, audio, vidéo, optionnel)', 'es': 'Subir archivos multimedia (imágenes, audio, video, opcional)'
         },
         'uploaded_file': {
-            'zh': '当前已上传文件：', 'ja': '現在アップロード済みファイル：', 'en': 'Uploaded file: ', 'ru': 'Загруженный файл: ', 'ko': '업로드된 파일: ', 'fr': 'Fichier téléversé : '
+            'zh': '当前已上传文件：', 'zh-TW': '當前已上傳文件：', 'ja': '現在アップロード済みファイル：', 'en': 'Uploaded file: ', 'ru': 'Загруженный файл: ', 'ko': '업로드된 파일: ', 'fr': 'Fichier téléversé : ', 'es': 'Archivo subido: '
         },
         'translation_expectation_optional': {
-            'zh': '对翻译的期待（选填）', 'ja': '翻訳への期待（オプション）', 'en': 'Translation expectations (optional)', 'ru': 'Ожидания от перевода (необязательно)', 'ko': '번역에 대한 기대 (선택 사항)', 'fr': 'Attentes de traduction (optionnel)'
+            'zh': '对翻译的期待（选填）', 'zh-TW': '對翻譯的期待（選填）', 'ja': '翻訳への期待（オプション）', 'en': 'Translation expectations (optional)', 'ru': 'Ожидания от перевода (необязательно)', 'ko': '번역에 대한 기대 (선택 사항)', 'fr': 'Attentes de traduction (optionnel)', 'es': 'Expectativas de traducción (opcional)'
         },
         'translation_expectation_placeholder': {
-            'zh': '如：希望译文更有文学性、希望译者多与我沟通等', 'ja': '例：より文学的な翻訳を希望、翻訳者とのコミュニケーションを希望など', 'en': 'e.g., more literary style, prefer more communication with translator, etc.', 'ru': 'например, более литературный стиль, больше общения с переводчиком и т.п.', 'ko': '예: 보다 문학적인 스타일, 번역가와의 소통을 선호 등', 'fr': 'ex. style plus littéraire, préférer plus de communication avec le traducteur, etc.'
+            'zh': '如：希望译文更有文学性、希望译者多与我沟通等', 'zh-TW': '如：希望譯文更有文學性、希望譯者多與我溝通等', 'ja': '例：より文学的な翻訳を希望、翻訳者とのコミュニケーションを希望など', 'en': 'e.g., more literary style, prefer more communication with translator, etc.', 'ru': 'например, более литературный стиль, больше общения с переводчиком и т.п.', 'ko': '예: 보다 문학적인 스타일, 번역가와의 소통을 선호 등', 'fr': 'ex. style plus littéraire, préférer plus de communication avec le traducteur, etc.', 'es': 'ej. estilo más literario, preferir más comunicación con el traductor, etc.'
         },
         'translation_requirements_checkbox': {
-            'zh': '我希望翻译者能完成以下要求：', 'ja': '翻訳者に以下の要求を完成してもらいたい：', 'en': 'I want the translator to meet the following requirements:', 'ru': 'Я хочу, чтобы переводчик выполнил следующие требования:', 'ko': '번역가가 다음 요구 사항을 충족하길 바랍니다:', 'fr': 'Je souhaite que le traducteur respecte les exigences suivantes :'
+            'zh': '我希望翻译者能完成以下要求：', 'zh-TW': '我希望翻譯者能完成以下要求：', 'ja': '翻訳者に以下の要求を完成してもらいたい：', 'en': 'I want the translator to meet the following requirements:', 'ru': 'Я хочу, чтобы переводчик выполнил следующие требования:', 'ko': '번역가가 다음 요구 사항을 충족하길 바랍니다:', 'fr': 'Je souhaite que le traducteur respecte les exigences suivantes :', 'es': 'Quiero que el traductor cumpla los siguientes requisitos:'
         },
         'translation_requirements_note': {
-            'zh': '（翻译者必须同意该要求才能进行翻译）', 'ja': '（翻訳者はこの要求に同意する必要があります）', 'en': '(The translator must agree to these requirements to proceed)', 'ru': '(Переводчик должен согласиться с этими требованиями, чтобы продолжить)', 'ko': '(번역가는 계속하려면 이 요구 사항에 동의해야 합니다)', 'fr': '(Le traducteur doit accepter ces exigences pour continuer)'
+            'zh': '（翻译者必须同意该要求才能进行翻译）', 'zh-TW': '（翻譯者必須同意該要求才能進行翻譯）', 'ja': '（翻訳者はこの要求に同意する必要があります）', 'en': '(The translator must agree to these requirements to proceed)', 'ru': '(Переводчик должен согласиться с этими требованиями, чтобы продолжить)', 'ko': '(번역가는 계속하려면 이 요구 사항에 동의해야 합니다)', 'fr': '(Le traducteur doit accepter ces exigences pour continuer)', 'es': '(El traductor debe estar de acuerdo con estos requisitos para continuar)'
         },
         'translation_requirements': {
-            'zh': '对翻译的要求', 'ja': '翻訳への要求', 'en': 'Translation requirements', 'ru': 'Требования к переводу', 'ko': '번역 요구사항', 'fr': 'Exigences de traduction'
+            'zh': '对翻译的要求', 'zh-TW': '對翻譯的要求', 'ja': '翻訳への要求', 'en': 'Translation requirements', 'ru': 'Требования к переводу', 'ko': '번역 요구사항', 'fr': 'Exigences de traduction', 'es': 'Requisitos de traducción'
         },
         'translation_requirements_placeholder': {
-            'zh': '要求翻译者不要擅自进行传播、用于商业用途等', 'ja': '翻訳者に無断での配布、商業利用などを禁止するよう要求', 'en': 'Require translators not to distribute without permission or use for commercial purposes, etc.', 'ru': 'Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.', 'ko': '번역자에게 무단 배포, 상업적 이용 등을 금지하도록 요구', 'fr': 'Exiger des traducteurs de ne pas distribuer sans autorisation ou utiliser à des fins commerciales, etc.'
+            'zh': '要求翻译者不要擅自进行传播、用于商业用途等', 'zh-TW': '要求翻譯者不要擅自進行傳播、用於商業用途等', 'ja': '翻訳者に無断での配布、商業利用などを禁止するよう要求', 'en': 'Require translators not to distribute without permission or use for commercial purposes, etc.', 'ru': 'Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.', 'ko': '번역자에게 무단 배포, 상업적 이용 등을 금지하도록 요구', 'fr': 'Exiger des traducteurs de ne pas distribuer sans autorisation ou utiliser à des fins commerciales, etc.', 'es': 'Requerir que los traductores no distribuyan sin permiso o usen para fines comerciales, etc.'
         },
         'contact_before_translate_checkbox': {
-            'zh': '我需要翻译者在翻译前提前联系我', 'ja': '翻訳前に翻訳者に連絡してもらいたい', 'en': 'I need the translator to contact me before translating', 'ru': 'Мне нужно, чтобы переводчик связался со мной перед переводом', 'ko': '번역 전에 번역가가 미리 연락해 주길 바랍니다', 'fr': 'J\'ai besoin que le traducteur me contacte avant de traduire'
+            'zh': '我需要翻译者在翻译前提前联系我', 'zh-TW': '我需要翻譯者在翻譯前提前聯繫我', 'ja': '翻訳前に翻訳者に連絡してもらいたい', 'en': 'I need the translator to contact me before translating', 'ru': 'Мне нужно, чтобы переводчик связался со мной перед переводом', 'ko': '번역 전에 번역가가 미리 연락해 주길 바랍니다', 'fr': 'J\'ai besoin que le traducteur me contacte avant de traduire', 'es': 'Necesito que el traductor me contacte antes de traducir'
         },
         'save_changes': {
-            'zh': '保存修改', 'ja': '変更を保存', 'en': 'Save changes', 'ru': 'Сохранить изменения', 'ko': '변경 사항 저장', 'fr': 'Enregistrer les modifications'
+            'zh': '保存修改', 'zh-TW': '保存修改', 'ja': '変更を保存', 'en': 'Save changes', 'ru': 'Сохранить изменения', 'ko': '변경 사항 저장', 'fr': 'Enregistrer les modifications', 'es': 'Guardar cambios'
         },
         'cancel': {
-            'zh': '取消', 'ja': 'キャンセル', 'en': 'Cancel', 'ru': 'Отмена', 'ko': '취소', 'fr': 'Annuler'
+            'zh': '取消', 'zh-TW': '取消', 'ja': 'キャンセル', 'en': 'Cancel', 'ru': 'Отмена', 'ko': '취소', 'fr': 'Annuler', 'es': 'Cancelar'
         },
         'translate_page_title': {
-            'zh': '翻译', 'ja': '翻訳', 'en': 'Translate', 'ru': 'Перевод', 'ko': '번역', 'fr': 'Traduire'
+            'zh': '翻译', 'zh-TW': '翻譯', 'ja': '翻訳', 'en': 'Translate', 'ru': 'Перевод', 'ko': '번역', 'fr': 'Traduire', 'es': 'Traducir'
         },
         'video_not_supported': {
-            'zh': '您的浏览器不支持视频播放。', 'ja': 'お使いのブラウザは動画再生をサポートしていません。', 'en': 'Your browser does not support video playback.', 'ru': 'Ваш браузер не поддерживает воспроизведение видео.', 'ko': '브라우저가 비디오 재생을 지원하지 않습니다.', 'fr': 'Votre navigateur ne prend pas en charge la lecture vidéo.'
+            'zh': '您的浏览器不支持视频播放。', 'zh-TW': '您的瀏覽器不支持視頻播放。', 'ja': 'お使いのブラウザは動画再生をサポートしていません。', 'en': 'Your browser does not support video playback.', 'ru': 'Ваш браузер не поддерживает воспроизведение видео.', 'ko': '브라우저가 비디오 재생을 지원하지 않습니다.', 'fr': 'Votre navigateur ne prend pas en charge la lecture vidéo.', 'es': 'Su navegador no admite la reproducción de video.'
         },
         'audio_not_supported': {
-            'zh': '您的浏览器不支持音频播放。', 'ja': 'お使いのブラウザは音声再生をサポートしていません。', 'en': 'Your browser does not support audio playback.', 'ru': 'Ваш браузер не поддерживает воспроизведение аудио.', 'ko': '브라우저가 오디오 재생을 지원하지 않습니다.', 'fr': 'Votre navigateur ne prend pas en charge la lecture audio.'
+            'zh': '您的浏览器不支持音频播放。', 'zh-TW': '您的瀏覽器不支持音頻播放。', 'ja': 'お使いのブラウザは音声再生をサポートしていません。', 'en': 'Your browser does not support audio playback.', 'ru': 'Ваш браузер не поддерживает воспроизведение аудио.', 'ko': '브라우저가 오디오 재생을 지원하지 않습니다.', 'fr': 'Votre navigateur ne prend pas en charge la lecture audio.', 'es': 'Su navegador no admite la reproducción de audio.'
         },
         'file_type': {
-            'zh': '文件类型：', 'ja': 'ファイルタイプ：', 'en': 'File type: ', 'ru': 'Тип файла: ', 'ko': '파일 유형: ', 'fr': 'Type de fichier : '
+            'zh': '文件类型：', 'zh-TW': '文件類型：', 'ja': 'ファイルタイプ：', 'en': 'File type: ', 'ru': 'Тип файла: ', 'ko': '파일 유형: ', 'fr': 'Type de fichier : ', 'es': 'Tipo de archivo: '
         },
         'download': {
-            'zh': '下载', 'ja': 'ダウンロード', 'en': 'Download', 'ru': 'Скачать', 'ko': '다운로드', 'fr': 'Télécharger'
+            'zh': '下载', 'zh-TW': '下載', 'ja': 'ダウンロード', 'en': 'Download', 'ru': 'Скачать', 'ko': '다운로드', 'fr': 'Télécharger', 'es': 'Descargar'
         },
         'creator_expectation': {
-            'zh': '创作者对翻译的期待', 'ja': 'クリエイターの翻訳への期待', 'en': "Creator's Translation Expectations", 'ru': 'Ожидания создателя от перевода', 'ko': '창작자의 번역 기대', 'fr': 'Attentes du créateur pour la traduction'
+            'zh': '创作者对翻译的期待', 'zh-TW': '創作者對翻譯的期待', 'ja': 'クリエイターの翻訳への期待', 'en': "Creator's Translation Expectations", 'ru': 'Ожидания создателя от перевода', 'ko': '창작자의 번역 기대', 'fr': 'Attentes du créateur pour la traduction', 'es': 'Expectativas del creador para la traducción'
         },
         'creator_requirements': {
-            'zh': '创作者对翻译的要求', 'ja': 'クリエイターの翻訳への要求', 'en': "Creator's Translation Requirements", 'ru': 'Требования создателя к переводу', 'ko': '창작자의 번역 요구사항', 'fr': 'Exigences du créateur pour la traduction'
+            'zh': '创作者对翻译的要求', 'zh-TW': '創作者對翻譯的要求', 'ja': 'クリエイターの翻訳への要求', 'en': "Creator's Translation Requirements", 'ru': 'Требования создателя к переводу', 'ko': '창작자의 번역 요구사항', 'fr': 'Exigences du créateur pour la traduction', 'es': 'Requisitos del creador para la traducción'
         },
         'translation_content_label': {
-            'zh': '翻译内容', 'ja': '翻訳内容', 'en': 'Translation content', 'ru': 'Содержимое перевода', 'ko': '번역 내용', 'fr': 'Contenu de la traduction'
+            'zh': '翻译内容', 'zh-TW': '翻譯內容', 'ja': '翻訳内容', 'en': 'Translation content', 'ru': 'Содержимое перевода', 'ko': '번역 내용', 'fr': 'Contenu de la traduction', 'es': 'Contenido de la traducción'
         },
         'translation_content_placeholder': {
-            'zh': '请在此输入翻译内容...', 'ja': 'ここに翻訳内容を入力してください...', 'en': 'Please enter the translation here...', 'ru': 'Введите здесь перевод...', 'ko': '여기에 번역 내용을 입력하세요...', 'fr': 'Veuillez saisir la traduction ici...'
+            'zh': '请在此输入翻译内容...', 'zh-TW': '請在此輸入翻譯內容...', 'ja': 'ここに翻訳内容を入力してください...', 'en': 'Please enter the translation here...', 'ru': 'Введите здесь перевод...', 'ko': '여기에 번역 내용을 입력하세요...', 'fr': 'Veuillez saisir la traduction ici...', 'es': 'Por favor ingrese la traducción aquí...'
         },
         'translation_attachment_label': {
-            'zh': '翻译附件', 'ja': '翻訳添付ファイル', 'en': 'Translation attachments', 'ru': 'Вложения к переводу', 'ko': '번역 첨부 파일', 'fr': 'Pièces jointes de traduction'
+            'zh': '翻译附件', 'zh-TW': '翻譯附件', 'ja': '翻訳添付ファイル', 'en': 'Translation attachments', 'ru': 'Вложения к переводу', 'ko': '번역 첨부 파일', 'fr': 'Pièces jointes de traduction', 'es': 'Archivos adjuntos de traducción'
         },
         'supported_formats': {
-            'zh': '支持格式：图片、视频、音频、PDF、Word、文本文件', 'ja': 'サポート形式：画像、動画、音声、PDF、Word、テキストファイル', 'en': 'Supported formats: images, video, audio, PDF, Word, text files', 'ru': 'Поддерживаемые форматы: изображения, видео, аудио, PDF, Word, текстовые файлы', 'ko': '지원 형식: 이미지, 비디오, 오디오, PDF, Word, 텍스트 파일', 'fr': 'Formats pris en charge : images, vidéo, audio, PDF, Word, fichiers texte'
+            'zh': '支持格式：图片、视频、音频、PDF、Word、文本文件', 'zh-TW': '支持格式：圖片、視頻、音頻、PDF、Word、文本文件', 'ja': 'サポート形式：画像、動画、音声、PDF、Word、テキストファイル', 'en': 'Supported formats: images, video, audio, PDF, Word, text files', 'ru': 'Поддерживаемые форматы: изображения, видео, аудио, PDF, Word, текстовые файлы', 'ko': '지원 형식: 이미지, 비디오, 오디오, PDF, Word, 텍스트 파일', 'fr': 'Formats pris en charge : images, vidéo, audio, PDF, Word, fichiers texte', 'es': 'Formatos soportados: imágenes, video, audio, PDF, Word, archivos de texto'
         },
         'submit_translation': {
-            'zh': '提交翻译', 'ja': '翻訳を提出', 'en': 'Submit translation', 'ru': 'Отправить перевод', 'ko': '번역 제출', 'fr': 'Soumettre la traduction'
+            'zh': '提交翻译', 'zh-TW': '提交翻譯', 'ja': '翻訳を提出', 'en': 'Submit translation', 'ru': 'Отправить перевод', 'ko': '번역 제출', 'fr': 'Soumettre la traduction', 'es': 'Enviar traducción'
         },
         'save_as_draft': {
-            'zh': '保存为草稿', 'ja': '下書きとして保存', 'en': 'Save as draft', 'ru': 'Сохранить как черновик', 'ko': '임시 저장', 'fr': 'Enregistrer comme brouillon'
+            'zh': '保存为草稿', 'zh-TW': '保存為草稿', 'ja': '下書きとして保存', 'en': 'Save as draft', 'ru': 'Сохранить как черновик', 'ko': '임시 저장', 'fr': 'Enregistrer comme brouillon', 'es': 'Guardar como borrador'
         },
         'translation_guide': {
-            'zh': '翻译指南', 'ja': '翻訳ガイド', 'en': 'Translation Guide', 'ru': 'Руководство по переводу', 'ko': '번역 가이드', 'fr': 'Guide de traduction'
+            'zh': '翻译指南', 'zh-TW': '翻譯指南', 'ja': '翻訳ガイド', 'en': 'Translation Guide', 'ru': 'Руководство по переводу', 'ko': '번역 가이드', 'fr': 'Guide de traduction', 'es': 'Guía de traducción'
         },
         'translation_tips': {
-            'zh': '翻译技巧', 'ja': '翻訳のコツ', 'en': 'Translation Tips', 'ru': 'Советы по переводу', 'ko': '번역 팁', 'fr': 'Conseils de traduction'
+            'zh': '翻译技巧', 'zh-TW': '翻譯技巧', 'ja': '翻訳のコツ', 'en': 'Translation Tips', 'ru': 'Советы по переводу', 'ko': '번역 팁', 'fr': 'Conseils de traduction', 'es': 'Consejos de traducción'
         },
         'tip_understand': {
-            'zh': '准确理解原文含义', 'ja': '原文の意味を正確に理解する', 'en': 'Understand the original accurately', 'ru': 'Точно понимать исходный текст', 'ko': '원문 의미를 정확히 이해', 'fr': 'Comprendre précisément le texte original'
+            'zh': '准确理解原文含义', 'zh-TW': '準確理解原文含義', 'ja': '原文の意味を正確に理解する', 'en': 'Understand the original accurately', 'ru': 'Точно понимать исходный текст', 'ko': '원문 의미를 정확히 이해', 'fr': 'Comprendre précisément le texte original', 'es': 'Entender el original con precisión'
         },
         'tip_natural': {
-            'zh': '保持自然流畅的翻译', 'ja': '自然で読みやすい翻訳にする', 'en': 'Keep the translation natural and readable', 'ru': 'Делайте перевод естественным и читаемым', 'ko': '자연스럽고 읽기 쉽게 번역', 'fr': 'Rendre la traduction naturelle et lisible'
+            'zh': '保持自然流畅的翻译', 'zh-TW': '保持自然流暢的翻譯', 'ja': '自然で読みやすい翻訳にする', 'en': 'Keep the translation natural and readable', 'ru': 'Делайте перевод естественным и читаемым', 'ko': '자연스럽고 읽기 쉽게 번역', 'fr': 'Rendre la traduction naturelle et lisible', 'es': 'Mantener la traducción natural y legible'
         },
         'tip_terms': {
-            'zh': '注意专业术语统一', 'ja': '専門用語の統一を心がける', 'en': 'Keep terminology consistent', 'ru': 'Соблюдайте единообразие терминологии', 'ko': '전문 용어 일관성 유지', 'fr': 'Maintenir une terminologie cohérente'
+            'zh': '注意专业术语统一', 'zh-TW': '注意專業術語統一', 'ja': '専門用語の統一を心がける', 'en': 'Keep terminology consistent', 'ru': 'Соблюдайте единообразие терминологии', 'ko': '전문 용어 일관성 유지', 'fr': 'Maintenir une terminologie cohérente', 'es': 'Mantener la terminología consistente'
         },
         'tip_culture': {
-            'zh': '考虑文化差异', 'ja': '文化的な違いを考慮する', 'en': 'Consider cultural differences', 'ru': 'Учитывайте культурные различия', 'ko': '문화적 차이 고려', 'fr': 'Prendre en compte les différences culturelles'
+            'zh': '考虑文化差异', 'zh-TW': '考慮文化差異', 'ja': '文化的な違いを考慮する', 'en': 'Consider cultural differences', 'ru': 'Учитывайте культурные различия', 'ko': '문화적 차이 고려', 'fr': 'Prendre en compte les différences culturelles', 'es': 'Considerar las diferencias culturales'
         },
         'notes': {
-            'zh': '注意事项', 'ja': '注意事項', 'en': 'Notes', 'ru': 'Примечания', 'ko': '주의 사항', 'fr': 'Remarques'
+            'zh': '注意事项', 'zh-TW': '注意事項', 'ja': '注意事項', 'en': 'Notes', 'ru': 'Примечания', 'ko': '주의 사항', 'fr': 'Remarques', 'es': 'Notas'
         },
         'note_avoid_mt': {
-            'zh': '避免直接使用机器翻译', 'ja': '機械翻訳の直接使用は避ける', 'en': 'Avoid direct use of machine translation', 'ru': 'Избегайте прямого использования машинного перевода', 'ko': '기계 번역의 직접 사용을 피하세요', 'fr': 'Éviter l\'utilisation directe de la traduction automatique'
+            'zh': '避免直接使用机器翻译', 'zh-TW': '避免直接使用機器翻譯', 'ja': '機械翻訳の直接使用は避ける', 'en': 'Avoid direct use of machine translation', 'ru': 'Избегайте прямого использования машинного перевода', 'ko': '기계 번역의 직접 사용을 피하세요', 'fr': 'Éviter l\'utilisation directe de la traduction automatique', 'es': 'Evitar el uso directo de la traducción automática'
         },
         'note_not_distort': {
-            'zh': '不要歪曲原文意图', 'ja': '原文の意図を歪めない', 'en': 'Do not distort the original intent', 'ru': 'Не искажайте замысел оригинала', 'ko': '원래 의도를 왜곡하지 마세요', 'fr': "Ne pas déformer l'intention originale"
+            'zh': '不要歪曲原文意图', 'zh-TW': '不要歪曲原文意圖', 'ja': '原文の意図を歪めない', 'en': 'Do not distort the original intent', 'ru': 'Не искажайте замысел оригинала', 'ko': '원래 의도를 왜곡하지 마세요', 'fr': "Ne pas déformer l'intention originale", 'es': 'No distorsionar la intención original'
         },
         'note_politeness': {
-            'zh': '注意使用适当的敬语', 'ja': '適切な敬語の使用を心がける', 'en': 'Use appropriate politeness', 'ru': 'Используйте соответствующую вежливость', 'ko': '적절한 경어 사용', 'fr': 'Utiliser des marques de politesse appropriées'
+            'zh': '注意使用适当的敬语', 'zh-TW': '注意使用適當的敬語', 'ja': '適切な敬語の使用を心がける', 'en': 'Use appropriate politeness', 'ru': 'Используйте соответствующую вежливость', 'ko': '적절한 경어 사용', 'fr': 'Utiliser des marques de politesse appropriées', 'es': 'Usar cortesía apropiada'
         },
         'work_info': {
-            'zh': '作品信息', 'ja': '作品情報', 'en': 'Work Info', 'ru': 'Информация о работе', 'ko': '작품 정보', 'fr': 'Informations sur l\'œuvre'
+            'zh': '作品信息', 'zh-TW': '作品資訊', 'ja': '作品情報', 'en': 'Work Info', 'ru': 'Информация о работе', 'ko': '작품 정보', 'fr': 'Informations sur l\'œuvre', 'es': 'Información de la obra'
         },
         'language_pair': {
-            'zh': '语言对：', 'ja': '言語ペア：', 'en': 'Language pair: ', 'ru': 'Пара языков: ', 'ko': '언어 쌍: ', 'fr': 'Paire de langues : '
+            'zh': '语言对：', 'zh-TW': '語言對：', 'ja': '言語ペア：', 'en': 'Language pair: ', 'ru': 'Пара языков: ', 'ko': '언어 쌍: ', 'fr': 'Paire de langues : ', 'es': 'Par de idiomas: '
         },
         'created_at_label': {
-            'zh': '创建时间：', 'ja': '作成日：', 'en': 'Created at: ', 'ru': 'Дата создания: ', 'ko': '작성일: ', 'fr': 'Date de création : '
+            'zh': '创建时间：', 'zh-TW': '創建時間：', 'ja': '作成日：', 'en': 'Created at: ', 'ru': 'Дата создания: ', 'ko': '작성일: ', 'fr': 'Date de création : ', 'es': 'Creado en: '
         },
         'original_copied': {
-            'zh': '原文已复制到剪贴板', 'ja': '原文がクリップボードにコピーされました', 'en': 'Original text copied to clipboard', 'ru': 'Исходный текст скопирован в буфер обмена', 'ko': '원문이 클립보드에 복사되었습니다', 'fr': "Le texte original a été copié dans le presse-papiers"
+            'zh': '原文已复制到剪贴板', 'zh-TW': '原文已複製到剪貼板', 'ja': '原文がクリップボードにコピーされました', 'en': 'Original text copied to clipboard', 'ru': 'Исходный текст скопирован в буфер обмена', 'ko': '원문이 클립보드에 복사되었습니다', 'fr': "Le texte original a été copié dans le presse-papiers", 'es': 'Texto original copiado al portapapeles'
         },
         'characters': {
-            'zh': '字符数：', 'ja': '文字数：', 'en': 'Characters: ', 'ru': 'Символов: ', 'ko': '문자 수: ', 'fr': 'Caractères : '
+            'zh': '字符数：', 'zh-TW': '字符數：', 'ja': '文字数：', 'en': 'Characters: ', 'ru': 'Символов: ', 'ko': '문자 수: ', 'fr': 'Caractères : ', 'es': 'Caracteres: '
         },
         'words': {
-            'zh': '词数：', 'ja': '単語数：', 'en': 'Words: ', 'ru': 'Слов: ', 'ko': '단어 수: ', 'fr': 'Mots : '
+            'zh': '词数：', 'zh-TW': '詞數：', 'ja': '単語数：', 'en': 'Words: ', 'ru': 'Слов: ', 'ko': '단어 수: ', 'fr': 'Mots : ', 'es': 'Palabras: '
         },
         'attachment': {
-            'zh': '附件', 'ja': '添付ファイル', 'en': 'Attachment', 'ru': 'Вложение', 'ko': '첨부파일', 'fr': 'Pièce jointe'
+            'zh': '附件', 'zh-TW': '附件', 'ja': '添付ファイル', 'en': 'Attachment', 'ru': 'Вложение', 'ko': '첨부파일', 'fr': 'Pièce jointe', 'es': 'Archivo adjunto'
         },
         'download_attachment': {
-            'zh': '下载附件', 'ja': '添付ファイルをダウンロード', 'en': 'Download Attachment', 'ru': 'Скачать вложение', 'ko': '첨부파일 다운로드', 'fr': 'Télécharger la pièce jointe'
+            'zh': '下载附件', 'zh-TW': '下載附件', 'ja': '添付ファイルをダウンロード', 'en': 'Download Attachment', 'ru': 'Скачать вложение', 'ko': '첨부파일 다운로드', 'fr': 'Télécharger la pièce jointe', 'es': 'Descargar archivo adjunto'
         },
         'contact_before_translate_title': {
-            'zh': '翻译前需要联系', 'ja': '翻訳前の連絡が必要', 'en': 'Contact Required Before Translation', 'ru': 'Требуется связь перед переводом', 'ko': '번역 전 연락 필요', 'fr': 'Contact requis avant traduction'
+            'zh': '翻译前需要联系', 'zh-TW': '翻譯前需要聯繫', 'ja': '翻訳前の連絡が必要', 'en': 'Contact Required Before Translation', 'ru': 'Требуется связь перед переводом', 'ko': '번역 전 연락 필요', 'fr': 'Contact requis avant traduction', 'es': 'Contacto requerido antes de la traducción'
         },
         'contact_before_translate_desc': {
-            'zh': '本作品创作者要求：翻译前请先私信联系作者！', 'ja': 'この作品のクリエイターは要求します：翻訳前に作者にメッセージを送信してください！', 'en': 'The creator of this work requires: Please message the author before translating!', 'ru': 'Создатель этой работы требует: Пожалуйста, напишите автору перед переводом!', 'ko': '이 작품의 창작자가 요구합니다: 번역하기 전에 먼저 작가에게 메시지를 보내주세요!', 'fr': 'Le créateur de cette œuvre exige : Veuillez contacter l\'auteur avant de traduire !'
+            'zh': '本作品创作者要求：翻译前请先私信联系作者！', 'zh-TW': '本作品創作者要求：翻譯前請先私信聯繫作者！', 'ja': 'この作品のクリエイターは要求します：翻訳前に作者にメッセージを送信してください！', 'en': 'The creator of this work requires: Please message the author before translating!', 'ru': 'Создатель этой работы требует: Пожалуйста, напишите автору перед переводом!', 'ko': '이 작품의 창작자가 요구합니다: 번역하기 전에 먼저 작가에게 메시지를 보내주세요!', 'fr': 'Le créateur de cette œuvre exige : Veuillez contacter l\'auteur avant de traduire !', 'es': '¡El creador de esta obra requiere: Por favor, envía un mensaje al autor antes de traducir!'
         },
         'original_content': {
-            'zh': '原文内容', 'ja': '原文内容', 'en': 'Original Content', 'ru': 'Исходное содержимое', 'ko': '원문 내용', 'fr': 'Contenu original'
+            'zh': '原文内容', 'zh-TW': '原文內容', 'ja': '原文内容', 'en': 'Original Content', 'ru': 'Исходное содержимое', 'ko': '원문 내용', 'fr': 'Contenu original', 'es': 'Contenido original'
         },
         'creator_expectation': {
-            'zh': '创作者对翻译的期待', 'ja': 'クリエイターの翻訳への期待', 'en': 'Creator\'s Translation Expectations', 'ru': 'Ожидания создателя от перевода', 'ko': '창작자의 번역 기대', 'fr': 'Attentes du créateur pour la traduction'
+            'zh': '创作者对翻译的期待', 'zh-TW': '創作者對翻譯的期待', 'ja': 'クリエイターの翻訳への期待', 'en': 'Creator\'s Translation Expectations', 'ru': 'Ожидания создателя от перевода', 'ko': '창작자의 번역 기대', 'fr': 'Attentes du créateur pour la traduction', 'es': 'Expectativas del creador para la traducción'
         },
         'creator_requirements': {
-            'zh': '创作者对翻译的要求', 'ja': 'クリエイターの翻訳への要求', 'en': 'Creator\'s Translation Requirements', 'ru': 'Требования создателя к переводу', 'ko': '창작자의 번역 요구사항', 'fr': 'Exigences du créateur pour la traduction'
+            'zh': '创作者对翻译的要求', 'zh-TW': '創作者對翻譯的要求', 'ja': 'クリエイターの翻訳への要求', 'en': 'Creator\'s Translation Requirements', 'ru': 'Требования создателя к переводу', 'ko': '창작자의 번역 요구사항', 'fr': 'Exigences du créateur pour la traduction', 'es': 'Requisitos del creador para la traducción'
         },
         'translator': {
-            'zh': '翻译者', 'ja': '翻訳者', 'en': 'Translator', 'ru': 'Переводчик', 'ko': '번역가', 'fr': 'Traducteur'
+            'zh': '翻译者', 'zh-TW': '翻譯者', 'ja': '翻訳者', 'en': 'Translator', 'ru': 'Переводчик', 'ko': '번역가', 'fr': 'Traducteur', 'es': 'Traductor'
         },
         'translator_expectation': {
-            'zh': '对作者的期待/要求', 'ja': 'のクリエイターへの期待/要求', 'en': 'Expectations/Requirements for Creator', 'ru': 'Ожидания/Требования к создателю', 'ko': '작가에 대한 기대/요구사항', 'fr': 'Attentes/Exigences pour le créateur'
+            'zh': '对作者的期待/要求', 'zh-TW': '對作者的期待/要求', 'ja': 'のクリエイターへの期待/要求', 'en': 'Expectations/Requirements for Creator', 'ru': 'Ожидания/Требования к создателю', 'ko': '작가에 대한 기대/요구사항', 'fr': 'Attentes/Exigences pour le créateur', 'es': 'Expectativas/Requisitos para el creador'
         },
         'translation_content': {
-            'zh': '翻译内容', 'ja': '翻訳内容', 'en': 'Translation Content', 'ru': 'Содержимое перевода', 'ko': '번역 내용', 'fr': 'Contenu de la traduction'
+            'zh': '翻译内容', 'zh-TW': '翻譯內容', 'ja': '翻訳内容', 'en': 'Translation Content', 'ru': 'Содержимое перевода', 'ko': '번역 내용', 'fr': 'Contenu de la traduction', 'es': 'Contenido de la traducción'
         },
         'multiple_translators': {
-            'zh': '多人翻译', 'ja': '複数翻訳者', 'en': 'Multiple Translators', 'ru': 'Несколько переводчиков', 'ko': '다중 번역가', 'fr': 'Traducteurs multiples'
+            'zh': '多人翻译', 'zh-TW': '多人翻譯', 'ja': '複数翻訳者', 'en': 'Multiple Translators', 'ru': 'Несколько переводчиков', 'ko': '다중 번역가', 'fr': 'Traducteurs multiples', 'es': 'Traductores múltiples'
         },
         'author_like': {
-            'zh': '收到作者的赞', 'ja': '作者からもらったいいね', 'en': 'Received Author\'s Like', 'ru': 'Получен лайк от автора', 'ko': '작가로부터 받은 좋아요', 'fr': 'J\'aime reçu de l\'auteur'
+            'zh': '收到作者的赞', 'zh-TW': '收到作者的讚', 'ja': '作者からもらったいいね', 'en': 'Received Author\'s Like', 'ru': 'Получен лайк от автора', 'ko': '작가로부터 받은 좋아요', 'fr': 'J\'aime reçu de l\'auteur', 'es': 'Me gusta recibido del autor'
         },
         'accept': {
-            'zh': '接受', 'ja': '承認', 'en': 'Accept', 'ru': 'Принять', 'ko': '수락', 'fr': 'Accepter'
+            'zh': '接受', 'zh-TW': '接受', 'ja': '承認', 'en': 'Accept', 'ru': 'Принять', 'ko': '수락', 'fr': 'Accepter', 'es': 'Aceptar'
         },
         'add_correction': {
-            'zh': '添加校正', 'ja': '校正を追加', 'en': 'Add Correction', 'ru': 'Добавить исправление', 'ko': '교정 추가', 'fr': 'Ajouter une correction'
+            'zh': '添加校正', 'zh-TW': '添加校正', 'ja': '校正を追加', 'en': 'Add Correction', 'ru': 'Добавить исправление', 'ko': '교정 추가', 'fr': 'Ajouter une correction', 'es': 'Agregar corrección'
         },
         'cannot_correct_own': {
-            'zh': '您无法对自己的翻译进行校正', 'ja': '自分自身の翻訳を校正することはできません', 'en': 'You cannot correct your own translation', 'ru': 'Вы не можете исправлять свой собственный перевод', 'ko': '자신의 번역을 교정할 수 없습니다', 'fr': 'Vous ne pouvez pas corriger votre propre traduction'
+            'zh': '您无法对自己的翻译进行校正', 'zh-TW': '您無法對自己的翻譯進行校正', 'ja': '自分自身の翻訳を校正することはできません', 'en': 'You cannot correct your own translation', 'ru': 'Вы не можете исправлять свой собственный перевод', 'ko': '자신의 번역을 교정할 수 없습니다', 'fr': 'Vous ne pouvez pas corriger votre propre traduction', 'es': 'No puedes corregir tu propia traducción'
         },
         'correction_content': {
-            'zh': '校正内容', 'ja': '校正内容', 'en': 'Correction Content', 'ru': 'Содержимое исправления', 'ko': '교정 내용', 'fr': 'Contenu de la correction'
+            'zh': '校正内容', 'zh-TW': '校正內容', 'ja': '校正内容', 'en': 'Correction Content', 'ru': 'Содержимое исправления', 'ko': '교정 내용', 'fr': 'Contenu de la correction', 'es': 'Contenido de la corrección'
         },
         'correction_content_label': {
-            'zh': '校正内容：', 'ja': '校正内容：', 'en': 'Correction Content:', 'ru': 'Содержимое исправления:', 'ko': '교정 내용:', 'fr': 'Contenu de la correction:'
+            'zh': '校正内容：', 'zh-TW': '校正內容：', 'ja': '校正内容：', 'en': 'Correction Content:', 'ru': 'Содержимое исправления:', 'ko': '교정 내용:', 'fr': 'Contenu de la correction:', 'es': 'Contenido de la corrección:'
         },
         'correction_content_placeholder': {
-            'zh': '请输入校正内容...', 'ja': '校正内容を入力...', 'en': 'Enter correction content...', 'ru': 'Введите содержимое исправления...', 'ko': '교정 내용을 입력하세요...', 'fr': 'Entrez le contenu de la correction...'
+            'zh': '请输入校正内容...', 'zh-TW': '請輸入校正內容...', 'ja': '校正内容を入力...', 'en': 'Enter correction content...', 'ru': 'Введите содержимое исправления...', 'ko': '교정 내용을 입력하세요...', 'fr': 'Entrez le contenu de la correction...', 'es': 'Ingrese el contenido de la corrección...'
         },
         'correction_notes_label': {
-            'zh': '校正说明：', 'ja': '校正说明：', 'en': 'Correction Notes:', 'ru': 'Примечания к исправлению:', 'ko': '교정 설명:', 'fr': 'Notes de correction:'
+            'zh': '校正说明：', 'zh-TW': '校正說明：', 'ja': '校正说明：', 'en': 'Correction Notes:', 'ru': 'Примечания к исправлению:', 'ko': '교정 설명:', 'fr': 'Notes de correction:', 'es': 'Notas de corrección:'
         },
         'correction_notes_placeholder': {
-            'zh': '请输入校正说明（可选）...', 'ja': '校正说明を入力（任意）...', 'en': 'Enter correction notes (optional)...', 'ru': 'Введите примечания к исправлению (необязательно)...', 'ko': '교정 설명을 입력하세요 (선택사항)...', 'fr': 'Entrez les notes de correction (optionnel)...'
+            'zh': '请输入校正说明（可选）...', 'zh-TW': '請輸入校正說明（可選）...', 'ja': '校正说明を入力（任意）...', 'en': 'Enter correction notes (optional)...', 'ru': 'Введите примечания к исправлению (необязательно)...', 'ko': '교정 설명을 입력하세요 (선택사항)...', 'fr': 'Entrez les notes de correction (optionnel)...', 'es': 'Ingrese notas de corrección (opcional)...'
         },
         'submit_correction': {
-            'zh': '提交校正', 'ja': '校正を提出', 'en': 'Submit Correction', 'ru': 'Отправить исправление', 'ko': '교정 제출', 'fr': 'Soumettre la correction'
+            'zh': '提交校正', 'zh-TW': '提交校正', 'ja': '校正を提出', 'en': 'Submit Correction', 'ru': 'Отправить исправление', 'ko': '교정 제출', 'fr': 'Soumettre la correction', 'es': 'Enviar corrección'
         },
         'correction_list': {
-            'zh': '校正列表', 'ja': '校正一覧', 'en': 'Correction List', 'ru': 'Список исправлений', 'ko': '교정 목록', 'fr': 'Liste des corrections'
+            'zh': '校正列表', 'zh-TW': '校正列表', 'ja': '校正一覧', 'en': 'Correction List', 'ru': 'Список исправлений', 'ko': '교정 목록', 'fr': 'Liste des corrections', 'es': 'Lista de correcciones'
         },
         'corrections_for': {
-            'zh': '对', 'ja': 'に対する', 'en': 'Corrections for', 'ru': 'Исправления для', 'ko': '에 대한', 'fr': 'Corrections pour'
+            'zh': '对', 'zh-TW': '對', 'ja': 'に対する', 'en': 'Corrections for', 'ru': 'Исправления для', 'ko': '에 대한', 'fr': 'Corrections pour', 'es': 'Correcciones para'
         },
         'translation_corrections': {
-            'zh': '的校正', 'ja': 'の校正', 'en': '\'s Translation', 'ru': 'Перевод', 'ko': '의 번역', 'fr': 'Traduction de'
+            'zh': '的校正', 'zh-TW': '的校正', 'ja': 'の校正', 'en': '\'s Translation', 'ru': 'Перевод', 'ko': '의 번역', 'fr': 'Traduction de', 'es': 'Traducción de'
         },
         'translation_attachments': {
-            'zh': '翻译附件', 'ja': '翻訳添付ファイル', 'en': 'Translation Attachments', 'ru': 'Вложения перевода', 'ko': '번역 첨부파일', 'fr': 'Pièces jointes de traduction'
+            'zh': '翻译附件', 'zh-TW': '翻譯附件', 'ja': '翻訳添付ファイル', 'en': 'Translation Attachments', 'ru': 'Вложения перевода', 'ko': '번역 첨부파일', 'fr': 'Pièces jointes de traduction', 'es': 'Archivos adjuntos de traducción'
         },
         'admin_operations': {
-            'zh': '管理员操作', 'ja': '管理者操作', 'en': 'Admin Operations', 'ru': 'Операции администратора', 'ko': '관리자 작업', 'fr': 'Opérations d\'administrateur'
+            'zh': '管理员操作', 'zh-TW': '管理員操作', 'ja': '管理者操作', 'en': 'Admin Operations', 'ru': 'Операции администратора', 'ko': '관리자 작업', 'fr': 'Opérations d\'administrateur', 'es': 'Operaciones de administrador'
         },
         'confirm_delete_correction': {
-            'zh': '确定要删除这个校正吗？', 'ja': 'この校正を削除しますか？', 'en': 'Are you sure you want to delete this correction?', 'ru': 'Вы уверены, что хотите удалить это исправление?', 'ko': '이 교정을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette correction?'
+            'zh': '确定要删除这个校正吗？', 'zh-TW': '確定要刪除這個校正嗎？', 'ja': 'この校正を削除しますか？', 'en': 'Are you sure you want to delete this correction?', 'ru': 'Вы уверены, что хотите удалить это исправление?', 'ko': '이 교정을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette correction?', 'es': '¿Estás seguro de que quieres eliminar esta corrección?'
         },
         'correction_comments': {
-            'zh': '校正评论', 'ja': '校正コメント', 'en': 'Correction Comments', 'ru': 'Комментарии к исправлению', 'ko': '교정 댓글', 'fr': 'Commentaires de correction'
+            'zh': '校正评论', 'zh-TW': '校正評論', 'ja': '校正コメント', 'en': 'Correction Comments', 'ru': 'Комментарии к исправлению', 'ko': '교정 댓글', 'fr': 'Commentaires de correction', 'es': 'Comentarios de corrección'
         },
         'correction_comment_placeholder': {
-            'zh': '输入对校正的评论...', 'ja': '校正についてコメントを入力...', 'en': 'Enter comments about the correction...', 'ru': 'Введите комментарии к исправлению...', 'ko': '교정에 대한 댓글을 입력하세요...', 'fr': 'Entrez des commentaires sur la correction...'
+            'zh': '输入对校正的评论...', 'zh-TW': '輸入對校正的評論...', 'ja': '校正についてコメントを入力...', 'en': 'Enter comments about the correction...', 'ru': 'Введите комментарии к исправлению...', 'ko': '교정에 대한 댓글을 입력하세요...', 'fr': 'Entrez des commentaires sur la correction...', 'es': 'Ingrese comentarios sobre la corrección...'
         },
         'post_comment': {
-            'zh': '发表评论', 'ja': 'コメントを投稿', 'en': 'Post Comment', 'ru': 'Оставить комментарий', 'ko': '댓글 작성', 'fr': 'Publier un commentaire'
+            'zh': '发表评论', 'zh-TW': '發表評論', 'ja': 'コメントを投稿', 'en': 'Post Comment', 'ru': 'Оставить комментарий', 'ko': '댓글 작성', 'fr': 'Publier un commentaire', 'es': 'Publicar comentario'
         },
         'translation_comments': {
-            'zh': '翻译评论', 'ja': '翻訳コメント', 'en': 'Translation Comments', 'ru': 'Комментарии к переводу', 'ko': '번역 댓글', 'fr': 'Commentaires de traduction'
+            'zh': '翻译评论', 'zh-TW': '翻譯評論', 'ja': '翻訳コメント', 'en': 'Translation Comments', 'ru': 'Комментарии к переводу', 'ko': '번역 댓글', 'fr': 'Commentaires de traduction', 'es': 'Comentarios de traducción'
         },
         'translator_work_section': {
-            'zh': '翻译者工作区域', 'ja': '翻訳者の作業エリア', 'en': 'Translator Work Section', 'ru': 'Рабочая область переводчика', 'ko': '번역가 작업 영역', 'fr': 'Section de travail du traducteur'
+            'zh': '翻译者工作区域', 'zh-TW': '翻譯者工作區域', 'ja': '翻訳者の作業エリア', 'en': 'Translator Work Section', 'ru': 'Рабочая область переводчика', 'ko': '번역가 작업 영역', 'fr': 'Section de travail du traducteur', 'es': 'Sección de trabajo del traductor'
         },
         'translator_corrections': {
-            'zh': '的校正', 'ja': 'の校正', 'en': '\'s Corrections', 'ru': 'Исправления', 'ko': '의 교정', 'fr': 'Corrections de'
+            'zh': '的校正', 'zh-TW': '的校正', 'ja': 'の校正', 'en': '\'s Corrections', 'ru': 'Исправления', 'ko': '의 교정', 'fr': 'Corrections de', 'es': 'Correcciones de'
         },
         'translator_comments': {
-            'zh': '的评论', 'ja': 'のコメント', 'en': '\'s Comments', 'ru': 'Комментарии', 'ko': '의 댓글', 'fr': 'Commentaires de'
+            'zh': '的评论', 'zh-TW': '的評論', 'ja': 'のコメント', 'en': '\'s Comments', 'ru': 'Комментарии', 'ko': '의 댓글', 'fr': 'Commentaires de', 'es': 'Comentarios de'
         },
         'translation_comment_note': {
-            'zh': '', 'ja': '', 'en': '', 'ru': '', 'ko': '', 'fr': ''
+            'zh': '', 'zh-TW': '', 'ja': '', 'en': '', 'ru': '', 'ko': '', 'fr': '', 'es': ''
         },
         'translation_comment_placeholder': {
-            'zh': '输入对翻译的评论...', 'ja': '翻訳についてコメントを入力...', 'en': 'Enter comments about the translation...', 'ru': 'Введите комментарии к переводу...', 'ko': '번역에 대한 댓글을 입력하세요...', 'fr': 'Entrez des commentaires sur la traduction...'
+            'zh': '输入对翻译的评论...', 'zh-TW': '輸入對翻譯的評論...', 'ja': '翻訳についてコメントを入力...', 'en': 'Enter comments about the translation...', 'ru': 'Введите комментарии к переводу...', 'ko': '번역에 대한 댓글을 입력하세요...', 'fr': 'Entrez des commentaires sur la traduction...', 'es': 'Ingrese comentarios sobre la traducción...'
         },
         'post_translation_comment': {
-            'zh': '发表翻译评论', 'ja': '翻訳コメントを投稿', 'en': 'Post Translation Comment', 'ru': 'Оставить комментарий к переводу', 'ko': '번역 댓글 작성', 'fr': 'Publier un commentaire de traduction'
+            'zh': '发表翻译评论', 'zh-TW': '發表翻譯評論', 'ja': '翻訳コメントを投稿', 'en': 'Post Translation Comment', 'ru': 'Оставить комментарий к переводу', 'ko': '번역 댓글 작성', 'fr': 'Publier un commentaire de traduction', 'es': 'Publicar comentario de traducción'
         },
         'download_translation_attachment': {
-            'zh': '下载翻译附件', 'ja': '翻訳添付ファイルをダウンロード', 'en': 'Download Translation Attachment', 'ru': 'Скачать вложение перевода', 'ko': '번역 첨부파일 다운로드', 'fr': 'Télécharger la pièce jointe de traduction'
+            'zh': '下载翻译附件', 'zh-TW': '下載翻譯附件', 'ja': '翻訳添付ファイルをダウンロード', 'en': 'Download Translation Attachment', 'ru': 'Скачать вложение перевода', 'ko': '번역 첨부파일 다운로드', 'fr': 'Télécharger la pièce jointe de traduction', 'es': 'Descargar archivo adjunto de traducción'
         },
         'start_translation': {
-            'zh': '开始翻译', 'ja': '翻訳を開始', 'en': 'Start Translation', 'ru': 'Начать перевод', 'ko': '번역 시작', 'fr': 'Commencer la traduction'
+            'zh': '开始翻译', 'zh-TW': '開始翻譯', 'ja': '翻訳を開始', 'en': 'Start Translation', 'ru': 'Начать перевод', 'ko': '번역 시작', 'fr': 'Commencer la traduction', 'es': 'Comenzar traducción'
         },
         'start_translation_desc': {
-            'zh': '如果您想翻译这个作品，请点击翻译按钮。', 'ja': 'この作品を翻訳したい場合は、翻訳ボタンをクリックしてください。', 'en': 'If you want to translate this work, please click the translate button.', 'ru': 'Если вы хотите перевести эту работу, нажмите кнопку перевода.', 'ko': '이 작품을 번역하고 싶다면 번역 버튼을 클릭하세요.', 'fr': 'Si vous voulez traduire cette œuvre, veuillez cliquer sur le bouton de traduction.'
+            'zh': '如果您想翻译这个作品，请点击翻译按钮。', 'zh-TW': '如果您想翻譯這個作品，請點擊翻譯按鈕。', 'ja': 'この作品を翻訳したい場合は、翻訳ボタンをクリックしてください。', 'en': 'If you want to translate this work, please click the translate button.', 'ru': 'Если вы хотите перевести эту работу, нажмите кнопку перевода.', 'ko': '이 작품을 번역하고 싶다면 번역 버튼을 클릭하세요.', 'fr': 'Si vous voulez traduire cette œuvre, veuillez cliquer sur le bouton de traduction.', 'es': 'Si quieres traducir esta obra, por favor haz clic en el botón de traducción.'
         },
         'translation_request': {
-            'zh': '翻译请求', 'ja': '翻訳リクエスト', 'en': 'Translation Request', 'ru': 'Запрос на перевод', 'ko': '번역 요청', 'fr': 'Demande de traduction'
+            'zh': '翻译请求', 'zh-TW': '翻譯請求', 'ja': '翻訳リクエスト', 'en': 'Translation Request', 'ru': 'Запрос на перевод', 'ko': '번역 요청', 'fr': 'Demande de traduction', 'es': 'Solicitud de traducción'
         },
         'translator_expectation_label': {
-            'zh': '翻译者的期待/要求：', 'ja': '翻訳者の期待/要求：', 'en': 'Translator\'s Expectations/Requirements:', 'ru': 'Ожидания/Требования переводчика:', 'ko': '번역가의 기대/요구사항:', 'fr': 'Attentes/Exigences du traducteur:'
+            'zh': '翻译者的期待/要求：', 'zh-TW': '翻譯者的期待/要求：', 'ja': '翻訳者の期待/要求：', 'en': 'Translator\'s Expectations/Requirements:', 'ru': 'Ожидания/Требования переводчика:', 'ko': '번역가의 기대/요구사항:', 'fr': 'Attentes/Exigences du traducteur:', 'es': 'Expectativas/Requisitos del traductor:'
         },
         'approve': {
-            'zh': '同意', 'ja': '承認', 'en': 'Approve', 'ru': 'Одобрить', 'ko': '승인', 'fr': 'Approuver'
+            'zh': '同意', 'zh-TW': '同意', 'ja': '承認', 'en': 'Approve', 'ru': 'Одобрить', 'ko': '승인', 'fr': 'Approuver', 'es': 'Aprobar'
         },
         'confirm_reject_request': {
-            'zh': '确定要拒绝这个翻译请求吗？', 'ja': 'この翻訳リクエストを却下しますか？', 'en': 'Are you sure you want to reject this translation request?', 'ru': 'Вы уверены, что хотите отклонить этот запрос на перевод?', 'ko': '이 번역 요청을 거부하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir rejeter cette demande de traduction?'
+            'zh': '确定要拒绝这个翻译请求吗？', 'zh-TW': '確定要拒絕這個翻譯請求嗎？', 'ja': 'この翻訳リクエストを却下しますか？', 'en': 'Are you sure you want to reject this translation request?', 'ru': 'Вы уверены, что хотите отклонить этот запрос на перевод?', 'ko': '이 번역 요청을 거부하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir rejeter cette demande de traduction?', 'es': '¿Estás seguro de que quieres rechazar esta solicitud de traducción?'
         },
         'confirm_untrust_translator': {
-            'zh': '确定要取消信赖该翻译者吗？', 'ja': 'この翻訳者の信頼を解除しますか？', 'en': 'Are you sure you want to remove trust from this translator?', 'ru': 'Вы уверены, что хотите снять доверие с этого переводчика?', 'ko': '이 번역가에 대한 신뢰를 해제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir retirer la confiance de ce traducteur?'
+            'zh': '确定要取消信赖该翻译者吗？', 'zh-TW': '確定要取消信賴該翻譯者嗎？', 'ja': 'この翻訳者の信頼を解除しますか？', 'en': 'Are you sure you want to remove trust from this translator?', 'ru': 'Вы уверены, что хотите снять доверие с этого переводчика?', 'ko': '이 번역가에 대한 신뢰를 해제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir retirer la confiance de ce traducteur?', 'es': '¿Estás seguro de que quieres quitar la confianza de este traductor?'
         },
         'confirm_delete_translation': {
-            'zh': '确定要删除这个翻译吗？', 'ja': 'この翻訳を削除しますか？', 'en': 'Are you sure you want to delete this translation?', 'ru': 'Вы уверены, что хотите удалить этот перевод?', 'ko': '이 번역을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette traduction?'
+            'zh': '确定要删除这个翻译吗？', 'zh-TW': '確定要刪除這個翻譯嗎？', 'ja': 'この翻訳を削除しますか？', 'en': 'Are you sure you want to delete this translation?', 'ru': 'Вы уверены, что хотите удалить этот перевод?', 'ko': '이 번역을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette traduction?', 'es': '¿Estás seguro de que quieres eliminar esta traducción?'
         },
         'general_request': {
-            'zh': '的一般要求', 'ja': 'の一般要求', 'en': '\'s General Request', 'ru': 'Общий запрос', 'ko': '의 일반 요청', 'fr': 'Demande générale de'
+            'zh': '的一般要求', 'zh-TW': '的一般要求', 'ja': 'の一般要求', 'en': '\'s General Request', 'ru': 'Общий запрос', 'ko': '의 일반 요청', 'fr': 'Demande générale de', 'es': 'Solicitud general de'
         },
         'confirm_delete_comment': {
-            'zh': '确定要删除这个评论吗？', 'ja': 'このコメントを削除しますか？', 'en': 'Are you sure you want to delete this comment?', 'ru': 'Вы уверены, что хотите удалить этот комментарий?', 'ko': '이 댓글을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer ce commentaire?'
+            'zh': '确定要删除这个评论吗？', 'zh-TW': '確定要刪除這個評論嗎？', 'ja': 'このコメントを削除しますか？', 'en': 'Are you sure you want to delete this comment?', 'ru': 'Вы уверены, что хотите удалить этот комментарий?', 'ko': '이 댓글을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer ce commentaire?', 'es': '¿Estás seguro de que quieres eliminar este comentario?'
         },
         'confirm_delete_work': {
-            'zh': '确定要删除这个作品吗？', 'ja': 'この作品を削除しますか？', 'en': 'Are you sure you want to delete this work?', 'ru': 'Вы уверены, что хотите удалить эту работу?', 'ko': '이 작품을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette œuvre?'
+            'zh': '确定要删除这个作品吗？', 'zh-TW': '確定要刪除這個作品嗎？', 'ja': 'この作品を削除しますか？', 'en': 'Are you sure you want to delete this work?', 'ru': 'Вы уверены, что хотите удалить эту работу?', 'ko': '이 작품을 삭제하시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir supprimer cette œuvre?', 'es': '¿Estás seguro de que quieres eliminar esta obra?'
         },
         'confirm_clear_translation': {
-            'zh': '确定要清空翻译内容吗？', 'ja': '翻訳内容をクリアしますか？', 'en': 'Are you sure you want to clear the translation content?', 'ru': 'Вы уверены, что хотите очистить содержимое перевода?', 'ko': '번역 내용을 지우시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir effacer le contenu de la traduction?'
+            'zh': '确定要清空翻译内容吗？', 'zh-TW': '確定要清空翻譯內容嗎？', 'ja': '翻訳内容をクリアしますか？', 'en': 'Are you sure you want to clear the translation content?', 'ru': 'Вы уверены, что хотите очистить содержимое перевода?', 'ko': '번역 내용을 지우시겠습니까?', 'fr': 'Êtes-vous sûr de vouloir effacer le contenu de la traduction?', 'es': '¿Estás seguro de que quieres limpiar el contenido de la traducción?'
         },
         'confirm_delete_translation_irreversible': {
-            'zh': '确定要删除这个翻译吗？此操作不可撤销。', 'ja': 'この翻訳を削除しますか？この操作は取り消せません。', 'en': 'Are you sure you want to delete this translation? This action cannot be undone.', 'ru': 'Вы уверены, что хотите удалить этот перевод? Это действие нельзя отменить.', 'ko': '이 번역을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.', 'fr': 'Êtes-vous sûr de vouloir supprimer cette traduction? Cette action ne peut pas être annulée.'
+            'zh': '确定要删除这个翻译吗？此操作不可撤销。', 'zh-TW': '確定要刪除這個翻譯嗎？此操作不可撤銷。', 'ja': 'この翻訳を削除しますか？この操作は取り消せません。', 'en': 'Are you sure you want to delete this translation? This action cannot be undone.', 'ru': 'Вы уверены, что хотите удалить этот перевод? Это действие нельзя отменить.', 'ko': '이 번역을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.', 'fr': 'Êtes-vous sûr de vouloir supprimer cette traduction? Cette action ne peut pas être annulée.', 'es': '¿Estás seguro de que quieres eliminar esta traducción? Esta acción no se puede deshacer.'
         },
         'confirm_clear_all_data': {
-            'zh': '确定要清理所有数据吗？此操作不可恢复！', 'ja': 'すべてのデータをクリアしますか？この操作は復元できません！', 'en': 'Are you sure you want to clear all data? This operation cannot be restored!', 'ru': 'Вы уверены, что хотите очистить все данные? Эта операция не может быть восстановлена!', 'ko': '모든 데이터를 지우시겠습니까? 이 작업은 복원할 수 없습니다!', 'fr': 'Êtes-vous sûr de vouloir effacer toutes les données? Cette operation ne peut pas être restaurée!'
+            'zh': '确定要清理所有数据吗？此操作不可恢复！', 'zh-TW': '確定要清理所有數據嗎？此操作不可恢復！', 'ja': 'すべてのデータをクリアしますか？この操作は復元できません！', 'en': 'Are you sure you want to clear all data? This operation cannot be restored!', 'ru': 'Вы уверены, что хотите очистить все данные? Эта операция не может быть восстановлена!', 'ko': '모든 데이터를 지우시겠습니까? 이 작업은 복원할 수 없습니다!', 'fr': 'Êtes-vous sûr de vouloir effacer toutes les données? Cette operation ne peut pas être restaurée!', 'es': '¿Estás seguro de que quieres limpiar todos los datos? ¡Esta operación no se puede restaurar!'
         },
         'alert_enter_deletion_reason': {
-            'zh': '请输入删除理由', 'ja': '削除理由を入力してください', 'en': 'Please enter a deletion reason', 'ru': 'Пожалуйста, введите причину удаления', 'ko': '삭제 이유를 입력해 주세요', 'fr': 'Veuillez entrer une raison de suppression'
+            'zh': '请输入删除理由', 'zh-TW': '請輸入刪除理由', 'ja': '削除理由を入力してください', 'en': 'Please enter a deletion reason', 'ru': 'Пожалуйста, введите причину удаления', 'ko': '삭제 이유를 입력해 주세요', 'fr': 'Veuillez entrer une raison de suppression', 'es': 'Por favor ingrese una razón de eliminación'
         },
         'already_admin': {
-            'zh': '您已经是管理员了', 'ja': 'あなたは既に管理者です', 'en': 'You are already an administrator', 'ru': 'Вы уже администратор', 'ko': '이미 관리자입니다', 'fr': 'Vous êtes déjà administrateur'
+            'zh': '您已经是管理员了', 'zh-TW': '您已經是管理員了', 'ja': 'あなたは既に管理者です', 'en': 'You are already an administrator', 'ru': 'Вы уже администратор', 'ko': '이미 관리자입니다', 'fr': 'Vous êtes déjà administrateur', 'es': 'Ya eres administrador'
         },
         'admin_request_pending': {
-            'zh': '您已经有一个待审核的管理员申请', 'ja': '審査待ちの管理者申請が既にあります', 'en': 'You already have a pending administrator application', 'ru': 'У вас уже есть заявка на администратора на рассмотрении', 'ko': '이미 대기 중인 관리자 신청이 있습니다', 'fr': 'Vous avez déjà une demande d\'administrateur en attente'
+            'zh': '您已经有一个待审核的管理员申请', 'zh-TW': '您已經有一個待審核的管理員申請', 'ja': '審査待ちの管理者申請が既にあります', 'en': 'You already have a pending administrator application', 'ru': 'У вас уже есть заявка на администратора на рассмотрении', 'ko': '이미 대기 중인 관리자 신청이 있습니다', 'fr': 'Vous avez déjà une demande d\'administrateur en attente', 'es': 'Ya tienes una solicitud de administrador pendiente'
         },
         'please_enter_reason': {
-            'zh': '请填写申请理由', 'ja': '申請理由を入力してください', 'en': 'Please enter application reason', 'ru': 'Пожалуйста, введите причину заявки', 'ko': '신청 이유를 입력해 주세요', 'fr': 'Veuillez entrer la raison de la demande'
+            'zh': '请填写申请理由', 'zh-TW': '請填寫申請理由', 'ja': '申請理由を入力してください', 'en': 'Please enter application reason', 'ru': 'Пожалуйста, введите причину заявки', 'ko': '신청 이유를 입력해 주세요', 'fr': 'Veuillez entrer la raison de la demande', 'es': 'Por favor ingrese la razón de la solicitud'
         },
         'admin_request_submitted': {
-            'zh': '管理员申请已提交，请等待审核', 'ja': '管理者申請が提出されました、審査をお待ちください', 'en': 'Administrator application submitted, please wait for review', 'ru': 'Заявка на администратора подана, пожалуйста, ждите рассмотрения', 'ko': '관리자 신청이 제출되었습니다. 검토를 기다려 주세요', 'fr': 'Demande d\'administrateur soumise, veuillez attendre l\'examen'
+            'zh': '管理员申请已提交，请等待审核', 'zh-TW': '管理員申請已提交，請等待審核', 'ja': '管理者申請が提出されました、審査をお待ちください', 'en': 'Administrator application submitted, please wait for review', 'ru': 'Заявка на администратора подана, пожалуйста, ждите рассмотрения', 'ko': '관리자 신청이 제출되었습니다. 검토를 기다려 주세요', 'fr': 'Demande d\'administrateur soumise, veuillez attendre l\'examen', 'es': 'Solicitud de administrador enviada, por favor espere la revisión'
         },
         'insufficient_permissions': {
-            'zh': '权限不足', 'ja': '権限が不足しています', 'en': 'Insufficient permissions', 'ru': 'Недостаточно прав', 'ko': '권한이 부족합니다', 'fr': 'Permissions insuffisantes'
+            'zh': '权限不足', 'zh-TW': '權限不足', 'ja': '権限が不足しています', 'en': 'Insufficient permissions', 'ru': 'Недостаточно прав', 'ko': '권한이 부족합니다', 'fr': 'Permissions insuffisantes', 'es': 'Permisos insuficientes'
         },
         'request_already_processed': {
-            'zh': '该申请已经被处理过了', 'ja': 'この申請は既に処理されています', 'en': 'This request has already been processed', 'ru': 'Эта заявка уже обработана', 'ko': '이 신청은 이미 처리되었습니다', 'fr': 'Cette demande a déjà été traitée'
+            'zh': '该申请已经被处理过了', 'zh-TW': '該申請已經被處理過了', 'ja': 'この申請は既に処理されています', 'en': 'This request has already been processed', 'ru': 'Эта заявка уже обработана', 'ko': '이 신청은 이미 처리되었습니다', 'fr': 'Cette demande a déjà été traitée', 'es': 'Esta solicitud ya ha sido procesada'
         },
         'admin_request_approved': {
             'zh': '已批准 {} 的管理员申请',
@@ -1837,3653 +1952,4503 @@ def get_message(key, lang=None, **kwargs):
         },
         'completed_work_cannot_edit': {
             'zh': '已完成的作品不能编辑',
+            'zh-TW': '已完成的作品不能編輯',
             'ja': '完了した作品は編集できません',
             'en': 'Completed works cannot be edited',
             'ru': 'Завершенные работы нельзя редактировать',
             'ko': '완료된 작품은 편집할 수 없습니다',
-            'fr': 'Les œuvres terminées ne peuvent pas être modifiées'
+            'fr': 'Les œuvres terminées ne peuvent pas être modifiées',
+            'es': 'Las obras completadas no se pueden editar'
         },
         'completed_work_cannot_delete': {
             'zh': '已完成的作品不能删除',
+            'zh-TW': '已完成的作品不能刪除',
             'ja': '完了した作品は削除できません',
             'en': 'Completed works cannot be deleted',
             'ru': 'Завершенные работы нельзя удалять',
             'ko': '완료된 작품은 삭제할 수 없습니다',
-            'fr': 'Les œuvres terminées ne peuvent pas être supprimées'
+            'fr': 'Les œuvres terminées ne peuvent pas être supprimées',
+            'es': 'Las obras completadas no se pueden eliminar'
         },
         'delete_work_error': {
             'zh': '删除作品时出错: {}',
+            'zh-TW': '刪除作品時出錯: {}',
             'ja': '作品削除中にエラーが発生しました: {}',
             'en': 'Error deleting work: {}',
             'ru': 'Ошибка при удалении работы: {}',
             'ko': '작품 삭제 중 오류 발생: {}',
-            'fr': 'Erreur lors de la suppression de l\'œuvre: {}'
-
+            'fr': 'Erreur lors de la suppression de l\'œuvre: {}',
+            'es': 'Error al eliminar la obra: {}'
         },
         'completed_work_translation_cannot_edit': {
             'zh': '已完成的作品的翻译不能编辑',
+            'zh-TW': '已完成的作品的翻譯不能編輯',
             'ja': '完了した作品の翻訳は編集できません',
             'en': 'Translation of completed works cannot be edited',
             'ru': 'Перевод завершенных работ нельзя редактировать',
             'ko': '완료된 작품의 번역은 편집할 수 없습니다',
-            'fr': 'La traduction des œuvres terminées ne peut pas être modifiée'
+            'fr': 'La traduction des œuvres terminées ne peut pas être modifiée',
+            'es': 'La traducción de obras completadas no se puede editar'
         },
         'completed_work_translation_cannot_delete': {
-            'zh': '已完成的作品的翻译不能删除', 'ja': '完了した作品の翻訳は削除できません', 'en': 'Translation of completed works cannot be deleted', 'ru': 'Перевод завершенных работ нельзя удалять', 'ko': '완료된 작품의 번역은 삭제할 수 없습니다', 'fr': 'La traduction des œuvres terminées ne peut pas être supprimée'
+            'zh': '已完成的作品的翻译不能删除', 'zh-TW': '已完成的作品的翻譯不能刪除', 'ja': '完了した作品の翻訳は削除できません', 'en': 'Translation of completed works cannot be deleted', 'ru': 'Перевод завершенных работ нельзя удалять', 'ko': '완료된 작품의 번역은 삭제할 수 없습니다', 'fr': 'La traduction des œuvres terminées ne peut pas être supprimée', 'es': 'La traducción de obras completadas no se puede eliminar'
         },
         'comments': {
-            'zh': '评论', 'ja': 'コメント', 'en': 'Comments', 'ru': 'Комментарии', 'ko': '댓글', 'fr': 'Commentaires'
+            'zh': '评论', 'zh-TW': '評論', 'ja': 'コメント', 'en': 'Comments', 'ru': 'Комментарии', 'ko': '댓글', 'fr': 'Commentaires', 'es': 'Comentarios'
         },
         'work_comment_note': {
-            'zh': '此评论针对整个作品内容', 'ja': 'このコメントは作品全体について表示されます', 'en': 'This comment is for the entire work content', 'ru': 'Этот комментарий для всего содержимого работы', 'ko': '이 댓글은 전체 작품 내용에 대한 것입니다', 'fr': 'Ce commentaire est pour l\'ensemble du contenu de l\'œuvre'
+            'zh': '此评论针对整个作品内容', 'zh-TW': '此評論針對整個作品內容', 'ja': 'このコメントは作品全体について表示されます', 'en': 'This comment is for the entire work content', 'ru': 'Этот комментарий для всего содержимого работы', 'ko': '이 댓글은 전체 작품 내용에 대한 것입니다', 'fr': 'Ce commentaire est pour l\'ensemble du contenu de l\'œuvre', 'es': 'Este comentario es para todo el contenido de la obra'
         },
         'comment_placeholder': {
-            'zh': '输入评论...', 'ja': 'コメントを入力...', 'en': 'Enter comment...', 'ru': 'Введите комментарий...', 'ko': '댓글을 입력하세요...', 'fr': 'Entrez un commentaire...'
+            'zh': '输入评论...', 'zh-TW': '輸入評論...', 'ja': 'コメントを入力...', 'en': 'Enter comment...', 'ru': 'Введите комментарий...', 'ko': '댓글을 입력하세요...', 'fr': 'Entrez un commentaire...', 'es': 'Ingrese comentario...'
         },
         'post_work_comment': {
-            'zh': '发表作品评论', 'ja': '作品コメントを投稿', 'en': 'Post Work Comment', 'ru': 'Оставить комментарий к работе', 'ko': '작품 댓글 작성', 'fr': 'Publier un commentaire sur l\'œuvre'
+            'zh': '发表作品评论', 'zh-TW': '發表作品評論', 'ja': '作品コメントを投稿', 'en': 'Post Work Comment', 'ru': 'Оставить комментарий к работе', 'ko': '작품 댓글 작성', 'fr': 'Publier un commentaire sur l\'œuvre', 'es': 'Publicar comentario de obra'
         },
         'no_comments': {
-            'zh': '暂无评论', 'ja': 'まだコメントがありません', 'en': 'No comments yet', 'ru': 'Пока нет комментариев', 'ko': '아직 댓글이 없습니다', 'fr': 'Aucun commentaire pour le moment'
+            'zh': '暂无评论', 'zh-TW': '暫無評論', 'ja': 'まだコメントがありません', 'en': 'No comments yet', 'ru': 'Пока нет комментариев', 'ko': '아직 댓글이 없습니다', 'fr': 'Aucun commentaire pour le moment', 'es': 'Aún no hay comentarios'
         },
         'translation_operations': {
-            'zh': '翻译操作', 'ja': '翻訳操作', 'en': 'Translation Operations', 'ru': 'Операции перевода', 'ko': '번역 작업', 'fr': 'Opérations de traduction'
+            'zh': '翻译操作', 'zh-TW': '翻譯操作', 'ja': '翻訳操作', 'en': 'Translation Operations', 'ru': 'Операции перевода', 'ko': '번역 작업', 'fr': 'Opérations de traduction', 'es': 'Operaciones de traducción'
         },
         'message_author': {
-            'zh': '私信作者', 'ja': '作者にメッセージ', 'en': 'Message Author', 'ru': 'Написать автору', 'ko': '작가에게 메시지', 'fr': 'Message à l\'auteur'
+            'zh': '私信作者', 'zh-TW': '私信作者', 'ja': '作者にメッセージ', 'en': 'Message Author', 'ru': 'Написать автору', 'ko': '작가에게 메시지', 'fr': 'Message à l\'auteur', 'es': 'Mensaje al autor'
         },
         'need_contact_author': {
-            'zh': '翻译前需要联系作者', 'ja': '翻訳前に作者に連絡が必要です', 'en': 'Need to contact author before translation', 'ru': 'Нужно связаться с автором перед переводом', 'ko': '번역 전에 작가와 연락해야 합니다', 'fr': 'Besoin de contacter l\'auteur avant la traduction'
+            'zh': '翻译前需要联系作者', 'zh-TW': '翻譯前需要聯繫作者', 'ja': '翻訳前に作者に連絡が必要です', 'en': 'Need to contact author before translation', 'ru': 'Нужно связаться с автором перед переводом', 'ko': '번역 전에 작가와 연락해야 합니다', 'fr': 'Besoin de contacter l\'auteur avant la traduction', 'es': 'Necesita contactar al autor antes de la traducción'
         },
         'confirm_translation_requirements': {
-            'zh': '确认翻译要求', 'ja': '翻訳要求確認', 'en': 'Confirm Translation Requirements', 'ru': 'Подтвердить требования к переводу', 'ko': '번역 요구사항 확인', 'fr': 'Confirmer les exigences de traduction'
+            'zh': '确认翻译要求', 'zh-TW': '確認翻譯要求', 'ja': '翻訳要求確認', 'en': 'Confirm Translation Requirements', 'ru': 'Подтвердить требования к переводу', 'ko': '번역 요구사항 확인', 'fr': 'Confirmer les exigences de traduction', 'es': 'Confirmar requisitos de traducción'
         },
         'need_agree_requirements': {
-            'zh': '需要同意翻译要求', 'ja': '翻訳要求に同意する必要があります', 'en': 'Need to agree to translation requirements', 'ru': 'Нужно согласиться с требованиями к переводу', 'ko': '번역 요구사항에 동의해야 합니다', 'fr': 'Besoin d\'accepter les exigences de traduction'
+            'zh': '需要同意翻译要求', 'zh-TW': '需要同意翻譯要求', 'ja': '翻訳要求に同意する必要があります', 'en': 'Need to agree to translation requirements', 'ru': 'Нужно согласиться с требованиями к переводу', 'ko': '번역 요구사항에 동의해야 합니다', 'fr': 'Besoin d\'accepter les exigences de traduction', 'es': 'Necesita aceptar los requisitos de traducción'
         },
         'trusted_translator': {
-            'zh': '作为被信任的翻译者', 'ja': '信頼された翻訳者として', 'en': 'As a trusted translator', 'ru': 'Как доверенный переводчик', 'ko': '신뢰받는 번역가로서', 'fr': 'En tant que traducteur de confiance'
+            'zh': '作为被信任的翻译者', 'zh-TW': '作為被信任的翻譯者', 'ja': '信頼された翻訳者として', 'en': 'As a trusted translator', 'ru': 'Как доверенный переводчик', 'ko': '신뢰받는 번역가로서', 'fr': 'En tant que traducteur de confiance', 'es': 'Como traductor de confianza'
         },
         'already_translated': {
-            'zh': '该作品已有翻译', 'ja': 'この作品は既に翻訳されています', 'en': 'This work has already been translated', 'ru': 'Эта работа уже переведена', 'ko': '이 작품은 이미 번역되었습니다', 'fr': 'Cette œuvre a déjà été traduite'
+            'zh': '该作品已有翻译', 'zh-TW': '該作品已有翻譯', 'ja': 'この作品は既に翻訳されています', 'en': 'This work has already been translated', 'ru': 'Эта работа уже переведена', 'ko': '이 작품은 이미 번역되었습니다', 'fr': 'Cette œuvre a déjà été traduite', 'es': 'Esta obra ya ha sido traducida'
         },
         'you_already_translated': {
-            'zh': '您已经翻译过这个作品', 'ja': 'この作品は既に翻訳済みです', 'en': 'You have already translated this work', 'ru': 'Вы уже перевели эту работу', 'ko': '이미 이 작품을 번역했습니다', 'fr': 'Vous avez déjà traduit cette œuvre'
+            'zh': '您已经翻译过这个作品', 'zh-TW': '您已經翻譯過這個作品', 'ja': 'この作品は既に翻訳済みです', 'en': 'You have already translated this work', 'ru': 'Вы уже перевели эту работу', 'ko': '이미 이 작품을 번역했습니다', 'fr': 'Vous avez déjà traduit cette œuvre', 'es': 'Ya has traducido esta obra'
         },
         'multiple_translators_allowed': {
-            'zh': '允许多人翻译', 'ja': '複数の翻訳者を許可', 'en': 'Multiple translators allowed', 'ru': 'Разрешено несколько переводчиков', 'ko': '여러 번역가 허용', 'fr': 'Plusieurs traducteurs autorisés'
+            'zh': '允许多人翻译', 'zh-TW': '允許多人翻譯', 'ja': '複数の翻訳者を許可', 'en': 'Multiple translators allowed', 'ru': 'Разрешено несколько переводчиков', 'ko': '여러 번역가 허용', 'fr': 'Plusieurs traducteurs autorisés', 'es': 'Múltiples traductores permitidos'
         },
         'need_translator_qualification': {
-            'zh': '需要翻译者资格', 'ja': '翻訳者資格が必要です', 'en': 'Need translator qualification', 'ru': 'Нужна квалификация переводчика', 'ko': '번역가 자격이 필요합니다', 'fr': 'Besoin d\'une qualification de traducteur'
+            'zh': '需要翻译者资格', 'zh-TW': '需要翻譯者資格', 'ja': '翻訳者資格が必要です', 'en': 'Need translator qualification', 'ru': 'Нужна квалификация переводчика', 'ko': '번역가 자격이 필요합니다', 'fr': 'Besoin d\'une qualification de traducteur', 'es': 'Necesita calificación de traductor'
         },
         'apply_translator': {
-            'zh': '申请成为翻译者', 'ja': '翻訳者申請', 'en': 'Apply to become a translator', 'ru': 'Подать заявку на переводчика', 'ko': '번역가 신청', 'fr': 'Postuler pour devenir traducteur'
+            'zh': '申请成为翻译者', 'zh-TW': '申請成為翻譯者', 'ja': '翻訳者申請', 'en': 'Apply to become a translator', 'ru': 'Подать заявку на переводчика', 'ko': '번역가 신청', 'fr': 'Postuler pour devenir traducteur', 'es': 'Solicitar convertirse en traductor'
         },
         'work_info': {
-            'zh': '作品信息', 'ja': '作品情報', 'en': 'Work Information', 'ru': 'Информация о работе', 'ko': '작품 정보', 'fr': 'Informations sur l\'œuvre'
+            'zh': '作品信息', 'zh-TW': '作品資訊', 'ja': '作品情報', 'en': 'Work Information', 'ru': 'Информация о работе', 'ko': '작품 정보', 'fr': 'Informations sur l\'œuvre', 'es': 'Información de la obra'
         },
         'language': {
-            'zh': '语言：', 'ja': '言語：', 'en': 'Language:', 'ru': 'Язык:', 'ko': '언어:', 'fr': 'Langue:'
+            'zh': '语言：', 'zh-TW': '語言：', 'ja': '言語：', 'en': 'Language:', 'ru': 'Язык:', 'ko': '언어:', 'fr': 'Langue:', 'es': 'Idioma:'
         },
         'category': {
-            'zh': '分类：', 'ja': 'カテゴリー：', 'en': 'Category:', 'ru': 'Категория:', 'ko': '카테고리:', 'fr': 'Catégorie:'
+            'zh': '分类：', 'zh-TW': '分類：', 'ja': 'カテゴリー：', 'en': 'Category:', 'ru': 'Категория:', 'ko': '카테고리:', 'fr': 'Catégorie:', 'es': 'Categoría:'
         },
         'created_date': {
-            'zh': '创建时间：', 'ja': '作成日：', 'en': 'Created Date:', 'ru': 'Дата создания:', 'ko': '생성 날짜:', 'fr': 'Date de création:'
+            'zh': '创建时间：', 'zh-TW': '創建時間：', 'ja': '作成日：', 'en': 'Created Date:', 'ru': 'Дата создания:', 'ko': '생성 날짜:', 'fr': 'Date de création:', 'es': 'Fecha de creación:'
         },
         'status': {
-            'zh': '状态：', 'ja': 'ステータス：', 'en': 'Status:', 'ru': 'Статус:', 'ko': '상태:', 'fr': 'Statut:'
+            'zh': '状态：', 'zh-TW': '狀態：', 'ja': 'ステータス：', 'en': 'Status:', 'ru': 'Статус:', 'ko': '상태:', 'fr': 'Statut:', 'es': 'Estado:'
         },
         'author_info': {
-            'zh': '作者信息', 'ja': '作者情報', 'en': 'Author Information', 'ru': 'Информация об авторе', 'ko': '작가 정보', 'fr': 'Informations sur l\'auteur'
+            'zh': '作者信息', 'zh-TW': '作者資訊', 'ja': '作者情報', 'en': 'Author Information', 'ru': 'Информация об авторе', 'ko': '작가 정보', 'fr': 'Informations sur l\'auteur', 'es': 'Información del autor'
         },
         'reviewer': {
-            'zh': '校正者', 'ja': '校正者', 'en': 'Reviewer', 'ru': 'Рецензент', 'ko': '검토자', 'fr': 'Réviseur'
+            'zh': '校正者', 'zh-TW': '校正者', 'ja': '校正者', 'en': 'Reviewer', 'ru': 'Рецензент', 'ko': '검토자', 'fr': 'Réviseur', 'es': 'Revisor'
         },
         'admin': {
-            'zh': '管理员', 'ja': '管理者', 'en': 'Administrator', 'ru': 'Администратор', 'ko': '관리자', 'fr': 'Administrateur'
+            'zh': '管理员', 'zh-TW': '管理員', 'ja': '管理者', 'en': 'Administrator', 'ru': 'Администратор', 'ko': '관리자', 'fr': 'Administrateur', 'es': 'Administrador'
         },
         'works': {
-            'zh': '作品', 'ja': '作品', 'en': 'Works', 'ru': 'Работы', 'ko': '작품', 'fr': 'Œuvres'
+            'zh': '作品', 'zh-TW': '作品', 'ja': '作品', 'en': 'Works', 'ru': 'Работы', 'ko': '작품', 'fr': 'Œuvres', 'es': 'Obras'
         },
         'translations': {
-            'zh': '翻译', 'ja': '翻訳', 'en': 'Translations', 'ru': 'Переводы', 'ko': '번역', 'fr': 'Traductions'
+            'zh': '翻译', 'zh-TW': '翻譯', 'ja': '翻訳', 'en': 'Translations', 'ru': 'Переводы', 'ko': '번역', 'fr': 'Traductions', 'es': 'Traducciones'
         },
         'likes': {
-            'zh': '点赞', 'ja': 'いいね', 'en': 'Likes', 'ru': 'Лайки', 'ko': '좋아요', 'fr': 'J\'aime'
+            'zh': '点赞', 'zh-TW': '點讚', 'ja': 'いいね', 'en': 'Likes', 'ru': 'Лайки', 'ko': '좋아요', 'fr': 'J\'aime', 'es': 'Me gusta'
         },
         'registration_date': {
-            'zh': '注册时间：', 'ja': '登録日：', 'en': 'Registration Date:', 'ru': 'Дата регистрации:', 'ko': '가입 날짜:', 'fr': 'Date d\'inscription:'
+            'zh': '注册时间：', 'zh-TW': '註冊時間：', 'ja': '登録日：', 'en': 'Registration Date:', 'ru': 'Дата регистрации:', 'ko': '가입 날짜:', 'fr': 'Date d\'inscription:', 'es': 'Fecha de registro:'
         },
         'preferred_language': {
-            'zh': '偏好语言：', 'ja': '好みの言語：', 'en': 'Preferred Language:', 'ru': 'Предпочитаемый язык:', 'ko': '선호 언어:', 'fr': 'Langue préférée:'
+            'zh': '偏好语言：', 'zh-TW': '偏好語言：', 'ja': '好みの言語：', 'en': 'Preferred Language:', 'ru': 'Предпочитаемый язык:', 'ko': '선호 언어:', 'fr': 'Langue préférée:', 'es': 'Idioma preferido:'
         },
         'chinese': {
-            'zh': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois'
+            'zh': '中文', 'zh-TW': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois', 'es': 'Chino'
         },
         'japanese': {
-            'zh': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais'
+            'zh': '日文', 'zh-TW': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais', 'es': 'Japonés'
         },
         'english': {
-            'zh': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais'
+            'zh': '英文', 'zh-TW': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais', 'es': 'Inglés'
         },
         'russian': {
-            'zh': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe'
+            'zh': '俄文', 'zh-TW': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe', 'es': 'Ruso'
         },
         'korean': {
-            'zh': '韩文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen'
+            'zh': '韩文', 'zh-TW': '韓文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen', 'es': 'Coreano'
         },
         'french': {
-            'zh': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français'
+            'zh': '法文', 'zh-TW': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français', 'es': 'Francés'
         },
         'view_profile': {
-            'zh': '查看资料', 'ja': 'プロフィール', 'en': 'View Profile', 'ru': 'Просмотр профиля', 'ko': '프로필 보기', 'fr': 'Voir le profil'
+            'zh': '查看资料', 'zh-TW': '查看資料', 'ja': 'プロフィール', 'en': 'View Profile', 'ru': 'Просмотр профиля', 'ko': '프로필 보기', 'fr': 'Voir le profil', 'es': 'Ver perfil'
         },
         'accept_translation': {
-            'zh': '接受翻译', 'ja': '翻訳を承認', 'en': 'Accept Translation', 'ru': 'Принять перевод', 'ko': '번역 수락', 'fr': 'Accepter la traduction'
+            'zh': '接受翻译', 'zh-TW': '接受翻譯', 'ja': '翻訳を承認', 'en': 'Accept Translation', 'ru': 'Принять перевод', 'ko': '번역 수락', 'fr': 'Accepter la traduction', 'es': 'Aceptar traducción'
         },
         'evaluation_optional': {
-            'zh': '评价（可选）', 'ja': '評価（オプション）', 'en': 'Evaluation (Optional)', 'ru': 'Оценка (необязательно)', 'ko': '평가 (선택사항)', 'fr': 'Évaluation (optionnel)'
+            'zh': '评价（可选）', 'zh-TW': '評價（可選）', 'ja': '評価（オプション）', 'en': 'Evaluation (Optional)', 'ru': 'Оценка (необязательно)', 'ko': '평가 (선택사항)', 'fr': 'Évaluation (optionnel)', 'es': 'Evaluación (opcional)'
         },
         'evaluation_placeholder': {
-            'zh': '请输入对翻译的评价...', 'ja': '翻訳についての評価を入力してください...', 'en': 'Please enter your evaluation of the translation...', 'ru': 'Пожалуйста, введите вашу оценку перевода...', 'ko': '번역에 대한 평가를 입력하세요...', 'fr': 'Veuillez entrer votre évaluation de la traduction...'
+            'zh': '请输入对翻译的评价...', 'zh-TW': '請輸入對翻譯的評價...', 'ja': '翻訳についての評価を入力してください...', 'en': 'Please enter your evaluation of the translation...', 'ru': 'Пожалуйста, введите вашу оценку перевода...', 'ko': '번역에 대한 평가를 입력하세요...', 'fr': 'Veuillez entrer votre évaluation de la traduction...', 'es': 'Por favor ingrese su evaluación de la traducción...'
         },
         'add_like_to_translation': {
-            'zh': '为翻译点赞', 'ja': '翻訳にいいねを追加', 'en': 'Add like to translation', 'ru': 'Добавить лайк к переводу', 'ko': '번역에 좋아요 추가', 'fr': 'Ajouter un j\'aime à la traduction'
+            'zh': '为翻译点赞', 'zh-TW': '為翻譯點讚', 'ja': '翻訳にいいねを追加', 'en': 'Add like to translation', 'ru': 'Добавить лайк к переводу', 'ko': '번역에 좋아요 추가', 'fr': 'Ajouter un j\'aime à la traduction', 'es': 'Agregar me gusta a la traducción'
         },
         'already_accepted': {
             'zh': '您已经接受过这个翻译了',
+            'zh-TW': '您已經接受過這個翻譯了',
             'ja': '既にこの翻訳を承認しています',
             'en': 'You have already accepted this translation',
             'ru': 'Вы уже приняли этот перевод',
             'ko': '이미 이 번역을 승인했습니다',
-            'fr': 'Vous avez déjà accepté cette traduction'
+            'fr': 'Vous avez déjà accepté cette traduction',
+            'es': 'Ya has aceptado esta traducción'
         },
         'translation_accepted': {
             'zh': '翻译已接受！',
+            'zh-TW': '翻譯已接受！',
             'ja': '翻訳が承認されました！',
             'en': 'Translation accepted!',
             'ru': 'Перевод принят!',
             'ko': '번역이 승인되었습니다!',
-            'fr': 'Traduction acceptée!'
+            'fr': 'Traduction acceptée!',
+            'es': '¡Traducción aceptada!'
         },
         'only_author_unaccept': {
             'zh': '只有作品作者可以取消接受翻译',
+            'zh-TW': '只有作品作者可以取消接受翻譯',
             'ja': '作品の作者のみが翻訳の承認を取り消すことができます',
             'en': 'Only the work author can unaccept translation',
             'ru': 'Только автор работы может отменить принятие перевода',
             'ko': '작품 작가만 번역 승인을 취소할 수 있습니다',
-            'fr': 'Seul l\'auteur de l\'œuvre peut annuler l\'acceptation de la traduction'
+            'fr': 'Seul l\'auteur de l\'œuvre peut annuler l\'acceptation de la traduction',
+            'es': 'Solo el autor de la obra puede cancelar la aceptación de la traducción'
         },
         'not_accepted': {
             'zh': '您还没有接受过这个翻译',
+            'zh-TW': '您還沒有接受過這個翻譯',
             'ja': 'まだこの翻訳を承認していません',
             'en': 'You have not accepted this translation yet',
             'ru': 'Вы еще не приняли этот перевод',
             'ko': '아직 이 번역을 승인하지 않았습니다',
-            'fr': 'Vous n\'avez pas encore accepté cette traduction'
+            'fr': 'Vous n\'avez pas encore accepté cette traduction',
+            'es': 'Aún no has aceptado esta traducción'
         },
         'translation_unaccepted': {
             'zh': '已取消接受翻译。',
+            'zh-TW': '已取消接受翻譯。',
             'ja': '翻訳の承認を取り消しました。',
             'en': 'Translation acceptance has been cancelled.',
             'ru': 'Принятие перевода было отменено.',
             'ko': '번역 승인이 취소되었습니다.',
-            'fr': 'L\'acceptation de la traduction a été annulée.'
+            'fr': 'L\'acceptation de la traduction a été annulée.',
+            'es': 'La aceptación de la traducción ha sido cancelada.'
         },
         'author_accept_irreversible': {
             'zh': '作者已承认翻译不可取消，请重新考虑。',
+            'zh-TW': '作者已承認翻譯不可取消，請重新考慮。',
             'ja': '作者は翻訳の取り消しができないことを承認しました。再考してください。',
             'en': 'The author has acknowledged that the translation cannot be cancelled, please reconsider.',
             'ru': 'Автор признал, что перевод нельзя отменить, пожалуйста, пересмотрите.',
             'ko': '작가는 번역을 취소할 수 없다는 것을 인정했습니다. 다시 고려해 주세요.',
-            'fr': 'L\'auteur a reconnu que la traduction ne peut pas être annulée, veuillez reconsidérer.'
+            'fr': 'L\'auteur a reconnu que la traduction ne peut pas être annulée, veuillez reconsidérer.',
+            'es': 'El autor ha reconocido que la traducción no se puede cancelar, por favor reconsidera.'
         },
         'translation_content_required': {
             'zh': '翻译内容不能为空',
+            'zh-TW': '翻譯內容不能為空',
             'ja': '翻訳内容は空にできません',
             'en': 'Translation content cannot be empty',
             'ru': 'Содержание перевода не может быть пустым',
             'ko': '번역 내용은 비워둘 수 없습니다',
-            'fr': 'Le contenu de la traduction ne peut pas être vide'
+            'fr': 'Le contenu de la traduction ne peut pas être vide',
+            'es': 'El contenido de la traducción no puede estar vacío'
         },
         'category_required': {
             'zh': '请选择作品分类',
+            'zh-TW': '請選擇作品分類',
             'ja': '作品のカテゴリーを選択してください',
             'en': 'Please select a work category',
             'ru': 'Пожалуйста, выберите категорию работы',
             'ko': '작품 카테고리를 선택해 주세요',
-            'fr': 'Veuillez sélectionner une catégorie d\'œuvre'
+            'fr': 'Veuillez sélectionner une catégorie d\'œuvre',
+            'es': 'Por favor seleccione una categoría de obra'
         },
                          'languages_cannot_be_same': {
                      'zh': '原始语言和目标语言不能相同（除了"其他"）',
+                     'zh-TW': '原始語言和目標語言不能相同（除了「其他」）',
                      'ja': '原文言語と目標言語は同じにできません（「その他」を除く）',
                      'en': 'Original language and target language cannot be the same (except "Other")',
                      'ru': 'Исходный язык и целевой язык не могут быть одинаковыми (кроме "Другое")',
                      'ko': '원본 언어와 목표 언어는 같을 수 없습니다 ("기타" 제외)',
-                     'fr': 'La langue originale et la langue cible ne peuvent pas être identiques (sauf "Autre")'
+                     'fr': 'La langue originale et la langue cible ne peuvent pas être identiques (sauf "Autre")',
+                     'es': 'El idioma original y el idioma objetivo no pueden ser iguales (excepto "Otro")'
                  },
                  'validation_error': {
                      'zh': '验证错误',
+                     'zh-TW': '驗證錯誤',
                      'ja': '検証エラー',
                      'en': 'Validation Error',
                      'ru': 'Ошибка валидации',
                      'ko': '검증 오류',
-                     'fr': 'Erreur de validation'
+                     'fr': 'Erreur de validation',
+                     'es': 'Error de validación'
                  },
                  'file_too_large_title': {
                      'zh': '文件过大',
+                     'zh-TW': '檔案過大',
                      'ja': 'ファイルが大きすぎます',
                      'en': 'File Too Large',
                      'ru': 'Файл слишком большой',
                      'ko': '파일이 너무 큽니다',
-                     'fr': 'Fichier trop volumineux'
+                     'fr': 'Fichier trop volumineux',
+                     'es': 'Archivo demasiado grande'
                  },
         'draft_saved': {
             'zh': '草稿已保存',
+            'zh-TW': '草稿已保存',
             'ja': '草稿が保存されました',
             'en': 'Draft saved',
             'ru': 'Черновик сохранен',
             'ko': '초안이 저장되었습니다',
-            'fr': 'Brouillon sauvegardé'
+            'fr': 'Brouillon sauvegardé',
+            'es': 'Borrador guardado'
         },
                                 'translation_rejected': {
                             'zh': '翻译已拒绝',
+                            'zh-TW': '翻譯已拒絕',
                             'ja': '翻訳が拒否されました',
                             'en': 'Translation rejected',
                             'ru': 'Перевод отклонен',
                             'ko': '번역이 거부되었습니다',
-                            'fr': 'Traduction rejetée'
+                            'fr': 'Traduction rejetée',
+                            'es': 'Traducción rechazada'
                         },
                         'admin_request_approved': {
             'zh': '您的管理员申请已获得批准',
+            'zh-TW': '您的管理員申請已獲得批准',
             'ja': '管理者申請が承認されました',
             'en': f'Congratulations! Your admin application has been approved. You now have admin privileges.',
             'ru': f'Поздравляем! Ваша заявка на администратора была одобрена. Теперь у вас есть права администратора.',
             'ko': f'축하합니다! 관리자 신청이 승인되었습니다. 이제 관리자 권한을 가지고 있습니다.',
             'fr': f'Félicitations ! Votre demande d\'administrateur a été approuvée. Vous avez maintenant les privilèges d\'administrateur.',
+            'es': f'¡Felicitaciones! Tu solicitud de administrador ha sido aprobada. Ahora tienes privilegios de administrador.',
         },
                                 'admin_request_rejected': {
             'zh': '您的管理员申请被拒绝了',
+            'zh-TW': '您的管理員申請被拒絕了',
             'ja': '管理者申請が拒否されました',
             'en': f'Sorry, your admin application was rejected.',
             'ru': f'Извините, ваша заявка на администратора была отклонена.',
             'ko': f'죄송합니다. 관리자 신청이 거부되었습니다.',
             'fr': f'Désolé, votre demande d\'administrateur a été rejetée.',
+            'es': f'Lo siento, tu solicitud de administrador fue rechazada.',
         },
         'comment_added': {
             'zh': '评论添加成功',
+            'zh-TW': '評論添加成功',
             'ja': 'コメントが追加されました',
             'en': 'Comment added successfully',
             'ru': 'Комментарий успешно добавлен',
             'ko': '댓글이 성공적으로 추가되었습니다',
-            'fr': 'Commentaire ajouté avec succès'
+            'fr': 'Commentaire ajouté avec succès',
+            'es': 'Comentario agregado exitosamente'
         },
         'comment_deleted': {
             'zh': '评论已删除',
+            'zh-TW': '評論已刪除',
             'ja': 'コメントが削除されました',
             'en': 'Comment deleted',
             'ru': 'Комментарий удален',
             'ko': '댓글이 삭제되었습니다',
-            'fr': 'Commentaire supprimé'
+            'fr': 'Commentaire supprimé',
+            'es': 'Comentario eliminado'
         },
         'no_permission_delete_comment': {
             'zh': '您没有权限删除此评论',
+            'zh-TW': '您沒有權限刪除此評論',
             'ja': 'このコメントを削除する権限がありません',
             'en': 'You do not have permission to delete this comment',
             'ru': 'У вас нет разрешения на удаление этого комментария',
             'ko': '이 댓글을 삭제할 권한이 없습니다',
-            'fr': 'Vous n\'avez pas la permission de supprimer ce commentaire'
+            'fr': 'Vous n\'avez pas la permission de supprimer ce commentaire',
+            'es': 'No tienes permiso para eliminar este comentario'
         },
         'admin_comment_deleted': {
             'zh': '管理员删除了您的评论',
+            'zh-TW': '管理員刪除了您的評論',
             'ja': '管理者があなたのコメントを削除しました',
             'en': f'Admin {kwargs.get("admin_name", "")} has deleted your comment in the work "{kwargs.get("work_title", "")}".',
             'ru': f'Администратор {kwargs.get("admin_name", "")} удалил ваш комментарий в работе "{kwargs.get("work_title", "")}".',
             'ko': f'관리자 {kwargs.get("admin_name", "")}가 작품 "{kwargs.get("work_title", "")}"에서 귀하의 댓글을 삭제했습니다.',
             'fr': f'L\'administrateur {kwargs.get("admin_name", "")} a supprimé votre commentaire dans l\'œuvre "{kwargs.get("work_title", "")}".',
+            'es': f'El administrador {kwargs.get("admin_name", "")} ha eliminado tu comentario en la obra "{kwargs.get("work_title", "")}".',
         },
         'cannot_correct_own_translation': {
             'zh': '您无法对自己的翻译进行校正',
+            'zh-TW': '您無法對自己的翻譯進行校正',
             'ja': '自分自身の翻訳を校正することはできません',
             'en': 'You cannot correct your own translation',
             'ru': 'Вы не можете исправлять свой собственный перевод',
             'ko': '자신의 번역을 교정할 수 없습니다',
-            'fr': 'Vous ne pouvez pas corriger votre propre traduction'
+            'fr': 'Vous ne pouvez pas corriger votre propre traduction',
+            'es': 'No puedes corregir tu propia traducción'
         },
         'received_like': {
             'zh': '您收到了一个点赞',
+            'zh-TW': '您收到了一個點讚',
             'ja': 'いいねをもらいました',
             'en': 'You received a like',
             'ru': 'Вы получили лайк',
             'ko': '좋아요를 받았습니다',
-            'fr': 'Vous avez reçu un j\'aime'
+            'fr': 'Vous avez reçu un j\'aime',
+            'es': 'Recibiste un me gusta'
         },
         # 邮件通知相关
         'email_new_message_subject': {
             'zh': '您有一条新消息',
+            'zh-TW': '您有一條新消息',
             'ja': '新しいメッセージがあります',
             'en': 'You have a new message',
             'ru': 'У вас новое сообщение',
             'ko': '새 메시지가 있습니다',
-            'fr': 'Vous avez un nouveau message'
+            'fr': 'Vous avez un nouveau message',
+            'es': 'Tienes un nuevo mensaje'
         },
         'email_greeting': {
             'zh': '您好，{username}',
+            'zh-TW': '您好，{username}',
             'ja': '{username} 様',
             'en': 'Hello, {username}',
             'ru': 'Здравствуйте, {username}',
             'ko': '안녕하세요, {username}님',
-            'fr': 'Bonjour, {username}'
+            'fr': 'Bonjour, {username}',
+            'es': 'Hola, {username}'
         },
         'email_from': {
             'zh': '来自',
+            'zh-TW': '來自',
             'ja': '送信者',
             'en': 'From',
             'ru': 'От',
             'ko': '보낸 사람',
-            'fr': 'De'
+            'fr': 'De',
+            'es': 'De'
         },
         'email_time': {
             'zh': '时间',
+            'zh-TW': '時間',
             'ja': '時間',
             'en': 'Time',
             'ru': 'Время',
             'ko': '시간',
-            'fr': 'Heure'
+            'fr': 'Heure',
+            'es': 'Hora'
         },
         'email_footer': {
             'zh': '请登录平台查看详情。',
+            'zh-TW': '請登錄平台查看詳情。',
             'ja': '詳細はプラットフォームにログインしてご確認ください。',
             'en': 'Please log in to the platform to view details.',
             'ru': 'Пожалуйста, войдите на платформу, чтобы посмотреть подробности.',
             'ko': '자세한 내용은 플랫폼에 로그인하여 확인하세요.',
-            'fr': 'Veuillez vous connecter à la plateforme pour voir les détails.'
+            'fr': 'Veuillez vous connecter à la plateforme pour voir les détails.',
+            'es': 'Por favor inicie sesión en la plataforma para ver los detalles.'
         },
         'email_notifications_label': {
             'zh': '邮件通知（收到消息时发送到邮箱）',
+            'zh-TW': '郵件通知（收到消息時發送到郵箱）',
             'ja': 'メール通知（メッセージ受信時にメール送信）',
             'en': 'Email notifications (send to inbox when you receive messages)',
             'ru': 'Уведомления по почте (отправлять письмо при получении сообщений)',
             'ko': '이메일 알림 (메시지 수신 시 메일 발송)',
-            'fr': 'Notifications par e-mail (envoyer un mail lors de la réception de messages)'
+            'fr': 'Notifications par e-mail (envoyer un mail lors de la réception de messages)',
+            'es': 'Notificaciones por correo electrónico (enviar al buzón cuando recibas mensajes)'
         },
         'email_verification_code': {
             'zh': '邮箱验证码',
+            'zh-TW': '郵箱驗證碼',
             'ja': 'メール認証コード',
             'en': 'Email verification code',
             'ru': 'Код подтверждения email',
             'ko': '이메일 인증 코드',
-            'fr': 'Code de vérification email'
+            'fr': 'Code de vérification email',
+            'es': 'Código de verificación de correo electrónico'
         },
         'send_verification_code': {
             'zh': '发送验证码',
+            'zh-TW': '發送驗證碼',
             'ja': '認証コードを送信',
             'en': 'Send verification code',
             'ru': 'Отправить код подтверждения',
             'ko': '인증 코드 보내기',
-            'fr': 'Envoyer le code de vérification'
+            'fr': 'Envoyer le code de vérification',
+            'es': 'Enviar código de verificación'
         },
         'verification_code_sent': {
             'zh': '验证码已发送到您的邮箱',
+            'zh-TW': '驗證碼已發送到您的郵箱',
             'ja': '認証コードをメールで送信しました',
             'en': 'Verification code sent to your email',
             'ru': 'Код подтверждения отправлен на ваш email',
             'ko': '인증 코드가 이메일로 전송되었습니다',
-            'fr': 'Code de vérification envoyé à votre email'
+            'fr': 'Code de vérification envoyé à votre email',
+            'es': 'Código de verificación enviado a tu correo electrónico'
         },
         'verification_code_required': {
             'zh': '请输入验证码',
+            'zh-TW': '請輸入驗證碼',
             'ja': '認証コードを入力してください',
             'en': 'Please enter verification code',
             'ru': 'Пожалуйста, введите код подтверждения',
             'ko': '인증 코드를 입력해 주세요',
-            'fr': 'Veuillez entrer le code de vérification'
+            'fr': 'Veuillez entrer le code de vérification',
+            'es': 'Por favor ingrese el código de verificación'
         },
         'verification_code_invalid': {
             'zh': '验证码无效或已过期',
+            'zh-TW': '驗證碼無效或已過期',
             'ja': '認証コードが無効または期限切れです',
             'en': 'Verification code is invalid or expired',
             'ru': 'Код подтверждения недействителен или истек',
             'ko': '인증 코드가 유효하지 않거나 만료되었습니다',
-            'fr': 'Le code de vérification est invalide ou expiré'
+            'fr': 'Le code de vérification est invalide ou expiré',
+            'es': 'El código de verificación es inválido o ha expirado'
         },
         'verification_code_success': {
             'zh': '邮箱验证成功',
+            'zh-TW': '郵箱驗證成功',
             'ja': 'メール認証が成功しました',
             'en': 'Email verification successful',
             'ru': 'Подтверждение email успешно',
             'ko': '이메일 인증 성공',
-            'fr': 'Vérification email réussie'
+            'fr': 'Vérification email réussie',
+            'es': 'Verificación de correo electrónico exitosa'
         },
         'enter_verification_code': {
             'zh': '请输入验证码',
+            'zh-TW': '請輸入驗證碼',
             'ja': '認証コードを入力',
             'en': 'Enter verification code',
             'ru': 'Введите код подтверждения',
             'ko': '인증 코드 입력',
-            'fr': 'Entrez le code de vérification'
+            'fr': 'Entrez le code de vérification',
+            'es': 'Ingrese código de verificación'
         },
         'resend_verification_code': {
             'zh': '重新发送验证码',
+            'zh-TW': '重新發送驗證碼',
             'ja': '認証コードを再送信',
             'en': 'Resend verification code',
             'ru': 'Отправить код подтверждения повторно',
             'ko': '인증 코드 재전송',
-            'fr': 'Renvoyer le code de vérification'
+            'fr': 'Renvoyer le code de vérification',
+            'es': 'Reenviar código de verificación'
         },
         'invalid_email': {
             'zh': '邮箱格式无效',
+            'zh-TW': '郵箱格式無效',
             'ja': 'メールアドレスの形式が無効です',
             'en': 'Invalid email format',
             'ru': 'Неверный формат email',
             'ko': '이메일 형식이 유효하지 않습니다',
-            'fr': 'Format d\'email invalide'
+            'fr': 'Format d\'email invalide',
+            'es': 'Formato de correo electrónico inválido'
         },
         'email_send_failed': {
             'zh': '邮件发送失败，请稍后重试',
+            'zh-TW': '郵件發送失敗，請稍後重試',
             'ja': 'メール送信に失敗しました。後でもう一度お試しください',
             'en': 'Email sending failed, please try again later',
             'ru': 'Ошибка отправки email, попробуйте позже',
             'ko': '이메일 전송에 실패했습니다. 나중에 다시 시도해 주세요',
-            'fr': 'Échec de l\'envoi de l\'email, veuillez réessayer plus tard'
+            'fr': 'Échec de l\'envoi de l\'email, veuillez réessayer plus tard',
+            'es': 'El envío de correo electrónico falló, por favor inténtalo más tarde'
         },
         'please_enter_email': {
             'zh': '请输入邮箱',
+            'zh-TW': '請輸入郵箱',
             'ja': 'メールアドレスを入力してください',
             'en': 'Please enter email',
             'ru': 'Пожалуйста, введите email',
             'ko': '이메일을 입력해 주세요',
-            'fr': 'Veuillez entrer l\'email'
+            'fr': 'Veuillez entrer l\'email',
+            'es': 'Por favor ingrese el correo electrónico'
         },
         'work': {
             'zh': '作品',
+            'zh-TW': '作品',
             'ja': '作品',
             'en': 'work',
             'ru': 'работа',
             'ko': '작품',
-            'fr': 'œuvre'
+            'fr': 'œuvre',
+            'es': 'obra'
         },
         'translation': {
             'zh': '翻译',
+            'zh-TW': '翻譯',
             'ja': '翻訳',
             'en': 'translation',
             'ru': 'перевод',
             'ko': '번역',
-            'fr': 'traduction'
+            'fr': 'traduction',
+            'es': 'traducción'
         },
         'comment': {
             'zh': '评论',
+            'zh-TW': '評論',
             'ja': 'コメント',
             'en': 'comment',
             'ru': 'комментарий',
             'ko': '댓글',
-            'fr': 'commentaire'
+            'fr': 'commentaire',
+            'es': 'comentario'
         },
         'correction': {
             'zh': '校正',
+            'zh-TW': '校正',
             'ja': '校正',
             'en': 'correction',
             'ru': 'исправление',
             'ko': '교정',
-            'fr': 'correction'
+            'fr': 'correction',
+            'es': 'corrección'
         },
         'like_milestone_10': {
             'zh': '恭喜！您获得了10个点赞里程碑',
+            'zh-TW': '恭喜！您獲得了10個點讚里程碑',
             'ja': 'おめでとうございます！10いいねのマイルストーンに到達しました',
             'en': 'Congratulations! You reached the 10 likes milestone',
             'ru': 'Поздравляем! Вы достигли рубежа в 10 лайков',
             'ko': '축하합니다! 좋아요 10개 이정표를 달성했습니다',
-            'fr': 'Félicitations! Vous avez atteint le jalon de 10 j\'aime'
-
+            'fr': 'Félicitations! Vous avez atteint le jalon de 10 j\'aime',
+            'es': '¡Felicitaciones! Has alcanzado el hito de 10 me gusta'
         },
         'like_milestone_100': {
             'zh': '恭喜！您获得了100个点赞里程碑',
+            'zh-TW': '恭喜！您獲得了100個點讚里程碑',
             'ja': 'おめでとうございます！100いいねのマイルストーンに到達しました',
             'en': 'Congratulations! You reached the 100 likes milestone',
             'ru': 'Поздравляем! Вы достигли рубежа в 100 лайков',
             'ko': '축하합니다! 좋아요 100개 이정표를 달성했습니다',
-            'fr': 'Félicitations! Vous avez atteint le jalon de 100 j\'aime'
-
+            'fr': 'Félicitations! Vous avez atteint le jalon de 100 j\'aime',
+            'es': '¡Felicitaciones! Has alcanzado el hito de 100 me gusta'
         },
         'like_milestone_1000': {
             'zh': '恭喜！您获得了1000个点赞里程碑',
+            'zh-TW': '恭喜！您獲得了1000個點讚里程碑',
             'ja': 'おめでとうございます！1000いいねのマイルストーンに到達しました',
             'en': 'Congratulations! You reached the 1000 likes milestone',
             'ru': 'Поздравляем! Вы достигли рубежа в 1000 лайков',
             'ko': '축하합니다! 좋아요 1000개 이정표를 달성했습니다',
-            'fr': 'Félicitations! Vous avez atteint le jalon de 1000 j\'aime'
-
+            'fr': 'Félicitations! Vous avez atteint le jalon de 1000 j\'aime',
+            'es': '¡Felicitaciones! Has alcanzado el hito de 1000 me gusta'
         },
         # Upload page messages
         'upload_work': {
             'zh': '上传作品',
+            'zh-TW': '上傳作品',
             'ja': '作品をアップロード',
             'en': 'Upload Work',
             'ru': 'Загрузить работу',
             'ko': '작품 업로드',
-            'fr': 'Télécharger l\'œuvre'
+            'fr': 'Télécharger l\'œuvre',
+            'es': 'Subir obra'
         },
         'title': {
-            'zh': '标题', 'ja': '作品タイトル', 'en': 'Title', 'ru': 'Название', 'ko': '제목', 'fr': 'Titre'
+            'zh': '标题', 'zh-TW': '標題', 'ja': '作品タイトル', 'en': 'Title', 'ru': 'Название', 'ko': '제목', 'fr': 'Titre', 'es': 'Título'
         },
         'enter_work_title': {
-            'zh': '请输入作品标题', 'ja': '作品のタイトルを入力', 'en': 'Enter work title', 'ru': 'Введите название работы', 'ko': '작품 제목을 입력하세요', 'fr': 'Entrez le titre de l\'œuvre'
+            'zh': '请输入作品标题', 'zh-TW': '請輸入作品標題', 'ja': '作品のタイトルを入力', 'en': 'Enter work title', 'ru': 'Введите название работы', 'ko': '작품 제목을 입력하세요', 'fr': 'Entrez le titre de l\'œuvre', 'es': 'Ingrese el título de la obra'
         },
         'category': {
-            'zh': '分类', 'ja': 'カテゴリー', 'en': 'Category', 'ru': 'Категория', 'ko': '카테고리', 'fr': 'Catégorie'
+            'zh': '分类', 'zh-TW': '分類', 'ja': 'カテゴリー', 'en': 'Category', 'ru': 'Категория', 'ko': '카테고리', 'fr': 'Catégorie', 'es': 'Categoría'
         },
         'select_category': {
-            'zh': '选择分类', 'ja': 'カテゴリーを選択', 'en': 'Select category', 'ru': 'Выберите категорию', 'ko': '카테고리 선택', 'fr': 'Sélectionner une catégorie'
+            'zh': '选择分类', 'zh-TW': '選擇分類', 'ja': 'カテゴリーを選択', 'en': 'Select category', 'ru': 'Выберите категорию', 'ko': '카테고리 선택', 'fr': 'Sélectionner une catégorie', 'es': 'Seleccionar categoría'
         },
         'original_language': {
-            'zh': '原文语言', 'ja': '原文言語', 'en': 'Original Language', 'ru': 'Исходный язык', 'ko': '원본 언어', 'fr': 'Langue originale'
+            'zh': '原文语言', 'zh-TW': '原文語言', 'ja': '原文言語', 'en': 'Original Language', 'ru': 'Исходный язык', 'ko': '원본 언어', 'fr': 'Langue originale', 'es': 'Idioma original'
         },
         'target_language': {
-            'zh': '目标语言', 'ja': '目標言語', 'en': 'Target Language', 'ru': 'Целевой язык', 'ko': '목표 언어', 'fr': 'Langue cible'
+            'zh': '目标语言', 'zh-TW': '目標語言', 'ja': '目標言語', 'en': 'Target Language', 'ru': 'Целевой язык', 'ko': '목표 언어', 'fr': 'Langue cible', 'es': 'Idioma objetivo'
         },
         'content': {
-            'zh': '正文内容', 'ja': '本文内容', 'en': 'Content', 'ru': 'Содержание', 'ko': '내용', 'fr': 'Contenu'
+            'zh': '正文内容', 'zh-TW': '正文內容', 'ja': '本文内容', 'en': 'Content', 'ru': 'Содержание', 'ko': '내용', 'fr': 'Contenu', 'es': 'Contenido'
         },
         'enter_work_content': {
-            'zh': '请输入作品内容...', 'ja': '作品の内容を入力してください...', 'en': 'Enter work content...', 'ru': 'Введите содержание работы...', 'ko': '작품 내용을 입력하세요...', 'fr': 'Entrez le contenu de l\'œuvre...'
+            'zh': '请输入作品内容...', 'zh-TW': '請輸入作品內容...', 'ja': '作品の内容を入力してください...', 'en': 'Enter work content...', 'ru': 'Введите содержание работы...', 'ko': '작품 내용을 입력하세요...', 'fr': 'Entrez le contenu de l\'œuvre...', 'es': 'Ingrese el contenido de la obra...'
         },
         'content_help': {
-            'zh': '请提供清晰、结构化的内容，以便翻译者更好地理解', 'ja': '翻訳者が理解しやすいように、明確で構造化された内容を提供してください', 'en': 'Please provide clear, structured content for better translator understanding', 'ru': 'Предоставьте четкое, структурированное содержание для лучшего понимания переводчиком', 'ko': '번역자가 이해하기 쉽도록 명확하고 구조화된 내용을 제공해 주세요', 'fr': 'Veuillez fournir un contenu clair et structuré pour une meilleure compréhension du traducteur'
+            'zh': '请提供清晰、结构化的内容，以便翻译者更好地理解', 'zh-TW': '請提供清晰、結構化的內容，以便翻譯者更好地理解', 'ja': '翻訳者が理解しやすいように、明確で構造化された内容を提供してください', 'en': 'Please provide clear, structured content for better translator understanding', 'ru': 'Предоставьте четкое, структурированное содержание для лучшего понимания переводчиком', 'ko': '번역자가 이해하기 쉽도록 명확하고 구조화된 내용을 제공해 주세요', 'fr': 'Veuillez fournir un contenu clair et structuré pour une meilleure compréhension du traducteur', 'es': 'Por favor proporcione contenido claro y estructurado para una mejor comprensión del traductor'
         },
         'multimedia_files': {
-            'zh': '上传多媒体文件（图片、音频、视频，选填）', 'ja': 'マルチメディアファイルをアップロード（画像、音声、動画、オプション）', 'en': 'Upload multimedia files (images, audio, video, optional)', 'ru': 'Загрузить мультимедийные файлы (изображения, аудио, видео, опционально)', 'ko': '멀티미디어 파일 업로드 (이미지, 오디오, 비디오, 선택사항)', 'fr': 'Télécharger des fichiers multimédias (images, audio, vidéo, optionnel)'
+            'zh': '上传多媒体文件（图片、音频、视频，选填）', 'zh-TW': '上傳多媒體文件（圖片、音頻、視頻，選填）', 'ja': 'マルチメディアファイルをアップロード（画像、音声、動画、オプション）', 'en': 'Upload multimedia files (images, audio, video, optional)', 'ru': 'Загрузить мультимедийные файлы (изображения, аудио, видео, опционально)', 'ko': '멀티미디어 파일 업로드 (이미지, 오디오, 비디오, 선택사항)', 'fr': 'Télécharger des fichiers multimédias (images, audio, vidéo, optionnel)', 'es': 'Subir archivos multimedia (imágenes, audio, video, opcional)'
         },
         'supported_formats': {
-            'zh': '支持格式：JPG, PNG, GIF, MP3, MP4, AVI 等（最大10MB）', 'ja': 'サポート形式：JPG, PNG, GIF, MP3, MP4, AVI など（最大10MB）', 'en': 'Supported formats: JPG, PNG, GIF, MP3, MP4, AVI, etc. (max 10MB)', 'ru': 'Поддерживаемые форматы: JPG, PNG, GIF, MP3, MP4, AVI и др. (макс. 10МБ)', 'ko': '지원 형식: JPG, PNG, GIF, MP3, MP4, AVI 등 (최대 10MB)', 'fr': 'Formats supportés: JPG, PNG, GIF, MP3, MP4, AVI, etc. (max 10MB)'
+            'zh': '支持格式：JPG, PNG, GIF, MP3, MP4, AVI 等（最大10MB）', 'zh-TW': '支持格式：JPG, PNG, GIF, MP3, MP4, AVI 等（最大10MB）', 'ja': 'サポート形式：JPG, PNG, GIF, MP3, MP4, AVI など（最大10MB）', 'en': 'Supported formats: JPG, PNG, GIF, MP3, MP4, AVI, etc. (max 10MB)', 'ru': 'Поддерживаемые форматы: JPG, PNG, GIF, MP3, MP4, AVI и др. (макс. 10МБ)', 'ko': '지원 형식: JPG, PNG, GIF, MP3, MP4, AVI 등 (최대 10MB)', 'fr': 'Formats supportés: JPG, PNG, GIF, MP3, MP4, AVI, etc. (max 10MB)', 'es': 'Formatos soportados: JPG, PNG, GIF, MP3, MP4, AVI, etc. (máx. 10MB)'
         },
         'translation_expectation': {
-            'zh': '对翻译的期待（选填）', 'ja': '翻訳への期待（オプション）', 'en': 'Translation Expectations (Optional)', 'ru': 'Ожидания от перевода (опционально)', 'ko': '번역에 대한 기대 (선택사항)', 'fr': 'Attentes de traduction (optionnel)'
+            'zh': '对翻译的期待（选填）', 'zh-TW': '對翻譯的期待（選填）', 'ja': '翻訳への期待（オプション）', 'en': 'Translation Expectations (Optional)', 'ru': 'Ожидания от перевода (опционально)', 'ko': '번역에 대한 기대 (선택사항)', 'fr': 'Attentes de traduction (optionnel)', 'es': 'Expectativas de traducción (opcional)'
         },
         'translation_expectation_placeholder': {
-            'zh': '如：希望译文更有文学性、希望译者多与我沟通等', 'ja': '例：より文学的な翻訳を希望、翻訳者とのコミュニケーションを希望など', 'en': 'e.g., Hope for more literary translation, hope to communicate with translator, etc.', 'ru': 'например: Надеюсь на более литературный перевод, надеюсь на общение с переводчиком и т.д.', 'ko': '예: 더 문학적인 번역을 희망, 번역자와의 소통을 희망 등', 'fr': 'ex: Espère une traduction plus littéraire, espère communiquer avec le traducteur, etc.'
+            'zh': '如：希望译文更有文学性、希望译者多与我沟通等', 'zh-TW': '如：希望譯文更有文學性、希望譯者多與我溝通等', 'ja': '例：より文学的な翻訳を希望、翻訳者とのコミュニケーションを希望など', 'en': 'e.g., Hope for more literary translation, hope to communicate with translator, etc.', 'ru': 'например: Надеюсь на более литературный перевод, надеюсь на общение с переводчиком и т.д.', 'ko': '예: 더 문학적인 번역을 희망, 번역자와의 소통을 희망 등', 'fr': 'ex: Espère une traduction plus littéraire, espère communiquer avec le traducteur, etc.', 'es': 'ej: Espero una traducción más literaria, espero comunicarme con el traductor, etc.'
         },
         'translation_expectation_help': {
-            'zh': '如果有想告诉翻译者的期待或希望，请在此填写', 'ja': '翻訳者に伝えたい期待や希望があれば記入してください', 'en': 'Please fill in any expectations or hopes you want to tell the translator', 'ru': 'Пожалуйста, заполните любые ожидания или надежды, которые вы хотите сообщить переводчику', 'ko': '번역자에게 전하고 싶은 기대나 희망이 있으면 기입해 주세요', 'fr': 'Veuillez remplir toutes les attentes ou espoirs que vous souhaitez dire au traducteur'
+            'zh': '如果有想告诉翻译者的期待或希望，请在此填写', 'zh-TW': '如果有想告訴翻譯者的期待或希望，請在此填寫', 'ja': '翻訳者に伝えたい期待や希望があれば記入してください', 'en': 'Please fill in any expectations or hopes you want to tell the translator', 'ru': 'Пожалуйста, заполните любые ожидания или надежды, которые вы хотите сообщить переводчику', 'ko': '번역자에게 전하고 싶은 기대나 희망이 있으면 기입해 주세요', 'fr': 'Veuillez remplir toutes les attentes ou espoirs que vous souhaitez dire au traducteur', 'es': 'Por favor complete cualquier expectativa o esperanza que quiera decirle al traductor'
         },
         'translation_requirements': {
-            'zh': '我希望翻译者能完成以下要求：', 'ja': '翻訳者に以下の要求を完成してもらいたい：', 'en': 'I want the translator to complete the following requirements:', 'ru': 'Я хочу, чтобы переводчик выполнил следующие требования:', 'ko': '번역자가 다음 요구사항을 완료하기를 원합니다:', 'fr': 'Je veux que le traducteur complète les exigences suivantes:'
+            'zh': '我希望翻译者能完成以下要求：', 'zh-TW': '我希望翻譯者能完成以下要求：', 'ja': '翻訳者に以下の要求を完成してもらいたい：', 'en': 'I want the translator to complete the following requirements:', 'ru': 'Я хочу, чтобы переводчик выполнил следующие требования:', 'ko': '번역자가 다음 요구사항을 완료하기를 원합니다:', 'fr': 'Je veux que le traducteur complète les exigences suivantes:', 'es': 'Quiero que el traductor complete los siguientes requisitos:'
         },
         'requirements_note': {
-            'zh': '（翻译者必须同意该要求才能进行翻译）', 'ja': '（翻訳者はこの要求に同意する必要があります）', 'en': '(The translator must agree to this requirement to proceed)', 'ru': '(Переводчик должен согласиться с этим требованием для продолжения)', 'ko': '(번역자는 이 요구사항에 동의해야 진행할 수 있습니다)', 'fr': '(Le traducteur doit accepter cette exigence pour procéder)'
+            'zh': '（翻译者必须同意该要求才能进行翻译）', 'zh-TW': '（翻譯者必須同意該要求才能進行翻譯）', 'ja': '（翻訳者はこの要求に同意する必要があります）', 'en': '(The translator must agree to this requirement to proceed)', 'ru': '(Переводчик должен согласиться с этим требованием для продолжения)', 'ko': '(번역자는 이 요구사항에 동의해야 진행할 수 있습니다)', 'fr': '(Le traducteur doit accepter cette exigence pour procéder)', 'es': '(El traductor debe estar de acuerdo con este requisito para proceder)'
         },
         'requirements_placeholder': {
-            'zh': '要求翻译者不要擅自进行传播、用于商业用途等', 'ja': '翻訳者に無断での配布、商業利用などを禁止するよう要求', 'en': 'Require translators not to distribute without permission or use for commercial purposes, etc.', 'ru': 'Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.', 'ko': '번역자에게 무단 배포, 상업적 이용 등을 금지하도록 요구', 'fr': 'Exiger des traducteurs de ne pas distribuer sans autorisation ou utiliser à des fins commerciales, etc.'
+            'zh': '要求翻译者不要擅自进行传播、用于商业用途等', 'zh-TW': '要求翻譯者不要擅自進行傳播、用於商業用途等', 'ja': '翻訳者に無断での配布、商業利用などを禁止するよう要求', 'en': 'Require translators not to distribute without permission or use for commercial purposes, etc.', 'ru': 'Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.', 'ko': '번역자에게 무단 배포, 상업적 이용 등을 금지하도록 요구', 'fr': 'Exiger des traducteurs de ne pas distribuer sans autorisation ou utiliser à des fins commerciales, etc.', 'es': 'Requerir que los traductores no distribuyan sin permiso o usen para fines comerciales, etc.'
         },
         'contact_before_translate': {
-            'zh': '我需要翻译者在翻译前提前私信我', 'ja': '翻訳前に翻訳者に連絡してもらいたい', 'en': 'I need the translator to contact me before translation', 'ru': 'Мне нужно, чтобы переводчик связался со мной перед переводом', 'ko': '번역 전에 번역자가 저에게 연락하기를 원합니다', 'fr': 'J\'ai besoin que le traducteur me contacte avant la traduction'
+            'zh': '我需要翻译者在翻译前提前私信我', 'zh-TW': '我需要翻譯者在翻譯前提前私信我', 'ja': '翻訳前に翻訳者に連絡してもらいたい', 'en': 'I need the translator to contact me before translation', 'ru': 'Мне нужно, чтобы переводчик связался со мной перед переводом', 'ko': '번역 전에 번역자가 저에게 연락하기를 원합니다', 'fr': 'J\'ai besoin que le traducteur me contacte avant la traduction', 'es': 'Necesito que el traductor me contacte antes de la traducción'
         },
         'contact_before_translate_help': {
-            'zh': '选择此选项，在私信沟通后，请在个人界面设置信赖的翻译者，对方才能翻译您的作品', 'ja': 'このオプションを選択すると、メッセージでのコミュニケーション後、個人画面で信頼する翻訳者を設定してください。その後、相手があなたの作品を翻訳できます', 'en': 'If you select this option, after communication via messages, please set trusted translators in your personal interface. Then the other party can translate your work', 'ru': 'Если вы выберете эту опцию, после общения через сообщения, пожалуйста, установите доверенных переводчиков в вашем личном интерфейсе. Затем другая сторона сможет перевести вашу работу', 'ko': '이 옵션을 선택하면 메시지를 통한 소통 후 개인 화면에서 신뢰하는 번역자를 설정해 주세요. 그 후 상대방이 당신의 작품을 번역할 수 있습니다', 'fr': 'Si vous sélectionnez cette option, après communication via messages, veuillez définir des traducteurs de confiance dans votre interface personnelle. Ensuite, l\'autre partie pourra traduire votre travail'
+            'zh': '选择此选项，在私信沟通后，请在个人界面设置信赖的翻译者，对方才能翻译您的作品', 'zh-TW': '選擇此選項，在私信溝通後，請在個人界面設置信賴的翻譯者，對方才能翻譯您的作品', 'ja': 'このオプションを選択すると、メッセージでのコミュニケーション後、個人画面で信頼する翻訳者を設定してください。その後、相手があなたの作品を翻訳できます', 'en': 'If you select this option, after communication via messages, please set trusted translators in your personal interface. Then the other party can translate your work', 'ru': 'Если вы выберете эту опцию, после общения через сообщения, пожалуйста, установите доверенных переводчиков в вашем личном интерфейсе. Затем другая сторона сможет перевести вашу работу', 'ko': '이 옵션을 선택하면 메시지를 통한 소통 후 개인 화면에서 신뢰하는 번역자를 설정해 주세요. 그 후 상대방이 당신의 작품을 번역할 수 있습니다', 'fr': 'Si vous sélectionnez cette option, après communication via messages, veuillez définir des traducteurs de confiance dans votre interface personnelle. Ensuite, l\'autre partie pourra traduire votre travail', 'es': 'Si selecciona esta opción, después de la comunicación a través de mensajes, por favor configure traductores de confianza en su interfaz personal. Entonces la otra parte podrá traducir su obra'
         },
         'allow_multiple_translators': {
-            'zh': '允许多人翻译', 'ja': '複数の翻訳者による翻訳を許可', 'en': 'Allow multiple translators', 'ru': 'Разрешить нескольких переводчиков', 'ko': '여러 번역자의 번역 허용', 'fr': 'Autoriser plusieurs traducteurs'
+            'zh': '允许多人翻译', 'zh-TW': '允許多人翻譯', 'ja': '複数の翻訳者による翻訳を許可', 'en': 'Allow multiple translators', 'ru': 'Разрешить нескольких переводчиков', 'ko': '여러 번역자의 번역 허용', 'fr': 'Autoriser plusieurs traducteurs', 'es': 'Permitir múltiples traductores'
         },
         'allow_multiple_translators_help': {
-            'zh': '选择此选项，允许多个翻译者同时翻译这个作品。每个翻译者的翻译将独立显示', 'ja': 'このオプションを選択すると、複数の翻訳者が同時にこの作品を翻訳できます。各翻訳者の翻訳は独立して表示されます', 'en': 'If you select this option, multiple translators can translate this work simultaneously. Each translator\'s translation will be displayed independently', 'ru': 'Если вы выберете эту опцию, несколько переводчиков смогут одновременно переводить эту работу. Перевод каждого переводчика будет отображаться независимо', 'ko': '이 옵션을 선택하면 여러 번역자가 동시에 이 작품을 번역할 수 있습니다. 각 번역자의 번역은 독립적으로 표시됩니다', 'fr': 'Si vous sélectionnez cette option, plusieurs traducteurs peuvent traduire ce travail simultanément. La traduction de chaque traducteur sera affichée indépendamment'
+            'zh': '选择此选项，允许多个翻译者同时翻译这个作品。每个翻译者的翻译将独立显示', 'zh-TW': '選擇此選項，允許多個翻譯者同時翻譯這個作品。每個翻譯者的翻譯將獨立顯示', 'ja': 'このオプションを選択すると、複数の翻訳者が同時にこの作品を翻訳できます。各翻訳者の翻訳は独立して表示されます', 'en': 'If you select this option, multiple translators can translate this work simultaneously. Each translator\'s translation will be displayed independently', 'ru': 'Если вы выберете эту опцию, несколько переводчиков смогут одновременно переводить эту работу. Перевод каждого переводчика будет отображаться независимо', 'ko': '이 옵션을 선택하면 여러 번역자가 동시에 이 작품을 번역할 수 있습니다. 각 번역자의 번역은 독립적으로 표시됩니다', 'fr': 'Si vous sélectionnez cette option, plusieurs traducteurs peuvent traduire ce travail simultanément. La traduction de chaque traducteur sera affichée indépendamment', 'es': 'Si selecciona esta opción, múltiples traductores pueden traducir esta obra simultáneamente. La traducción de cada traductor se mostrará independientemente'
         },
         'cancel': {
-            'zh': '取消', 'ja': 'キャンセル', 'en': 'Cancel', 'ru': 'Отмена', 'ko': '취소', 'fr': 'Annuler'
+            'zh': '取消', 'zh-TW': '取消', 'ja': 'キャンセル', 'en': 'Cancel', 'ru': 'Отмена', 'ko': '취소', 'fr': 'Annuler', 'es': 'Cancelar'
         },
         'upload_guide': {
-            'zh': '上传指南', 'ja': 'アップロードガイド', 'en': 'Upload Guide', 'ru': 'Руководство по загрузке', 'ko': '업로드 가이드', 'fr': 'Guide de téléchargement'
+            'zh': '上传指南', 'zh-TW': '上傳指南', 'ja': 'アップロードガイド', 'en': 'Upload Guide', 'ru': 'Руководство по загрузке', 'ko': '업로드 가이드', 'fr': 'Guide de téléchargement', 'es': 'Guía de carga'
         },
         'good_examples': {
-            'zh': '好的例子', 'ja': '良い例', 'en': 'Good Examples', 'ru': 'Хорошие примеры', 'ko': '좋은 예시', 'fr': 'Bons exemples'
+            'zh': '好的例子', 'zh-TW': '好的例子', 'ja': '良い例', 'en': 'Good Examples', 'ru': 'Хорошие примеры', 'ko': '좋은 예시', 'fr': 'Bons exemples', 'es': 'Buenos ejemplos'
         },
         'clear_structured_content': {
-            'zh': '清晰、结构化的内容', 'ja': '明確で構造化された内容', 'en': 'Clear and structured content', 'ru': 'Четкое и структурированное содержание', 'ko': '명확하고 구조화된 내용', 'fr': 'Contenu clair et structuré'
+            'zh': '清晰、结构化的内容', 'zh-TW': '清晰、結構化的內容', 'ja': '明確で構造化された内容', 'en': 'Clear and structured content', 'ru': 'Четкое и структурированное содержание', 'ko': '명확하고 구조화된 내용', 'fr': 'Contenu clair et structuré', 'es': 'Contenido claro y estructurado'
         },
         'appropriate_category': {
-            'zh': '选择合适的分类', 'ja': '適切なカテゴリー選択', 'en': 'Appropriate category selection', 'ru': 'Правильный выбор категории', 'ko': '적절한 카테고리 선택', 'fr': 'Sélection de catégorie appropriée'
+            'zh': '选择合适的分类', 'zh-TW': '選擇合適的分類', 'ja': '適切なカテゴリー選択', 'en': 'Appropriate category selection', 'ru': 'Правильный выбор категории', 'ko': '적절한 카테고리 선택', 'fr': 'Sélection de catégorie appropriée', 'es': 'Selección de categoría apropiada'
         },
         'specific_requirements': {
-            'zh': '具体的翻译要求', 'ja': '具体的な翻訳要求', 'en': 'Specific translation requirements', 'ru': 'Конкретные требования к переводу', 'ko': '구체적인 번역 요구사항', 'fr': 'Exigences de traduction spécifiques'
+            'zh': '具体的翻译要求', 'zh-TW': '具體的翻譯要求', 'ja': '具体的な翻訳要求', 'en': 'Specific translation requirements', 'ru': 'Конкретные требования к переводу', 'ko': '구체적인 번역 요구사항', 'fr': 'Exigences de traduction spécifiques', 'es': 'Requisitos de traducción específicos'
         },
         'should_avoid': {
-            'zh': '应该避免', 'ja': '避けるべき', 'en': 'Should Avoid', 'ru': 'Следует избегать', 'ko': '피해야 할 것', 'fr': 'À éviter'
+            'zh': '应该避免', 'zh-TW': '應該避免', 'ja': '避けるべき', 'en': 'Should Avoid', 'ru': 'Следует избегать', 'ko': '피해야 할 것', 'fr': 'À éviter', 'es': 'Debe evitar'
         },
         'vague_content': {
-            'zh': '模糊、不明确的内容', 'ja': '曖昧で不明確な内容', 'en': 'Vague and unclear content', 'ru': 'Расплывчатое и неясное содержание', 'ko': '모호하고 불명확한 내용', 'fr': 'Contenu vague et peu clair'
+            'zh': '模糊、不明确的内容', 'zh-TW': '模糊、不明確的內容', 'ja': '曖昧で不明確な内容', 'en': 'Vague and unclear content', 'ru': 'Расплывчатое и неясное содержание', 'ko': '모호하고 불명확한 내용', 'fr': 'Contenu vague et peu clair', 'es': 'Contenido vago e impreciso'
         },
         'copyright_infringing': {
-            'zh': '侵犯版权的内容', 'ja': '著作権侵害の内容', 'en': 'Copyright infringing content', 'ru': 'Контент, нарушающий авторские права', 'ko': '저작권 침해 내용', 'fr': 'Contenu violant les droits d\'auteur'
+            'zh': '侵犯版权的内容', 'zh-TW': '侵犯版權的內容', 'ja': '著作権侵害の内容', 'en': 'Copyright infringing content', 'ru': 'Контент, нарушающий авторские права', 'ko': '저작권 침해 내용', 'fr': 'Contenu violant les droits d\'auteur', 'es': 'Contenido que infringe derechos de autor'
         },
         'inappropriate_content': {
-            'zh': '不当内容', 'ja': '不適切な内容', 'en': 'Inappropriate content', 'ru': 'Неприемлемый контент', 'ko': '부적절한 내용', 'fr': 'Contenu inapproprié'
+            'zh': '不当内容', 'zh-TW': '不當內容', 'ja': '不適切な内容', 'en': 'Inappropriate content', 'ru': 'Неприемлемый контент', 'ko': '부적절한 내용', 'fr': 'Contenu inapproprié', 'es': 'Contenido inapropiado'
         },
         'file_too_large': {
-            'zh': '文件大小过大，请选择10MB以下的文件。', 'ja': 'ファイルサイズが大きすぎます。10MB以下にしてください。', 'en': 'File size is too large. Please select a file under 10MB.', 'ru': 'Размер файла слишком большой. Пожалуйста, выберите файл менее 10МБ.', 'ko': '파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해 주세요.', 'fr': 'La taille du fichier est trop grande. Veuillez sélectionner un fichier de moins de 10MB.'
+            'zh': '文件大小过大，请选择10MB以下的文件。', 'zh-TW': '文件大小過大，請選擇10MB以下的文件。', 'ja': 'ファイルサイズが大きすぎます。10MB以下にしてください。', 'en': 'File size is too large. Please select a file under 10MB.', 'ru': 'Размер файла слишком большой. Пожалуйста, выберите файл менее 10МБ.', 'ko': '파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해 주세요.', 'fr': 'La taille du fichier est trop grande. Veuillez sélectionner un fichier de moins de 10MB.', 'es': 'El tamaño del archivo es demasiado grande. Por favor seleccione un archivo de menos de 10MB.'
         },
         'chinese': {
-            'zh': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois'
+            'zh': '中文', 'zh-TW': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois', 'es': 'Chino'
         },
         'japanese': {
-            'zh': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais'
+            'zh': '日文', 'zh-TW': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais', 'es': 'Japonés'
         }
     ,
         'register': {
             'zh': '注册',
+            'zh-TW': '註冊',
             'ja': '新規登録',
             'en': 'Register',
             'ru': 'Регистрация',
             'ko': '등록',
             'fr': 'S\'inscrire',
+            'es': 'Registrarse',
         },
         'attention': {
             'zh': '注意',
+            'zh-TW': '注意',
             'ja': '注意',
             'en': 'Attention',
             'ru': 'Внимание',
             'ko': '주의',
             'fr': 'Attention',
+            'es': 'Atención',
         },
         'security_warning': {
             'zh': '目前该测试版本缺乏安全防护，请勿在其中输入重要信息！',
+            'zh-TW': '目前該測試版本缺乏安全防護，請勿在其中輸入重要信息！',
             'ja': '現在のテストバージョンはセキュリティ保護が不十分です。重要な情報を入力しないでください！',
             'en': 'The current test version lacks security protection. Please do not enter important information!',
             'ru': 'Текущая тестовая версия не имеет защиты. Пожалуйста, не вводите важную информацию!',
             'ko': '현재 테스트 버전은 보안 보호가 부족합니다. 중요한 정보를 입력하지 마세요!',
             'fr': 'La version de test actuelle manque de protection de sécurité. Veuillez ne pas entrer d\'informations importantes!',
+            'es': '¡La versión de prueba actual carece de protección de seguridad. Por favor no ingrese información importante!',
         },
         'email': {
             'zh': '邮箱',
+            'zh-TW': '郵箱',
             'ja': 'メールアドレス',
             'en': 'Email',
             'ru': 'Электронная почта',
             'ko': '이메일',
             'fr': 'Email',
+            'es': 'Correo electrónico',
         },
         'enter_email': {
             'zh': '请输入邮箱',
+            'zh-TW': '請輸入郵箱',
             'ja': 'メールアドレスを入力',
             'en': 'Enter email',
             'ru': 'Введите email',
             'ko': '이메일 입력',
             'fr': 'Entrez l\'email',
+            'es': 'Ingrese correo electrónico',
         },
         'confirm_password': {
             'zh': '确认密码',
+            'zh-TW': '確認密碼',
             'ja': 'パスワード確認',
             'en': 'Confirm Password',
             'ru': 'Подтвердите пароль',
             'ko': '비밀번호 확인',
             'fr': 'Confirmer le mot de passe',
+            'es': 'Confirmar contraseña',
         },
         're_enter_password': {
             'zh': '请再次输入密码',
+            'zh-TW': '請再次輸入密碼',
             'ja': 'パスワードを再入力',
             'en': 'Re-enter password',
             'ru': 'Повторите пароль',
             'ko': '비밀번호를 다시 입력하세요',
             'fr': 'Retaper le mot de passe',
+            'es': 'Volver a ingresar contraseña',
         },
         'password_mismatch': {
             'zh': '密码不匹配',
+            'zh-TW': '密碼不匹配',
             'ja': 'パスワードが一致しません',
             'en': 'Passwords do not match',
             'ru': 'Пароли не совпадают',
             'ko': '비밀번호가 일치하지 않습니다',
             'fr': 'Les mots de passe ne correspondent pas',
+            'es': 'Las contraseñas no coinciden',
         },
         'please_enter_username': {
             'zh': '请输入用户名',
+            'zh-TW': '請輸入用戶名',
             'ja': 'ユーザー名を入力してください',
             'en': 'Please enter username',
             'ru': 'Пожалуйста, введите имя пользователя',
             'ko': '사용자 이름을 입력해 주세요',
             'fr': 'Veuillez entrer le nom d\'utilisateur',
+            'es': 'Por favor ingrese nombre de usuario',
         },
         'please_enter_email': {
             'zh': '请输入邮箱',
+            'zh-TW': '請輸入郵箱',
             'ja': 'メールアドレスを入力してください',
             'en': 'Please enter email',
             'ru': 'Пожалуйста, введите email',
             'ko': '이메일을 입력해 주세요',
             'fr': 'Veuillez entrer l\'email',
+            'es': 'Por favor ingrese correo electrónico',
         },
         'username_or_email': {
             'zh': '用户名或邮箱',
+            'zh-TW': '用戶名或郵箱',
             'ja': 'ユーザー名またはメールアドレス',
             'en': 'Username or Email',
             'ru': 'Имя пользователя или Email',
             'ko': '사용자명 또는 이메일',
             'fr': 'Nom d\'utilisateur ou Email',
+            'es': 'Nombre de usuario o correo electrónico',
         },
         'enter_username_or_email': {
             'zh': '请输入用户名或邮箱',
+            'zh-TW': '請輸入用戶名或郵箱',
             'ja': 'ユーザー名またはメールアドレスを入力',
             'en': 'Enter username or email',
             'ru': 'Введите имя пользователя или email',
             'ko': '사용자명 또는 이메일 입력',
             'fr': 'Entrez le nom d\'utilisateur ou l\'email',
+            'es': 'Ingrese nombre de usuario o correo electrónico',
         },
         'please_enter_username_or_email': {
             'zh': '请输入用户名或邮箱',
+            'zh-TW': '請輸入用戶名或郵箱',
             'ja': 'ユーザー名またはメールアドレスを入力してください',
             'en': 'Please enter username or email',
             'ru': 'Пожалуйста, введите имя пользователя или email',
             'ko': '사용자명 또는 이메일을 입력해 주세요',
             'fr': 'Veuillez entrer le nom d\'utilisateur ou l\'email',
+            'es': 'Por favor ingrese nombre de usuario o correo electrónico',
         },
         'please_enter_password': {
             'zh': '请输入密码',
+            'zh-TW': '請輸入密碼',
             'ja': 'パスワードを入力してください',
             'en': 'Please enter password',
             'ru': 'Пожалуйста, введите пароль',
             'ko': '비밀번호를 입력해 주세요',
             'fr': 'Veuillez entrer le mot de passe',
+            'es': 'Por favor ingrese contraseña',
         },
         'avatar': {
             'zh': '头像',
+            'zh-TW': '頭像',
             'ja': 'アバター',
             'en': 'Avatar',
             'ru': 'Аватар',
             'ko': '아바타',
             'fr': 'Avatar',
+            'es': 'Avatar',
         },
         'no_bio': {
             'zh': '暂无简介',
+            'zh-TW': '暫無簡介',
             'ja': '自己紹介なし',
             'en': 'No bio',
             'ru': 'Нет биографии',
             'ko': '소개 없음',
             'fr': 'Aucune bio',
+            'es': 'Sin biografía',
         },
         'preferred_language': {
             'zh': '偏好语言',
+            'zh-TW': '偏好語言',
             'ja': '偏好言語',
             'en': 'Preferred Language',
             'ru': 'Предпочитаемый язык',
             'ko': '선호 언어',
             'fr': 'Langue préférée',
+            'es': 'Idioma preferido',
         },
         'admin': {
             'zh': '管理员',
+            'zh-TW': '管理員',
             'ja': '管理者',
             'en': 'Administrator',
             'ru': 'Администратор',
             'ko': '관리자',
             'fr': 'Administrateur',
+            'es': 'Administrador',
         },
         'creator': {
             'zh': '创作者',
+            'zh-TW': '創作者',
             'ja': '創作者',
             'en': 'Creator',
             'ru': 'Создатель',
             'ko': '창작자',
             'fr': 'Créateur',
+            'es': 'Creador',
         },
         'translator': {
             'zh': '翻译者',
+            'zh-TW': '翻譯者',
             'ja': '翻訳者',
             'en': 'Translator',
             'ru': 'Переводчик',
             'ko': '번역가',
             'fr': 'Traducteur',
+            'es': 'Traductor',
         },
         'reviewer': {
             'zh': '校正者',
+            'zh-TW': '校正者',
             'ja': '校正者',
             'en': 'Reviewer',
             'ru': 'Рецензент',
             'ko': '검토자',
             'fr': 'Réviseur',
+            'es': 'Revisor',
         },
         'registration_date': {
             'zh': '注册时间',
+            'zh-TW': '註冊時間',
             'ja': '登録日',
             'en': 'Registration Date',
             'ru': 'Дата регистрации',
             'ko': '등록 날짜',
             'fr': 'Date d\'inscription',
+            'es': 'Fecha de registro',
         },
         'quick_actions': {
             'zh': '快速操作',
+            'zh-TW': '快速操作',
             'ja': 'クイックアクション',
             'en': 'Quick Actions',
             'ru': 'Быстрые действия',
             'ko': '빠른 작업',
             'fr': 'Actions rapides',
+            'es': 'Acciones rápidas',
         },
         'edit_profile': {
             'zh': '编辑资料',
+            'zh-TW': '編輯資料',
             'ja': 'プロフィール編集',
             'en': 'Edit Profile',
             'ru': 'Редактировать профиль',
             'ko': '프로필 편집',
             'fr': 'Modifier le profil',
+            'es': 'Editar perfil',
         },
         'change_password': {
             'zh': '修改密码',
+            'zh-TW': '修改密碼',
             'ja': 'パスワード変更',
             'en': 'Change Password',
             'ru': 'Изменить пароль',
             'ko': '비밀번호 변경',
             'fr': 'Changer le mot de passe',
+            'es': 'Cambiar contraseña',
         },
         'become_translator': {
             'zh': '通过测试，成为翻译者',
+            'zh-TW': '通過測試，成為翻譯者',
             'ja': 'テストに合格して翻訳者になる',
             'en': 'Pass test to become translator',
             'ru': 'Пройдите тест, чтобы стать переводчиком',
             'ko': '번역가가 되기 위해 테스트를 통과하세요',
             'fr': 'Passez le test pour devenir traducteur',
+            'es': 'Pasar prueba para convertirse en traductor',
         },
         'become_reviewer': {
             'zh': '通过测试，成为校正者',
+            'zh-TW': '通過測試，成為校正者',
             'ja': 'テストに合格して校正者になる',
             'en': 'Pass test to become reviewer',
             'ru': 'Пройдите тест, чтобы стать рецензентом',
             'ko': '검토자가 되기 위해 테스트를 통과하세요',
             'fr': 'Passez le test pour devenir réviseur',
+            'es': 'Pasar prueba para convertirse en revisor',
         },
         'my_friends': {
             'zh': '我的好友',
+            'zh-TW': '我的好友',
             'ja': '私の友達',
             'en': 'My Friends',
             'ru': 'Мои друзья',
             'ko': '내 친구들',
             'fr': 'Mes amis',
+            'es': 'Mis amigos',
         },
         'search_by_username': {
             'zh': '通过用户名搜索...',
+            'zh-TW': '通過用戶名搜索...',
             'ja': 'ユーザー名で検索...',
             'en': 'Search by username...',
             'ru': 'Поиск по имени пользователя...',
             'ko': '사용자 이름으로 검색...',
             'fr': 'Rechercher par nom d\'utilisateur...',
+            'es': 'Buscar por nombre de usuario...',
         },
         'search_results': {
             'zh': '搜索结果',
+            'zh-TW': '搜索結果',
             'ja': '検索結果',
             'en': 'Search Results',
             'ru': 'Результаты поиска',
             'ko': '검색 결과',
             'fr': 'Résultats de recherche',
+            'es': 'Resultados de búsqueda',
         },
         'no_friends': {
             'zh': '暂无好友',
+            'zh-TW': '暫無好友',
             'ja': '友達なし',
             'en': 'No friends',
             'ru': 'Нет друзей',
             'ko': '친구 없음',
             'fr': 'Aucun ami',
+            'es': 'Sin amigos',
         },
         'you_have_no_friends': {
             'zh': '您还没有添加任何好友',
+            'zh-TW': '您還沒有添加任何好友',
             'ja': 'まだ友達を追加していません',
             'en': 'You haven\'t added any friends yet',
             'ru': 'Вы еще не добавили друзей',
             'ko': '아직 친구를 추가하지 않았습니다',
             'fr': 'Vous n\'avez pas encore ajouté d\'amis',
+            'es': 'Aún no has agregado ningún amigo',
         },
         'find_friends': {
             'zh': '寻找好友',
+            'zh-TW': '尋找好友',
             'ja': '友達を探す',
             'en': 'Find Friends',
             'ru': 'Найти друзей',
             'ko': '친구 찾기',
             'fr': 'Trouver des amis',
+            'es': 'Encontrar amigos',
         },
         'please_enter_user_id': {
             'zh': '请输入用户ID',
+            'zh-TW': '請輸入用戶ID',
             'ja': 'ユーザーIDを入力してください',
             'en': 'Please enter user ID',
             'ru': 'Пожалуйста, введите ID пользователя',
             'ko': '사용자 ID를 입력해 주세요',
             'fr': 'Veuillez entrer l\'ID utilisateur',
+            'es': 'Por favor ingrese ID de usuario',
         },
         'invalid_user_id': {
             'zh': '无效的用户ID',
+            'zh-TW': '無效的用戶ID',
             'ja': '無効なユーザーID',
             'en': 'Invalid user ID',
             'ru': 'Недействительный ID пользователя',
             'ko': '잘못된 사용자 ID',
             'fr': 'ID utilisateur invalide',
+            'es': 'ID de usuario inválido',
         },
         'user_not_found': {
             'zh': '用户不存在',
+            'zh-TW': '用戶不存在',
             'ja': 'ユーザーが見つかりません',
             'en': 'User not found',
             'ru': 'Пользователь не найден',
             'ko': '사용자를 찾을 수 없습니다',
             'fr': 'Utilisateur introuvable',
+            'es': 'Usuario no encontrado',
         },
         'cannot_add_yourself': {
             'zh': '不能添加自己为好友',
+            'zh-TW': '不能添加自己為好友',
             'ja': '自分を友達として追加することはできません',
             'en': 'Cannot add yourself as friend',
             'ru': 'Нельзя добавить себя в друзья',
             'ko': '자신을 친구로 추가할 수 없습니다',
             'fr': 'Impossible de s\'ajouter soi-même comme ami',
+            'es': 'No puedes agregarte a ti mismo como amigo',
         },
         'search_and_add_friend': {
             'zh': '搜索并添加好友',
+            'zh-TW': '搜索並添加好友',
             'ja': '友達を検索して追加',
             'en': 'Search and Add Friend',
             'ru': 'Поиск и добавление друга',
             'ko': '친구 검색 및 추가',
             'fr': 'Rechercher et ajouter un ami',
+            'es': 'Buscar y agregar amigo',
         },
         'search_by_username_or_id': {
             'zh': '输入用户名或用户ID...',
+            'zh-TW': '輸入用戶名或用戶ID...',
             'ja': 'ユーザー名またはユーザーIDを入力...',
             'en': 'Enter username or user ID...',
             'ru': 'Введите имя пользователя или ID...',
             'ko': '사용자명 또는 사용자 ID 입력...',
             'fr': 'Entrez le nom d\'utilisateur ou l\'ID...',
+            'es': 'Ingrese nombre de usuario o ID de usuario...',
         },
 
         'pleaseEnterUsernameOrId': {
             'zh': '请输入用户名或用户ID',
+            'zh-TW': '請輸入用戶名或用戶ID',
             'ja': 'ユーザー名またはユーザーIDを入力してください',
             'en': 'Please enter username or user ID',
             'ru': 'Пожалуйста, введите имя пользователя или ID',
             'ko': '사용자명 또는 사용자 ID를 입력해 주세요',
             'fr': 'Veuillez entrer le nom d\'utilisateur ou l\'ID',
+            'es': 'Por favor ingrese nombre de usuario o ID de usuario',
         },
         'searching': {
             'zh': '搜索中...',
+            'zh-TW': '搜索中...',
             'ja': '検索中...',
             'en': 'Searching...',
             'ru': 'Поиск...',
             'ko': '검색 중...',
             'fr': 'Recherche...',
+            'es': 'Buscando...',
         },
         'multipleUsersFound': {
             'zh': '找到多个用户，请从搜索结果中选择',
+            'zh-TW': '找到多個用戶，請從搜索結果中選擇',
             'ja': '複数のユーザーが見つかりました。検索結果から選択してください',
             'en': 'Multiple users found, please select from search results',
             'ru': 'Найдено несколько пользователей, выберите из результатов поиска',
             'ko': '여러 사용자가 발견되었습니다. 검색 결과에서 선택하세요',
             'fr': 'Plusieurs utilisateurs trouvés, veuillez sélectionner dans les résultats',
+            'es': 'Se encontraron múltiples usuarios, por favor seleccione de los resultados de búsqueda',
         },
         'info': {
             'zh': '提示',
+            'zh-TW': '提示',
             'ja': 'ヒント',
             'en': 'Info',
             'ru': 'Информация',
             'ko': '정보',
             'fr': 'Info',
+            'es': 'Información',
         },
         'trusted_translators': {
             'zh': '信赖翻译者',
+            'zh-TW': '信賴翻譯者',
             'ja': '信頼翻訳者',
             'en': 'Trusted Translators',
             'ru': 'Доверенные переводчики',
             'ko': '신뢰할 수 있는 번역가',
             'fr': 'Traducteurs de confiance',
+            'es': 'Traductores de confianza',
         },
         'my_trusted_translators': {
             'zh': '我信赖的翻译者',
+            'zh-TW': '我信賴的翻譯者',
             'ja': '私が信頼する翻訳者',
             'en': 'My Trusted Translators',
             'ru': 'Мои доверенные переводчики',
             'ko': '내가 신뢰하는 번역가',
             'fr': 'Mes traducteurs de confiance',
+            'es': 'Mis traductores de confianza',
         },
         'no_trusted_translators': {
             'zh': '暂无信赖的翻译者',
+            'zh-TW': '暫無信賴的翻譯者',
             'ja': '信頼する翻訳者なし',
             'en': 'No trusted translators',
             'ru': 'Нет доверенных переводчиков',
             'ko': '신뢰할 수 있는 번역가 없음',
             'fr': 'Aucun traducteur de confiance',
+            'es': 'Sin traductores de confianza',
         },
         'you_have_no_trusted_translators': {
             'zh': '您还没有信赖任何翻译者',
+            'zh-TW': '您還沒有信賴任何翻譯者',
             'ja': 'まだ信頼する翻訳者はいません',
             'en': 'You haven\'t trusted any translators yet',
             'ru': 'Вы еще не доверяете ни одному переводчику',
             'ko': '아직 신뢰하는 번역가가 없습니다',
             'fr': 'Vous n\'avez encore confiance à aucun traducteur',
+            'es': 'Aún no has confiado en ningún traductor',
         },
         'find_translators': {
             'zh': '寻找翻译者',
+            'zh-TW': '尋找翻譯者',
             'ja': '翻訳者を探す',
             'en': 'Find Translators',
             'ru': 'Найти переводчиков',
             'ko': '번역가 찾기',
             'fr': 'Trouver des traducteurs',
+            'es': 'Encontrar traductores',
         },
         'creators_who_trust_me': {
             'zh': '信赖我的创作者',
+            'zh-TW': '信賴我的創作者',
             'ja': '私を信頼するクリエイター',
             'en': 'Creators Who Trust Me',
             'ru': 'Создатели, которые доверяют мне',
             'ko': '나를 신뢰하는 창작자',
             'fr': 'Créateurs qui me font confiance',
+            'es': 'Creadores que confían en mí',
         },
         'no_creators_trust_me': {
             'zh': '暂无信赖我的创作者',
+            'zh-TW': '暫無信賴我的創作者',
             'ja': '私を信頼するクリエイターなし',
             'en': 'No creators trust me',
             'ru': 'Нет создателей, которые доверяют мне',
             'ko': '나를 신뢰하는 창작자 없음',
             'fr': 'Aucun créateur ne me fait confiance',
+            'es': 'Ningún creador confía en mí',
         },
         'no_creators_trust_you': {
             'zh': '还没有创作者信赖您',
+            'zh-TW': '還沒有創作者信賴您',
             'ja': 'まだあなたを信頼するクリエイターはいません',
             'en': 'No creators trust you yet',
             'ru': 'Пока нет создателей, которые доверяют вам',
             'ko': '아직 당신을 신뢰하는 창작자가 없습니다',
             'fr': 'Aucun créateur ne vous fait encore confiance',
+            'es': 'Aún ningún creador confía en ti',
         },
         'keep_providing_quality_service': {
             'zh': '继续提供优质的翻译服务，会有更多创作者信赖您！',
+            'zh-TW': '繼續提供優質的翻譯服務，會有更多創作者信賴您！',
             'ja': '質の高い翻訳サービスを提供し続ければ、より多くのクリエイターがあなたを信頼するようになります！',
             'en': 'Keep providing quality translation services, and more creators will trust you!',
             'ru': 'Продолжайте предоставлять качественные услуги перевода, и больше создателей будут доверять вам!',
             'ko': '양질의 번역 서비스를 계속 제공하면 더 많은 창작자가 당신을 신뢰할 것입니다!',
             'fr': 'Continuez à fournir des services de traduction de qualité, et plus de créateurs vous feront confiance !',
+            'es': '¡Sigue proporcionando servicios de traducción de calidad, y más creadores confiarán en ti!',
         },
         'system_notifications': {
             'zh': '系统通知',
+            'zh-TW': '系統通知',
             'ja': 'システム通知',
             'en': 'System Notifications',
             'ru': 'Системные уведомления',
             'ko': '시스템 알림',
             'fr': 'Notifications système',
+            'es': 'Notificaciones del sistema',
         },
         'mark_as_read': {
             'zh': '标记为已读',
+            'zh-TW': '標記為已讀',
             'ja': '既読にする',
             'en': 'Mark as Read',
             'ru': 'Отметить как прочитанное',
             'ko': '읽음으로 표시',
             'fr': 'Marquer comme lu',
+            'es': 'Marcar como leído',
         },
         'friend_requests': {
             'zh': '好友请求',
+            'zh-TW': '好友請求',
             'ja': '友達リクエスト',
             'en': 'Friend Requests',
             'ru': 'Запросы в друзья',
             'ko': '친구 요청',
             'fr': 'Demandes d\'ami',
+            'es': 'Solicitudes de amistad',
         },
         'requests_to_add_friend': {
             'zh': '请求添加您为好友',
+            'zh-TW': '請求添加您為好友',
             'ja': 'があなたを友達に追加しようとしています',
             'en': 'requests to add you as friend',
             'ru': 'запрашивает добавить вас в друзья',
             'ko': '가 당신을 친구로 추가하려고 요청했습니다',
             'fr': 'demande à vous ajouter comme ami',
+            'es': 'solicita agregarte como amigo',
         },
         'agree': {
             'zh': '同意',
+            'zh-TW': '同意',
             'ja': '同意',
             'en': 'Agree',
             'ru': 'Согласиться',
             'ko': '동의',
             'fr': 'Accepter',
+            'es': 'Aceptar',
         },
         'security_warning': {
             'zh': '目前该测试版本缺乏安全防护，请勿在其中输入重要信息！',
+            'zh-TW': '目前該測試版本缺乏安全防護，請勿在其中輸入重要資訊！',
             'ja': '現在のテストバージョンはセキュリティ保護が不十分です。重要な情報を入力しないでください！',
             'en': 'The current test version lacks security protection. Please do not enter important information!',
             'ru': 'Текущая тестовая версия не имеет защиты. Пожалуйста, не вводите важную информацию!',
             'ko': '현재 테스트 버전은 보안 보호가 부족합니다. 중요한 정보를 입력하지 마세요!',
             'fr': 'La version de test actuelle manque de protection de sécurité. Veuillez ne pas entrer d\'informations importantes!',
+            'es': 'La versión de prueba actual carece de protección de seguridad. ¡Por favor no ingrese información importante!',
         },
         'email': {
             'zh': '邮箱',
+            'zh-TW': '郵箱',
             'ja': 'メールアドレス',
             'en': 'Email',
             'ru': 'Электронная почта',
             'ko': '이메일',
             'fr': 'Email',
+            'es': 'Correo electrónico',
         },
         'enter_email': {
             'zh': '请输入邮箱',
+            'zh-TW': '請輸入郵箱',
             'ja': 'メールアドレスを入力',
             'en': 'Enter email',
             'ru': 'Введите email',
             'ko': '이메일 입력',
             'fr': 'Entrez l\'email',
+            'es': 'Ingrese correo electrónico',
         },
         'confirm_password': {
             'zh': '确认密码',
+            'zh-TW': '確認密碼',
             'ja': 'パスワード確認',
             'en': 'Confirm Password',
             'ru': 'Подтвердите пароль',
             'ko': '비밀번호 확인',
             'fr': 'Confirmer le mot de passe',
+            'es': 'Confirmar contraseña',
         },
         're_enter_password': {
             'zh': '请再次输入密码',
+            'zh-TW': '請再次輸入密碼',
             'ja': 'パスワードを再入力',
             'en': 'Re-enter password',
             'ru': 'Повторите пароль',
             'ko': '비밀번호를 다시 입력하세요',
             'fr': 'Retaper le mot de passe',
+            'es': 'Vuelva a ingresar la contraseña',
         },
         'password_mismatch': {
             'zh': '密码不匹配',
+            'zh-TW': '密碼不匹配',
             'ja': 'パスワードが一致しません',
             'en': 'Passwords do not match',
             'ru': 'Пароли не совпадают',
             'ko': '비밀번호가 일치하지 않습니다',
             'fr': 'Les mots de passe ne correspondent pas',
+            'es': 'Las contraseñas no coinciden',
         },
         'please_enter_username': {
             'zh': '请输入用户名',
+            'zh-TW': '請輸入用戶名',
             'ja': 'ユーザー名を入力してください',
             'en': 'Please enter username',
             'ru': 'Пожалуйста, введите имя пользователя',
             'ko': '사용자 이름을 입력해 주세요',
             'fr': 'Veuillez entrer le nom d\'utilisateur',
+            'es': 'Por favor ingrese nombre de usuario',
         },
         'please_enter_email': {
             'zh': '请输入邮箱',
+            'zh-TW': '請輸入郵箱',
             'ja': 'メールアドレスを入力してください',
             'en': 'Please enter email',
             'ru': 'Пожалуйста, введите email',
             'ko': '이메일을 입력해 주세요',
             'fr': 'Veuillez entrer l\'email',
+            'es': 'Por favor ingrese correo electrónico',
         },
         'please_enter_password': {
             'zh': '请输入密码',
+            'zh-TW': '請輸入密碼',
             'ja': 'パスワードを入力してください',
             'en': 'Please enter password',
             'ru': 'Пожалуйста, введите пароль',
             'ko': '비밀번호를 입력해 주세요',
             'fr': 'Veuillez entrer le mot de passe',
+            'es': 'Por favor ingrese contraseña',
         },
         'avatar': {
             'zh': '头像',
+            'zh-TW': '頭像',
             'ja': 'アバター',
             'en': 'Avatar',
             'ru': 'Аватар',
             'ko': '아바타',
             'fr': 'Avatar',
+            'es': 'Avatar',
         },
         'no_bio': {
             'zh': '暂无简介',
+            'zh-TW': '暫無簡介',
             'ja': '自己紹介なし',
             'en': 'No bio',
             'ru': 'Нет биографии',
             'ko': '소개 없음',
             'fr': 'Aucune bio',
+            'es': 'Sin biografía',
         },
         'preferred_language': {
             'zh': '偏好语言',
+            'zh-TW': '偏好語言',
             'ja': '好みの言語',
             'en': 'Preferred Language',
             'ru': 'Предпочитаемый язык',
             'ko': '선호 언어',
             'fr': 'Langue préférée',
+            'es': 'Idioma preferido',
         },
         'admin': {
             'zh': '管理员',
+            'zh-TW': '管理員',
             'ja': '管理者',
             'en': 'Administrator',
             'ru': 'Администратор',
             'ko': '관리자',
             'fr': 'Administrateur',
+            'es': 'Administrador',
         },
         'creator': {
             'zh': '创作者',
+            'zh-TW': '創作者',
             'ja': '創作者',
             'en': 'Creator',
             'ru': 'Создатель',
             'ko': '창작자',
             'fr': 'Créateur',
+            'es': 'Creador',
         },
         'translator': {
             'zh': '翻译者',
+            'zh-TW': '翻譯者',
             'ja': '翻訳者',
             'en': 'Translator',
             'ru': 'Переводчик',
             'ko': '번역가',
             'fr': 'Traducteur',
+            'es': 'Traductor',
         },
         'reviewer': {
             'zh': '校正者',
+            'zh-TW': '校正者',
             'ja': '校正者',
             'en': 'Reviewer',
             'ru': 'Рецензент',
             'ko': '검토자',
             'fr': 'Réviseur',
+            'es': 'Revisor',
         },
         'registration_date': {
             'zh': '注册时间',
+            'zh-TW': '註冊時間',
             'ja': '登録日',
             'en': 'Registration Date',
             'ru': 'Дата регистрации',
             'ko': '등록 날짜',
             'fr': 'Date d\'inscription',
+            'es': 'Fecha de registro',
         },
         'quick_actions': {
             'zh': '快速操作',
+            'zh-TW': '快速操作',
             'ja': 'クイックアクション',
             'en': 'Quick Actions',
             'ru': 'Быстрые действия',
             'ko': '빠른 작업',
             'fr': 'Actions rapides',
+            'es': 'Acciones rápidas',
         },
         'edit_profile': {
             'zh': '编辑资料',
+            'zh-TW': '編輯資料',
             'ja': 'プロフィール編集',
             'en': 'Edit Profile',
             'ru': 'Редактировать профиль',
             'ko': '프로필 편집',
             'fr': 'Modifier le profil',
+            'es': 'Editar perfil',
         },
         'change_password': {
             'zh': '修改密码',
+            'zh-TW': '修改密碼',
             'ja': 'パスワード変更',
             'en': 'Change Password',
             'ru': 'Изменить пароль',
             'ko': '비밀번호 변경',
             'fr': 'Changer le mot de passe',
+            'es': 'Cambiar contraseña',
         },
         'become_translator': {
             'zh': '通过测试，成为翻译者',
+            'zh-TW': '通過測試，成為翻譯者',
             'ja': 'テストに合格して翻訳者になる',
             'en': 'Pass test to become translator',
             'ru': 'Пройдите тест, чтобы стать переводчиком',
             'ko': '번역가가 되기 위해 테스트를 통과하세요',
             'fr': 'Passez le test pour devenir traducteur',
+            'es': 'Pasar prueba para convertirse en traductor',
         },
         'become_reviewer': {
             'zh': '通过测试，成为校正者',
+            'zh-TW': '通過測試，成為校正者',
             'ja': 'テストに合格して校正者になる',
             'en': 'Pass test to become reviewer',
             'ru': 'Пройдите тест, чтобы стать рецензентом',
             'ko': '검토자가 되기 위해 테스트를 통과하세요',
             'fr': 'Passez le test pour devenir réviseur',
+            'es': 'Pasar prueba para convertirse en revisor',
         },
         'my_friends': {
             'zh': '我的好友',
+            'zh-TW': '我的好友',
             'ja': '私の友達',
             'en': 'My Friends',
             'ru': 'Мои друзья',
             'ko': '내 친구들',
             'fr': 'Mes amis',
+            'es': 'Mis amigos',
         },
         'search_by_username': {
             'zh': '通过用户名搜索...',
+            'zh-TW': '通過用戶名搜索...',
             'ja': 'ユーザー名で検索...',
             'en': 'Search by username...',
             'ru': 'Поиск по имени пользователя...',
             'ko': '사용자 이름으로 검색...',
             'fr': 'Rechercher par nom d\'utilisateur...',
+            'es': 'Buscar por nombre de usuario...',
         },
         'search_results': {
             'zh': '搜索结果',
+            'zh-TW': '搜索結果',
             'ja': '検索結果',
             'en': 'Search Results',
             'ru': 'Результаты поиска',
             'ko': '검색 결과',
             'fr': 'Résultats de recherche',
+            'es': 'Resultados de búsqueda',
         },
         'no_friends': {
             'zh': '暂无好友',
+            'zh-TW': '暫無好友',
             'ja': '友達なし',
             'en': 'No friends',
             'ru': 'Нет друзей',
             'ko': '친구 없음',
             'fr': 'Aucun ami',
+            'es': 'Sin amigos',
         },
         'you_have_no_friends': {
             'zh': '您还没有添加任何好友',
+            'zh-TW': '您還沒有添加任何好友',
             'ja': 'まだ友達を追加していません',
             'en': 'You haven\'t added any friends yet',
             'ru': 'Вы еще не добавили друзей',
             'ko': '아직 친구를 추가하지 않았습니다',
             'fr': 'Vous n\'avez pas encore ajouté d\'amis',
+            'es': 'Aún no has agregado ningún amigo',
         },
         'find_friends': {
             'zh': '寻找好友',
+            'zh-TW': '尋找好友',
             'ja': '友達を探す',
             'en': 'Find Friends',
             'ru': 'Найти друзей',
             'ko': '친구 찾기',
             'fr': 'Trouver des amis',
+            'es': 'Encontrar amigos',
         },
         'trusted_translators': {
             'zh': '信赖翻译者',
+            'zh-TW': '信賴翻譯者',
             'ja': '信頼翻訳者',
             'en': 'Trusted Translators',
             'ru': 'Доверенные переводчики',
             'ko': '신뢰할 수 있는 번역가',
             'fr': 'Traducteurs de confiance',
+            'es': 'Traductores de confianza',
         },
         'my_trusted_translators': {
             'zh': '我信赖的翻译者',
+            'zh-TW': '我信賴的翻譯者',
             'ja': '私が信頼する翻訳者',
             'en': 'My Trusted Translators',
             'ru': 'Мои доверенные переводчики',
             'ko': '내가 신뢰하는 번역가',
             'fr': 'Mes traducteurs de confiance',
+            'es': 'Mis traductores de confianza',
         },
         'no_trusted_translators': {
             'zh': '暂无信赖的翻译者',
+            'zh-TW': '暫無信賴的翻譯者',
             'ja': '信頼する翻訳者なし',
             'en': 'No trusted translators',
             'ru': 'Нет доверенных переводчиков',
             'ko': '신뢰할 수 있는 번역가 없음',
             'fr': 'Aucun traducteur de confiance',
+            'es': 'Sin traductores de confianza',
         },
         'you_have_no_trusted_translators': {
             'zh': '您还没有信赖任何翻译者',
+            'zh-TW': '您還沒有信賴任何翻譯者',
             'ja': 'まだ信頼する翻訳者はいません',
             'en': 'You haven\'t trusted any translators yet',
             'ru': 'Вы еще не доверяете ни одному переводчику',
             'ko': '아직 신뢰하는 번역가가 없습니다',
             'fr': 'Vous n\'avez encore confiance à aucun traducteur',
+            'es': 'Aún no confías en ningún traductor',
         },
         'find_translators': {
             'zh': '寻找翻译者',
+            'zh-TW': '尋找翻譯者',
             'ja': '翻訳者を探す',
             'en': 'Find Translators',
             'ru': 'Найти переводчиков',
             'ko': '번역가 찾기',
             'fr': 'Trouver des traducteurs',
+            'es': 'Encontrar traductores',
         },
         'creators_who_trust_me': {
             'zh': '信赖我的创作者',
+            'zh-TW': '信賴我的創作者',
             'ja': '私を信頼するクリエイター',
             'en': 'Creators Who Trust Me',
             'ru': 'Создатели, которые доверяют мне',
             'ko': '나를 신뢰하는 창작자',
             'fr': 'Créateurs qui me font confiance',
+            'es': 'Creadores que confían en mí',
         },
         'no_creators_trust_me': {
             'zh': '暂无信赖我的创作者',
+            'zh-TW': '暫無信賴我的創作者',
             'ja': '私を信頼するクリエイターなし',
             'en': 'No creators trust me',
             'ru': 'Нет создателей, которые доверяют мне',
             'ko': '나를 신뢰하는 창작자 없음',
             'fr': 'Aucun créateur ne me fait confiance',
+            'es': 'Ningún creador confía en mí',
         },
         'no_creators_trust_you': {
             'zh': '还没有创作者信赖您',
+            'zh-TW': '還沒有創作者信賴您',
             'ja': 'まだあなたを信頼するクリエイターはいません',
             'en': 'No creators trust you yet',
             'ru': 'Пока нет создателей, которые доверяют вам',
             'ko': '아직 당신을 신뢰하는 창작자가 없습니다',
             'fr': 'Aucun créateur ne vous fait encore confiance',
+            'es': 'Aún ningún creador confía en ti',
         },
         'system_notifications': {
             'zh': '系统通知',
+            'zh-TW': '系統通知',
             'ja': 'システム通知',
             'en': 'System Notifications',
             'ru': 'Системные уведомления',
             'ko': '시스템 알림',
             'fr': 'Notifications système',
+            'es': 'Notificaciones del sistema',
         },
         'mark_as_read': {
             'zh': '标记为已读',
+            'zh-TW': '標記為已讀',
             'ja': '既読にする',
             'en': 'Mark as Read',
             'ru': 'Отметить как прочитанное',
             'ko': '읽음으로 표시',
             'fr': 'Marquer comme lu',
+            'es': 'Marcar como leído',
         },
         'friend_requests': {
             'zh': '好友请求',
+            'zh-TW': '好友請求',
             'ja': '友達リクエスト',
             'en': 'Friend Requests',
             'ru': 'Запросы в друзья',
             'ko': '친구 요청',
             'fr': 'Demandes d\'ami',
+            'es': 'Solicitudes de amistad',
         },
         'requests_to_add_friend': {
             'zh': '请求添加您为好友',
+            'zh-TW': '請求添加您為好友',
             'ja': 'があなたを友達に追加しようとしています',
             'en': 'requests to add you as friend',
             'ru': 'запрашивает добавить вас в друзья',
             'ko': '가 당신을 친구로 추가하려고 요청했습니다',
             'fr': 'demande à vous ajouter comme ami',
+            'es': 'solicita agregarte como amigo',
         },
         'agree': {
             'zh': '同意',
+            'zh-TW': '同意',
             'ja': '同意',
             'en': 'Agree',
             'ru': 'Согласиться',
             'ko': '동의',
             'fr': 'Accepter',
+            'es': 'Aceptar',
         },
         'reject': {
             'zh': '拒绝',
+            'zh-TW': '拒絕',
             'ja': '拒否',
             'en': 'Reject',
             'ru': 'Отклонить',
             'ko': '거부',
             'fr': 'Rejeter',
+            'es': 'Rechazar',
         },
         # 翻译确认界面消息
         'confirm_translate_title': {
             'zh': '翻译请求确认',
+            'zh-TW': '翻譯請求確認',
             'ja': '翻訳リクエスト確認',
             'en': 'Translation Request Confirmation',
             'ru': 'Подтверждение запроса на перевод',
             'ko': '번역 요청 확인',
-            'fr': 'Confirmation de demande de traduction'
+            'fr': 'Confirmation de demande de traduction',
+            'es': 'Confirmación de solicitud de traducción'
         },
         'please_reconfirm_requirements': {
             'zh': '请再次确认翻译要求。',
+            'zh-TW': '請再次確認翻譯要求。',
             'ja': '翻訳要求を再確認してください。',
             'en': 'Please reconfirm the translation requirements.',
             'ru': 'Пожалуйста, подтвердите требования к переводу еще раз.',
             'ko': '번역 요구사항을 다시 확인해 주세요.',
-            'fr': 'Veuillez reconfirmer les exigences de traduction.'
+            'fr': 'Veuillez reconfirmer les exigences de traduction.',
+            'es': 'Por favor reconfirme los requisitos de traducción.'
         },
         'translate_request_sent': {
             'zh': '翻译请求已发送，请等待作者同意。',
+            'zh-TW': '翻譯請求已發送，請等待作者同意。',
             'ja': '翻訳リクエストが送信されました。作者の承認をお待ちください。',
             'en': 'Translation request sent, please wait for author approval.',
             'ru': 'Запрос на перевод отправлен, пожалуйста, ждите одобрения автора.',
             'ko': '번역 요청이 전송되었습니다. 작가의 승인을 기다려 주세요.',
-            'fr': 'Demande de traduction envoyée, veuillez attendre l\'approbation de l\'auteur.'
+            'fr': 'Demande de traduction envoyée, veuillez attendre l\'approbation de l\'auteur.',
+            'es': 'Solicitud de traducción enviada, por favor espere la aprobación del autor.'
         },
         'have_expectations_for_creator': {
             'zh': '我对作者有期待/要求',
+            'zh-TW': '我對作者有期待/要求',
             'ja': '作者に期待/要求があります',
             'en': 'I have expectations/requirements for the creator',
             'ru': 'У меня есть ожидания/требования к создателю',
             'ko': '작가에 대한 기대/요구사항이 있습니다',
-            'fr': 'J\'ai des attentes/exigences pour le créateur'
+            'fr': 'J\'ai des attentes/exigences pour le créateur',
+            'es': 'Tengo expectativas/requisitos para el creador'
         },
         'explain_expectations_then_translate': {
             'zh': '向作者表达期待或要求后再开始翻译',
+            'zh-TW': '向作者表達期待或要求後再開始翻譯',
             'ja': '作者に期待や要求を伝えてから翻訳を開始',
             'en': 'Express expectations or requirements to the author before starting translation',
             'ru': 'Выразить ожидания или требования автору перед началом перевода',
             'ko': '작가에게 기대나 요구사항을 표현한 후 번역 시작',
-            'fr': 'Exprimer les attentes ou exigences à l\'auteur avant de commencer la traduction'
+            'fr': 'Exprimer les attentes ou exigences à l\'auteur avant de commencer la traduction',
+            'es': 'Expresar expectativas o requisitos al autor antes de comenzar la traducción'
         },
         'agree_and_start_translation': {
             'zh': '同意要求并开始翻译',
+            'zh-TW': '同意要求並開始翻譯',
             'ja': '要求に同意して翻訳を開始',
             'en': 'Agree to requirements and start translation',
             'ru': 'Согласиться с требованиями и начать перевод',
             'ko': '요구사항에 동의하고 번역 시작',
-            'fr': 'Accepter les exigences et commencer la traduction'
+            'fr': 'Accepter les exigences et commencer la traduction',
+            'es': 'Aceptar requisitos y comenzar traducción'
         },
         'agree_and_go_to_translate_page': {
             'zh': '同意作者要求并进入翻译页面',
+            'zh-TW': '同意作者要求並進入翻譯頁面',
             'ja': '作者の要求に同意して翻訳ページに移動',
             'en': 'Agree to author requirements and go to translation page',
             'ru': 'Согласиться с требованиями автора и перейти на страницу перевода',
             'ko': '작가의 요구사항에 동의하고 번역 페이지로 이동',
-            'fr': 'Accepter les exigences de l\'auteur et aller à la page de traduction'
+            'fr': 'Accepter les exigences de l\'auteur et aller à la page de traduction',
+            'es': 'Aceptar requisitos del autor e ir a la página de traducción'
         },
         'expectations_for_creator': {
             'zh': '对作者的期待/要求',
+            'zh-TW': '對作者的期待/要求',
             'ja': '作者への期待/要求',
             'en': 'Expectations/Requirements for Creator',
             'ru': 'Ожидания/Требования к создателю',
             'ko': '작가에 대한 기대/요구사항',
-            'fr': 'Attentes/Exigences pour le créateur'
+            'fr': 'Attentes/Exigences pour le créateur',
+            'es': 'Expectativas/Requisitos para el creador'
         },
         'enter_expectations_for_translation': {
             'zh': '请输入您对翻译的期待或要求',
+            'zh-TW': '請輸入您對翻譯的期待或要求',
             'ja': '翻訳への期待や要求を入力してください',
             'en': 'Please enter your expectations or requirements for translation',
             'ru': 'Пожалуйста, введите ваши ожидания или требования к переводу',
             'ko': '번역에 대한 기대나 요구사항을 입력해 주세요',
-            'fr': 'Veuillez entrer vos attentes ou exigences pour la traduction'
+            'fr': 'Veuillez entrer vos attentes ou exigences pour la traduction',
+            'es': 'Por favor ingrese sus expectativas o requisitos para la traducción'
         },
         'expectations_placeholder': {
             'zh': '例如：翻译风格、术语统一、文化考虑等...',
+            'zh-TW': '例如：翻譯風格、術語統一、文化考慮等...',
             'ja': '例：翻訳スタイル、用語統一、文化的配慮など...',
             'en': 'e.g., Translation style, terminology consistency, cultural considerations, etc...',
             'ru': 'например: Стиль перевода, единообразие терминологии, культурные соображения и т.д...',
             'ko': '예: 번역 스타일, 용어 통일, 문화적 고려사항 등...',
-            'fr': 'ex: Style de traduction, cohérence terminologique, considérations culturelles, etc...'
+            'fr': 'ex: Style de traduction, cohérence terminologique, considérations culturelles, etc...',
+            'es': 'ej: Estilo de traducción, consistencia terminológica, consideraciones culturales, etc...'
         },
         'empty_then_direct_translate': {
             'zh': '留空则直接开始翻译',
+            'zh-TW': '留空則直接開始翻譯',
             'ja': '空欄の場合は直接翻訳を開始',
             'en': 'Leave empty to start translation directly',
             'ru': 'Оставьте пустым, чтобы начать перевод напрямую',
             'ko': '비워두면 직접 번역 시작',
-            'fr': 'Laisser vide pour commencer la traduction directement'
+            'fr': 'Laisser vide pour commencer la traduction directement',
+            'es': 'Dejar vacío para comenzar traducción directamente'
         },
         'send_request_to_creator': {
             'zh': '向作者发送请求',
+            'zh-TW': '向作者發送請求',
             'ja': '作者にリクエストを送信',
             'en': 'Send request to creator',
             'ru': 'Отправить запрос создателю',
             'ko': '작가에게 요청 보내기',
-            'fr': 'Envoyer la demande au créateur'
+            'fr': 'Envoyer la demande au créateur',
+            'es': 'Enviar solicitud al creador'
         },
         'choose_action': {
             'zh': '选择操作',
-            'ja': '操作を選択',
-        },
-        # 翻译者请求相关消息
-        'make_request_title': {
-            'zh': '向作者提出要求',
-            'ja': '作者に要求を提出',
-            'en': 'Make Request to Creator',
-            'ru': 'Предъявить требования к создателю',
-            'ko': '작가에게 요청하기',
-            'fr': 'Faire une demande au créateur'
-        },
-        'make_request_info': {
-            'zh': '您可以向作者表达您的期待或要求，这将帮助作者更好地了解您的需求。',
-            'ja': '作者に期待や要求を表現でき、作者があなたのニーズをよりよく理解するのに役立ちます。',
-            'en': 'You can express your expectations or requirements to the author, which will help the author better understand your needs.',
-            'ru': 'Вы можете выразить свои ожидания или требования автору, что поможет автору лучше понять ваши потребности.',
-            'ko': '작가에게 기대나 요구사항을 표현할 수 있으며, 이는 작가가 귀하의 요구사항을 더 잘 이해하는 데 도움이 됩니다.',
-            'fr': 'Vous pouvez exprimer vos attentes ou exigences à l\'auteur, ce qui aidera l\'auteur à mieux comprendre vos besoins.'
-        },
-        'request_sent_success': {
-            'zh': '您的要求已发送给作者，请等待作者回复。',
-            'ja': 'あなたの要求が作者に送信されました。作者の返信をお待ちください。',
-            'en': 'Your request has been sent to the author, please wait for the author\'s response.',
-            'ru': 'Ваш запрос отправлен автору, пожалуйста, ждите ответа автора.',
-            'ko': '귀하의 요청이 작가에게 전송되었습니다. 작가의 답변을 기다려 주세요.',
-            'fr': 'Votre demande a été envoyée à l\'auteur, veuillez attendre la réponse de l\'auteur.'
-        },
-        'your_expectations_for_creator': {
-            'zh': '您对作者的期待/要求',
-            'ja': '作者への期待/要求',
-            'en': 'Your Expectations/Requirements for Creator',
-            'ru': 'Ваши ожидания/Требования к создателю',
-            'ko': '작가에 대한 귀하의 기대/요구사항',
-            'fr': 'Vos attentes/exigences pour le créateur'
-        },
-        'enter_expectations_for_creator': {
-            'zh': '请输入您对作者的期待或要求',
-            'ja': '作者への期待や要求を入力してください',
-            'en': 'Please enter your expectations or requirements for the creator',
-            'ru': 'Пожалуйста, введите ваши ожидания или требования к создателю',
-            'ko': '작가에 대한 기대나 요구사항을 입력해 주세요',
-            'fr': 'Veuillez entrer vos attentes ou exigences pour le créateur'
-        },
-        'expectations_for_creator_placeholder': {
-            'zh': '例如：希望自己能作为翻译者署名、能够进行二次传播等...',
-            'ja': '例：自分が翻訳者として署名できることを希望、二次配布ができることを希望など...',
-            'en': 'e.g., Hope to be credited as a translator, hope to be able to redistribute the work, etc...',
-            'ru': 'например: Надеюсь быть указанным как переводчик, надеюсь иметь возможность распространять работу и т.д...',
-            'ko': '예: 번역가로 기여자 표시되기를 바람, 작품을 재배포할 수 있기를 바람 등...',
-            'fr': 'ex: Espérer être crédité comme traducteur, espérer pouvoir redistribuer l\'œuvre, etc...'
-        },
-        'request_help_text': {
-            'zh': '请详细描述您的需求，这将帮助作者更好地理解您的期望。',
-            'ja': 'あなたのニーズを詳しく説明してください。これにより作者があなたの期待をよりよく理解できます。',
-            'en': 'Please describe your needs in detail, which will help the author better understand your expectations.',
-            'ru': 'Пожалуйста, подробно опишите ваши потребности, это поможет автору лучше понять ваши ожидания.',
-            'ko': '귀하의 요구사항을 자세히 설명해 주세요. 이는 작가가 귀하의 기대를 더 잘 이해하는 데 도움이 됩니다.',
-            'fr': 'Veuillez décrire vos besoins en détail, ce qui aidera l\'auteur à mieux comprendre vos attentes.'
-        },
-        'make_request_to_creator': {
-            'zh': '向作者提出要求',
-            'ja': '作者に要求を提出',
-            'en': 'Make Request to Creator',
-            'ru': 'Предъявить требования к создателю',
-            'ko': '작가에게 요청하기',
-            'fr': 'Faire une demande au créateur'
-        },
-        'make_request_desc': {
-            'zh': '向作者表达您的期待或要求',
-            'ja': '作者に期待や要求を表現',
-            'en': 'Express your expectations or requirements to the author',
-            'ru': 'Выразить ваши ожидания или требования автору',
-            'ko': '작가에게 기대나 요구사항 표현',
-            'fr': 'Exprimer vos attentes ou exigences à l\'auteur'
-        },
-        'request_content_required': {
-            'zh': '请输入您的要求内容',
-            'ja': '要求内容を入力してください',
-            'en': 'Please enter your request content',
-            'ru': 'Пожалуйста, введите содержание вашего запроса',
-            'ko': '요청 내용을 입력해 주세요',
-            'fr': 'Veuillez entrer le contenu de votre demande'
-        },
-        'translator_requests': {
-            'zh': '翻译者请求',
-            'ja': '翻訳者リクエスト',
-            'en': 'Translator Requests',
-            'ru': 'Запросы переводчика',
-            'ko': '번역가 요청',
-            'fr': 'Demandes de traducteur'
-        },
-        'translator_request': {
-            'zh': '翻译者请求',
-            'ja': '翻訳者リクエスト',
-            'en': 'Translator Request',
-            'ru': 'Запрос переводчика',
-            'ko': '번역가 요청',
-            'fr': 'Demande de traducteur'
-        },
-        'requests_author_help': {
-            'zh': '向您提出要求',
-            'ja': 'あなたに要求を提出',
-            'en': 'Requests your help',
-            'ru': 'Просит вашей помощи',
-            'ko': '도움을 요청합니다',
-            'fr': 'Demande votre aide'
-        },
-        'translator_request_content': {
-            'zh': '要求内容',
-            'ja': '要求内容',
-            'en': 'Request content',
-            'ru': 'Содержание запроса',
-            'ko': '요청 내용',
-            'fr': 'Contenu de la demande'
-        },
-        'respond_to_translator_request': {
-            'zh': '回复翻译者请求',
-            'ja': '翻訳者リクエストに返信',
-            'en': 'Respond to Translator Request',
-            'ru': 'Ответить на запрос переводчика',
-            'ko': '번역가 요청에 답변',
-            'fr': 'Répondre à la demande du traducteur'
-        },
-        'your_response': {
-            'zh': '您的回复',
-            'ja': 'あなたの返信',
-            'en': 'Your response',
-            'ru': 'Ваш ответ',
-            'ko': '귀하의 답변',
-            'fr': 'Votre réponse'
-        },
-        'response_placeholder': {
-            'zh': '请输入您的回复...',
-            'ja': '返信を入力してください...',
-            'en': 'Please enter your response...',
-            'ru': 'Пожалуйста, введите ваш ответ...',
-            'ko': '답변을 입력해 주세요...',
-            'fr': 'Veuillez entrer votre réponse...'
-        },
-        'send_response': {
-            'zh': '发送回复',
-            'ja': '返信を送信',
-            'en': 'Send response',
-            'ru': 'Отправить ответ',
-            'ko': '답변 보내기',
-            'fr': 'Envoyer la réponse'
-        },
-        'response_required': {
-            'zh': '请输入回复内容',
-            'ja': '返信内容を入力してください',
-            'en': 'Please enter response content',
-            'ru': 'Пожалуйста, введите содержание ответа',
-            'ko': '답변 내용을 입력해 주세요',
-            'fr': 'Veuillez entrer le contenu de la réponse'
-        },
-        'response_sent': {
-            'zh': '回复已发送',
-            'ja': '返信が送信されました',
-            'en': 'Response sent',
-            'ru': 'Ответ отправлен',
-            'ko': '답변이 전송되었습니다',
-            'fr': 'Réponse envoyée'
-        },
-        'translator_request_approved_msg': {
-            'zh': '已同意翻译者的要求',
-            'ja': '翻訳者の要求を承認しました',
-            'en': 'Translator request approved',
-            'ru': 'Запрос переводчика одобрен',
-            'ko': '번역가 요청 승인됨',
-            'fr': 'Demande de traducteur approuvée'
-        },
-        'translator_request_rejected_msg': {
-            'zh': '已拒绝翻译者的要求',
-            'ja': '翻訳者の要求を拒否しました',
-            'en': 'Translator request rejected',
-            'ru': 'Запрос переводчика отклонен',
-            'ko': '번역가 요청 거부됨',
-            'fr': 'Demande de traducteur rejetée'
-        },
-        'choose_action': {
-            'zh': '选择操作',
+            'zh-TW': '選擇操作',
             'ja': '操作を選択',
             'en': 'Choose Action',
             'ru': 'Выберите действие',
             'ko': '작업 선택',
-            'fr': 'Choisir l\'action'
+            'fr': 'Choisir l\'action',
+            'es': 'Elegir acción',
+        },
+        # 翻译者请求相关消息
+        'make_request_title': {
+            'zh': '向作者提出要求',
+            'zh-TW': '向作者提出要求',
+            'ja': '作者に要求を提出',
+            'en': 'Make Request to Creator',
+            'ru': 'Предъявить требования к создателю',
+            'ko': '작가에게 요청하기',
+            'fr': 'Faire une demande au créateur',
+            'es': 'Hacer solicitud al creador'
+        },
+        'make_request_info': {
+            'zh': '您可以向作者表达您的期待或要求，这将帮助作者更好地了解您的需求。',
+            'zh-TW': '您可以向作者表達您的期待或要求，這將幫助作者更好地了解您的需求。',
+            'ja': '作者に期待や要求を表現でき、作者があなたのニーズをよりよく理解するのに役立ちます。',
+            'en': 'You can express your expectations or requirements to the author, which will help the author better understand your needs.',
+            'ru': 'Вы можете выразить свои ожидания или требования автору, что поможет автору лучше понять ваши потребности.',
+            'ko': '작가에게 기대나 요구사항을 표현할 수 있으며, 이는 작가가 귀하의 요구사항을 더 잘 이해하는 데 도움이 됩니다.',
+            'fr': 'Vous pouvez exprimer vos attentes ou exigences à l\'auteur, ce qui aidera l\'auteur à mieux comprendre vos besoins.',
+            'es': 'Puede expresar sus expectativas o requisitos al autor, lo que ayudará al autor a entender mejor sus necesidades.'
+        },
+        'request_sent_success': {
+            'zh': '您的要求已发送给作者，请等待作者回复。',
+            'zh-TW': '您的要求已發送給作者，請等待作者回復。',
+            'ja': 'あなたの要求が作者に送信されました。作者の返信をお待ちください。',
+            'en': 'Your request has been sent to the author, please wait for the author\'s response.',
+            'ru': 'Ваш запрос отправлен автору, пожалуйста, ждите ответа автора.',
+            'ko': '귀하의 요청이 작가에게 전송되었습니다. 작가의 답변을 기다려 주세요.',
+            'fr': 'Votre demande a été envoyée à l\'auteur, veuillez attendre la réponse de l\'auteur.',
+            'es': 'Su solicitud ha sido enviada al autor, por favor espere la respuesta del autor.'
+        },
+        'your_expectations_for_creator': {
+            'zh': '您对作者的期待/要求',
+            'zh-TW': '您對作者的期待/要求',
+            'ja': '作者への期待/要求',
+            'en': 'Your Expectations/Requirements for Creator',
+            'ru': 'Ваши ожидания/Требования к создателю',
+            'ko': '작가에 대한 귀하의 기대/요구사항',
+            'fr': 'Vos attentes/exigences pour le créateur',
+            'es': 'Sus expectativas/requisitos para el creador'
+        },
+        'enter_expectations_for_creator': {
+            'zh': '请输入您对作者的期待或要求',
+            'zh-TW': '請輸入您對作者的期待或要求',
+            'ja': '作者への期待や要求を入力してください',
+            'en': 'Please enter your expectations or requirements for the creator',
+            'ru': 'Пожалуйста, введите ваши ожидания или требования к создателю',
+            'ko': '작가에 대한 기대나 요구사항을 입력해 주세요',
+            'fr': 'Veuillez entrer vos attentes ou exigences pour le créateur',
+            'es': 'Por favor ingrese sus expectativas o requisitos para el creador'
+        },
+        'expectations_for_creator_placeholder': {
+            'zh': '例如：希望自己能作为翻译者署名、能够进行二次传播等...',
+            'zh-TW': '例如：希望自己能作為翻譯者署名、能夠進行二次傳播等...',
+            'ja': '例：自分が翻訳者として署名できることを希望、二次配布ができることを希望など...',
+            'en': 'e.g., Hope to be credited as a translator, hope to be able to redistribute the work, etc...',
+            'ru': 'например: Надеюсь быть указанным как переводчик, надеюсь иметь возможность распространять работу и т.д...',
+            'ko': '예: 번역가로 기여자 표시되기를 바람, 작품을 재배포할 수 있기를 바람 등...',
+            'fr': 'ex: Espérer être crédité comme traducteur, espérer pouvoir redistribuer l\'œuvre, etc...',
+            'es': 'ej: Esperar ser acreditado como traductor, esperar poder redistribuir la obra, etc...'
+        },
+        'request_help_text': {
+            'zh': '请详细描述您的需求，这将帮助作者更好地理解您的期望。',
+            'zh-TW': '請詳細描述您的需求，這將幫助作者更好地理解您的期望。',
+            'ja': 'あなたのニーズを詳しく説明してください。これにより作者があなたの期待をよりよく理解できます。',
+            'en': 'Please describe your needs in detail, which will help the author better understand your expectations.',
+            'ru': 'Пожалуйста, подробно опишите ваши потребности, это поможет автору лучше понять ваши ожидания.',
+            'ko': '귀하의 요구사항을 자세히 설명해 주세요. 이는 작가가 귀하의 기대를 더 잘 이해하는 데 도움이 됩니다.',
+            'fr': 'Veuillez décrire vos besoins en détail, ce qui aidera l\'auteur à mieux comprendre vos attentes.',
+            'es': 'Por favor describa sus necesidades en detalle, lo que ayudará al autor a entender mejor sus expectativas.'
+        },
+        'make_request_to_creator': {
+            'zh': '向作者提出要求',
+            'zh-TW': '向作者提出要求',
+            'ja': '作者に要求を提出',
+            'en': 'Make Request to Creator',
+            'ru': 'Предъявить требования к создателю',
+            'ko': '작가에게 요청하기',
+            'fr': 'Faire une demande au créateur',
+            'es': 'Hacer solicitud al creador'
+        },
+        'make_request_desc': {
+            'zh': '向作者表达您的期待或要求',
+            'zh-TW': '向作者表達您的期待或要求',
+            'ja': '作者に期待や要求を表現',
+            'en': 'Express your expectations or requirements to the author',
+            'ru': 'Выразить ваши ожидания или требования автору',
+            'ko': '작가에게 기대나 요구사항 표현',
+            'fr': 'Exprimer vos attentes ou exigences à l\'auteur',
+            'es': 'Expresar sus expectativas o requisitos al autor'
+        },
+        'request_content_required': {
+            'zh': '请输入您的要求内容',
+            'zh-TW': '請輸入您的要求內容',
+            'ja': '要求内容を入力してください',
+            'en': 'Please enter your request content',
+            'ru': 'Пожалуйста, введите содержание вашего запроса',
+            'ko': '요청 내용을 입력해 주세요',
+            'fr': 'Veuillez entrer le contenu de votre demande',
+            'es': 'Por favor ingrese el contenido de su solicitud'
+        },
+        'translator_requests': {
+            'zh': '翻译者请求',
+            'zh-TW': '翻譯者請求',
+            'ja': '翻訳者リクエスト',
+            'en': 'Translator Requests',
+            'ru': 'Запросы переводчика',
+            'ko': '번역가 요청',
+            'fr': 'Demandes de traducteur',
+            'es': 'Solicitudes de traductor'
+        },
+        'translator_request': {
+            'zh': '翻译者请求',
+            'zh-TW': '翻譯者請求',
+            'ja': '翻訳者リクエスト',
+            'en': 'Translator Request',
+            'ru': 'Запрос переводчика',
+            'ko': '번역가 요청',
+            'fr': 'Demande de traducteur',
+            'es': 'Solicitud de traductor'
+        },
+        'requests_author_help': {
+            'zh': '向您提出要求',
+            'zh-TW': '向您提出要求',
+            'ja': 'あなたに要求を提出',
+            'en': 'Requests your help',
+            'ru': 'Просит вашей помощи',
+            'ko': '도움을 요청합니다',
+            'fr': 'Demande votre aide',
+            'es': 'Solicita su ayuda'
+        },
+        'translator_request_content': {
+            'zh': '要求内容',
+            'zh-TW': '要求內容',
+            'ja': '要求内容',
+            'en': 'Request content',
+            'ru': 'Содержание запроса',
+            'ko': '요청 내용',
+            'fr': 'Contenu de la demande',
+            'es': 'Contenido de la solicitud'
+        },
+        'respond_to_translator_request': {
+            'zh': '回复翻译者请求',
+            'zh-TW': '回復翻譯者請求',
+            'ja': '翻訳者リクエストに返信',
+            'en': 'Respond to Translator Request',
+            'ru': 'Ответить на запрос переводчика',
+            'ko': '번역가 요청에 답변',
+            'fr': 'Répondre à la demande du traducteur',
+            'es': 'Responder a la solicitud del traductor'
+        },
+        'your_response': {
+            'zh': '您的回复',
+            'zh-TW': '您的回復',
+            'ja': 'あなたの返信',
+            'en': 'Your response',
+            'ru': 'Ваш ответ',
+            'ko': '귀하의 답변',
+            'fr': 'Votre réponse',
+            'es': 'Su respuesta'
+        },
+        'response_placeholder': {
+            'zh': '请输入您的回复...',
+            'zh-TW': '請輸入您的回復...',
+            'ja': '返信を入力してください...',
+            'en': 'Please enter your response...',
+            'ru': 'Пожалуйста, введите ваш ответ...',
+            'ko': '답변을 입력해 주세요...',
+            'fr': 'Veuillez entrer votre réponse...',
+            'es': 'Por favor ingrese su respuesta...'
+        },
+        'send_response': {
+            'zh': '发送回复',
+            'zh-TW': '發送回復',
+            'ja': '返信を送信',
+            'en': 'Send response',
+            'ru': 'Отправить ответ',
+            'ko': '답변 보내기',
+            'fr': 'Envoyer la réponse',
+            'es': 'Enviar respuesta'
+        },
+        'response_required': {
+            'zh': '请输入回复内容',
+            'zh-TW': '請輸入回復內容',
+            'ja': '返信内容を入力してください',
+            'en': 'Please enter response content',
+            'ru': 'Пожалуйста, введите содержание ответа',
+            'ko': '답변 내용을 입력해 주세요',
+            'fr': 'Veuillez entrer le contenu de la réponse',
+            'es': 'Por favor ingrese el contenido de la respuesta'
+        },
+        'response_sent': {
+            'zh': '回复已发送',
+            'zh-TW': '回復已發送',
+            'ja': '返信が送信されました',
+            'en': 'Response sent',
+            'ru': 'Ответ отправлен',
+            'ko': '답변이 전송되었습니다',
+            'fr': 'Réponse envoyée',
+            'es': 'Respuesta enviada'
+        },
+        'translator_request_approved_msg': {
+            'zh': '已同意翻译者的要求',
+            'zh-TW': '已同意翻譯者的要求',
+            'ja': '翻訳者の要求を承認しました',
+            'en': 'Translator request approved',
+            'ru': 'Запрос переводчика одобрен',
+            'ko': '번역가 요청 승인됨',
+            'fr': 'Demande de traducteur approuvée',
+            'es': 'Solicitud de traductor aprobada'
+        },
+        'translator_request_rejected_msg': {
+            'zh': '已拒绝翻译者的要求',
+            'zh-TW': '已拒絕翻譯者的要求',
+            'ja': '翻訳者の要求を拒否しました',
+            'en': 'Translator request rejected',
+            'ru': 'Запрос переводчика отклонен',
+            'ko': '번역가 요청 거부됨',
+            'fr': 'Demande de traducteur rejetée',
+            'es': 'Solicitud de traductor rechazada'
+        },
+        'choose_action': {
+            'zh': '选择操作',
+            'zh-TW': '選擇操作',
+            'ja': '操作を選択',
+            'en': 'Choose Action',
+            'ru': 'Выберите действие',
+            'ko': '작업 선택',
+            'fr': 'Choisir l\'action',
+            'es': 'Elegir acción'
         },
         'your_expectation': {
             'zh': '您的期待',
+            'zh-TW': '您的期待',
             'ja': 'あなたの期待',
             'en': 'Your Expectation',
             'ru': 'Ваше ожидание',
             'ko': '당신의 기대',
-            'fr': 'Votre attente'
+            'fr': 'Votre attente',
+            'es': 'Su expectativa'
         },
         # 基础模板消息
                        'site_name': {
                    'zh': '基于兴趣的翻译平台',
+                   'zh-TW': '基於興趣的翻譯平台',
                    'ja': '興味に基づいた翻訳プラットフォーム',
                    'en': 'Interest-Based Translation Platform',
                    'ru': 'Платформа переводов на основе интересов',
                    'ko': '관심사 기반 번역 플랫폼',
-                   'fr': 'Plateforme de traduction basée sur les intérêts'
+                   'fr': 'Plateforme de traduction basée sur les intérêts',
+                   'es': 'Plataforma de traducción basada en intereses'
                },
                'site_description': {
                    'zh': '连接创作者与翻译者的专业平台',
+                   'zh-TW': '連接創作者與翻譯者的專業平台',
                    'ja': 'クリエイターと翻訳者をつなぐ専門プラットフォーム',
                    'en': 'Professional platform connecting creators and translators',
                    'ru': 'Профессиональная платформа, соединяющая создателей и переводчиков',
                    'ko': '창작자와 번역가를 연결하는 전문 플랫폼',
-                   'fr': 'Plateforme professionnelle connectant créateurs et traducteurs'
+                   'fr': 'Plateforme professionnelle connectant créateurs et traducteurs',
+                   'es': 'Plataforma profesional que conecta creadores y traductores'
                },
         'works': {
             'zh': '作品',
+            'zh-TW': '作品',
             'ja': '作品',
             'en': 'Works',
             'ru': 'Работы',
             'ko': '작품',
-            'fr': 'Œuvres'
+            'fr': 'Œuvres',
+            'es': 'Obras'
         },
         'translate': {
             'zh': '翻译',
+            'zh-TW': '翻譯',
             'ja': '翻訳',
             'en': 'Translate',
             'ru': 'Перевести',
             'ko': '번역',
-            'fr': 'Traduire'
+            'fr': 'Traduire',
+            'es': 'Traducir'
         },
         'upload': {
             'zh': '上传',
+            'zh-TW': '上傳',
             'ja': 'アップロード',
             'en': 'Upload',
             'ru': 'Загрузить',
             'ko': '업로드',
-            'fr': 'Télécharger'
+            'fr': 'Télécharger',
+            'es': 'Subir'
         },
         'messages': {
             'zh': '私信',
+            'zh-TW': '私信',
             'ja': 'メッセージ',
             'en': 'Messages',
             'ru': 'Сообщения',
             'ko': '메시지',
-            'fr': 'Messages'
+            'fr': 'Messages',
+            'es': 'Mensajes'
         },
         'profile': {
             'zh': '个人资料',
+            'zh-TW': '個人資料',
             'ja': 'プロフィール',
             'en': 'Profile',
             'ru': 'Профиль',
             'ko': '프로필',
-            'fr': 'Profil'
+            'fr': 'Profil',
+            'es': 'Perfil'
         },
         'friends': {
             'zh': '好友',
+            'zh-TW': '好友',
             'ja': '友達',
             'en': 'Friends',
             'ru': 'Друзья',
             'ko': '친구',
-            'fr': 'Amis'
+            'fr': 'Amis',
+            'es': 'Amigos'
         },
         'trusted_translators': {
             'zh': '信赖翻译者',
+            'zh-TW': '信賴翻譯者',
             'ja': '信頼翻訳者',
             'en': 'Trusted Translators',
             'ru': 'Доверенные переводчики',
             'ko': '신뢰하는 번역가',
-            'fr': 'Traducteurs de confiance'
+            'fr': 'Traducteurs de confiance',
+            'es': 'Traductores de confianza'
         },
         'admin_panel': {
             'zh': '管理面板',
+            'zh-TW': '管理面板',
             'ja': '管理パネル',
             'en': 'Admin Panel',
             'ru': 'Панель администратора',
             'ko': '관리 패널',
-            'fr': 'Panneau d\'administration'
+            'fr': 'Panneau d\'administration',
+            'es': 'Panel de administración'
         },
         'logout': {
             'zh': '登出',
+            'zh-TW': '登出',
             'ja': 'ログアウト',
             'en': 'Logout',
             'ru': 'Выйти',
             'ko': '로그아웃',
-            'fr': 'Déconnexion'
+            'fr': 'Déconnexion',
+            'es': 'Cerrar sesión'
         },
         'login': {
             'zh': '登录',
+            'zh-TW': '登錄',
             'ja': 'ログイン',
             'en': 'Login',
             'ru': 'Войти',
             'ko': '로그인',
-            'fr': 'Connexion'
+            'fr': 'Connexion',
+            'es': 'Iniciar sesión'
         },
         'register': {
             'zh': '注册',
+            'zh-TW': '註冊',
             'ja': '登録',
             'en': 'Register',
             'ru': 'Регистрация',
             'ko': '등록',
-            'fr': 'S\'inscrire'
+            'fr': 'S\'inscrire',
+            'es': 'Registrarse'
         },
         'language': {
             'zh': '中文',
+            'zh-TW': '中文',
             'ja': '日本語',
             'en': 'English',
             'ru': 'Русский',
             'ko': '한국어',
-            'fr': 'Français'
+            'fr': 'Français',
+            'es': 'Español'
         },
         'chinese_lang': {
             'zh': '中文',
+            'zh-TW': '中文',
             'ja': '中国語',
             'en': 'Chinese',
             'ru': 'Китайский',
             'ko': '중국어',
-            'fr': 'Chinois'
+            'fr': 'Chinois',
+            'es': 'Chino'
         },
         'japanese_lang': {
             'zh': '日文',
+            'zh-TW': '日文',
             'ja': '日本語',
             'en': 'Japanese',
             'ru': 'Японский',
             'ko': '일본어',
-            'fr': 'Japonais'
+            'fr': 'Japonais',
+            'es': 'Japonés'
         },
         'english_lang': {
             'zh': '英文',
+            'zh-TW': '英文',
             'ja': '英語',
             'en': 'English',
             'ru': 'Английский',
             'ko': '영어',
-            'fr': 'Anglais'
+            'fr': 'Anglais',
+            'es': 'Inglés'
         },
         'russian_lang': {
             'zh': '俄文',
+            'zh-TW': '俄文',
             'ja': 'ロシア語',
             'en': 'Russian',
             'ru': 'Русский',
             'ko': '러시아어',
-            'fr': 'Russe'
+            'fr': 'Russe',
+            'es': 'Ruso'
         },
         'korean_lang': {
             'zh': '韩文',
+            'zh-TW': '韓文',
             'ja': '韓国語',
             'en': 'Korean',
             'ru': 'Корейский',
             'ko': '한국어',
-            'fr': 'Coréen'
+            'fr': 'Coréen',
+            'es': 'Coreano'
         },
                                'french_lang': {
             'zh': '法文',
+            'zh-TW': '法文',
             'ja': 'フランス語',
             'en': 'French',
             'ru': 'Французский',
             'ko': '프랑스어',
-            'fr': 'Français'
+            'fr': 'Français',
+            'es': 'Francés'
         },
         # 收藏功能相关消息
         'favorites': {
             'zh': '我的收藏',
+            'zh-TW': '我的收藏',
             'ja': 'お気に入り',
             'en': 'My Favorites',
             'ru': 'Мои избранные',
             'ko': '내 즐겨찾기',
-            'fr': 'Mes favoris'
+            'fr': 'Mes favoris',
+            'es': 'Mis favoritos'
         },
         'add_to_favorites': {
             'zh': '收藏',
+            'zh-TW': '收藏',
             'ja': 'お気に入りに追加',
             'en': 'Add to Favorites',
             'ru': 'Добавить в избранное',
             'ko': '즐겨찾기에 추가',
-            'fr': 'Ajouter aux favoris'
+            'fr': 'Ajouter aux favoris',
+            'es': 'Agregar a favoritos'
         },
         'remove_from_favorites': {
             'zh': '取消收藏',
+            'zh-TW': '取消收藏',
             'ja': 'お気に入りから削除',
             'en': 'Remove from Favorites',
             'ru': 'Удалить из избранного',
             'ko': '즐겨찾기에서 제거',
-            'fr': 'Retirer des favoris'
+            'fr': 'Retirer des favoris',
+            'es': 'Quitar de favoritos'
         },
         'favorite_added': {
             'zh': '已添加到收藏',
+            'zh-TW': '已添加到收藏',
             'ja': 'お気に入りに追加されました',
             'en': 'Added to favorites',
             'ru': 'Добавлено в избранное',
             'ko': '즐겨찾기에 추가되었습니다',
-            'fr': 'Ajouté aux favoris'
+            'fr': 'Ajouté aux favoris',
+            'es': 'Agregado a favoritos'
         },
         'favorite_removed': {
             'zh': '已从收藏中移除',
+            'zh-TW': '已從收藏中移除',
             'ja': 'お気に入りから削除されました',
             'en': 'Removed from favorites',
             'ru': 'Удалено из избранного',
             'ko': '즐겨찾기에서 제거되었습니다',
-            'fr': 'Retiré des favoris'
+            'fr': 'Retiré des favoris',
+            'es': 'Quitado de favoritos'
         },
         'no_favorites': {
             'zh': '暂无收藏作品',
+            'zh-TW': '暫無收藏作品',
             'ja': 'お気に入りの作品がありません',
             'en': 'No favorite works',
             'ru': 'Нет избранных работ',
             'ko': '즐겨찾기 작품이 없습니다',
-            'fr': 'Aucune œuvre favorite'
+            'fr': 'Aucune œuvre favorite',
+            'es': 'Sin obras favoritas'
         },
         'favorites_description': {
             'zh': '您收藏的所有作品',
+            'zh-TW': '您收藏的所有作品',
             'ja': 'お気に入りに追加したすべての作品',
             'en': 'All your favorite works',
             'ru': 'Все ваши избранные работы',
             'ko': '즐겨찾기에 추가한 모든 작품',
-            'fr': 'Toutes vos œuvres favorites'
+            'fr': 'Toutes vos œuvres favorites',
+            'es': 'Todas sus obras favoritas'
         },
         'no_favorites_description': {
             'zh': '您还没有收藏任何作品。浏览作品时点击收藏按钮即可添加到收藏列表。',
+            'zh-TW': '您還沒有收藏任何作品。瀏覽作品時點擊收藏按鈕即可添加到收藏列表。',
             'ja': 'まだお気に入りの作品がありません。作品を閲覧する際にハートボタンをクリックしてお気に入りに追加してください。',
             'en': 'You haven\'t favorited any works yet. Click the heart button when browsing works to add them to your favorites.',
             'ru': 'У вас пока нет избранных работ. Нажмите кнопку сердца при просмотре работ, чтобы добавить их в избранное.',
             'ko': '아직 즐겨찾기한 작품이 없습니다. 작품을 둘러볼 때 하트 버튼을 클릭하여 즐겨찾기에 추가하세요.',
-            'fr': 'Vous n\'avez pas encore d\'œuvres favorites. Cliquez sur le bouton cœur lors de la navigation pour les ajouter à vos favoris.'
+            'fr': 'Vous n\'avez pas encore d\'œuvres favorites. Cliquez sur le bouton cœur lors de la navigation pour les ajouter à vos favoris.',
+            'es': 'Aún no ha marcado ninguna obra como favorita. Haga clic en el botón de corazón al navegar por las obras para agregarlas a sus favoritos.'
         },
         'favorited_on': {
             'zh': '收藏于',
+            'zh-TW': '收藏於',
             'ja': 'お気に入りに追加日',
             'en': 'Favorited on',
             'ru': 'Добавлено в избранное',
             'ko': '즐겨찾기 추가일',
-            'fr': 'Ajouté aux favoris le'
+            'fr': 'Ajouté aux favoris le',
+            'es': 'Marcado como favorito el'
         },
         'confirm_remove_favorite': {
             'zh': '确定要取消收藏这个作品吗？',
+            'zh-TW': '確定要取消收藏這個作品嗎？',
             'ja': 'この作品をお気に入りから削除しますか？',
             'en': 'Are you sure you want to remove this work from favorites?',
             'ru': 'Вы уверены, что хотите удалить эту работу из избранного?',
             'ko': '이 작품을 즐겨찾기에서 제거하시겠습니까?',
-            'fr': 'Êtes-vous sûr de vouloir retirer cette œuvre de vos favoris?'
+            'fr': 'Êtes-vous sûr de vouloir retirer cette œuvre de vos favoris?',
+            'es': '¿Está seguro de que desea quitar esta obra de sus favoritos?'
         },
         'favorites_pagination': {
             'zh': '收藏作品分页',
+            'zh-TW': '收藏作品分頁',
             'ja': 'お気に入り作品のページネーション',
             'en': 'Favorites pagination',
             'ru': 'Пагинация избранных работ',
             'ko': '즐겨찾기 작품 페이지네이션',
-            'fr': 'Pagination des favoris'
+            'fr': 'Pagination des favoris',
+            'es': 'Paginación de favoritos'
         },
         'browse_works': {
             'zh': '浏览作品',
+            'zh-TW': '瀏覽作品',
             'ja': '作品を閲覧',
             'en': 'Browse Works',
             'ru': 'Просмотр работ',
             'ko': '작품 둘러보기',
-            'fr': 'Parcourir les œuvres'
+            'fr': 'Parcourir les œuvres',
+            'es': 'Explorar obras'
         },
                # 作品列表页面消息
                'works_list': {
                    'zh': '作品列表',
+                   'zh-TW': '作品列表',
                    'ja': '作品リスト',
                    'en': 'Works',
                    'ru': 'Работы',
                    'ko': '작품 목록',
-                   'fr': 'Œuvres'
+                   'fr': 'Œuvres',
+                   'es': 'Obras'
                },
                'filter': {
                    'zh': '筛选',
+                   'zh-TW': '篩選',
                    'ja': 'フィルター',
                    'en': 'Filter',
                    'ru': 'Фильтр',
                    'ko': '필터',
-                   'fr': 'Filtre'
+                   'fr': 'Filtre',
+                   'es': 'Filtro'
                },
                'search': {
                    'zh': '搜索',
+                   'zh-TW': '搜索',
                    'ja': '検索',
                    'en': 'Search',
                    'ru': 'Поиск',
                    'ko': '검색',
-                   'fr': 'Recherche'
+                   'fr': 'Recherche',
+                   'es': 'Buscar'
                },
                'search_placeholder': {
                    'zh': '搜索标题或内容...',
+                   'zh-TW': '搜索標題或內容...',
                    'ja': 'タイトルや内容で検索...',
                    'en': 'Search by title or content...',
                    'ru': 'Поиск по названию или содержанию...',
                    'ko': '제목이나 내용으로 검색...',
-                   'fr': 'Rechercher par titre ou contenu...'
+                   'fr': 'Rechercher par titre ou contenu...',
+                   'es': 'Buscar por título o contenido...'
                },
                'category': {
                    'zh': '分类',
+                   'zh-TW': '分類',
                    'ja': 'カテゴリー',
                    'en': 'Category',
                    'ru': 'Категория',
                    'ko': '카테고리',
-                   'fr': 'Catégorie'
+                   'fr': 'Catégorie',
+                   'es': 'Categoría'
                },
                'all_categories': {
                    'zh': '所有分类',
+                   'zh-TW': '所有分類',
                    'ja': 'すべてのカテゴリー',
                    'en': 'All Categories',
                    'ru': 'Все категории',
                    'ko': '모든 카테고리',
-                   'fr': 'Toutes les catégories'
+                   'fr': 'Toutes les catégories',
+                   'es': 'Todas las categorías'
                },
                'all_languages': {
                    'zh': '所有语言',
+                   'zh-TW': '所有語言',
                    'ja': 'すべての言語',
                    'en': 'All Languages',
                    'ru': 'Все языки',
                    'ko': '모든 언어',
-                   'fr': 'Toutes les langues'
+                   'fr': 'Toutes les langues',
+                   'es': 'Todos los idiomas'
                },
                'original_language': {
                    'zh': '原文语言',
+                   'zh-TW': '原文語言',
                    'ja': '原文言語',
                    'en': 'Original Language',
                    'ru': 'Исходный язык',
                    'ko': '원본 언어',
-                   'fr': 'Langue originale'
+                   'fr': 'Langue originale',
+                   'es': 'Idioma original'
                },
                'target_language': {
                    'zh': '目标语言',
+                   'zh-TW': '目標語言',
                    'ja': '翻訳言語',
                    'en': 'Target Language',
                    'ru': 'Целевой язык',
                    'ko': '번역 언어',
-                   'fr': 'Langue cible'
+                   'fr': 'Langue cible',
+                   'es': 'Idioma objetivo'
                },
                'status': {
                    'zh': '状态',
+                   'zh-TW': '狀態',
                    'ja': 'ステータス',
                    'en': 'Status',
                    'ru': 'Статус',
                    'ko': '상태',
-                   'fr': 'Statut'
+                   'fr': 'Statut',
+                   'es': 'Estado'
                },
                'pending': {
                    'zh': '待翻译',
+                   'zh-TW': '待翻譯',
                    'ja': '翻訳待ち',
                    'en': 'Pending',
                    'ru': 'Ожидает',
                    'ko': '대기 중',
-                   'fr': 'En attente'
+                   'fr': 'En attente',
+                   'es': 'Pendiente'
                },
                'translating': {
                    'zh': '翻译中',
+                   'zh-TW': '翻譯中',
                    'ja': '翻訳中',
                    'en': 'Translating',
                    'ru': 'Переводится',
                    'ko': '번역 중',
-                   'fr': 'En cours'
+                   'fr': 'En cours',
+                   'es': 'Traduciendo'
                },
                'completed': {
                    'zh': '已完成',
+                   'zh-TW': '已完成',
                    'ja': '完了',
                    'en': 'Completed',
                    'ru': 'Завершено',
                    'ko': '완료',
-                   'fr': 'Terminé'
+                   'fr': 'Terminé',
+                   'es': 'Completado'
                },
                'tags': {
                    'zh': '标签',
+                   'zh-TW': '標籤',
                    'ja': 'タグ',
                    'en': 'Tags',
                    'ru': 'Теги',
                    'ko': '태그',
-                   'fr': 'Étiquettes'
+                   'fr': 'Étiquettes',
+                   'es': 'Etiquetas'
                },
                'all_tags': {
                    'zh': '所有标签',
+                   'zh-TW': '所有標籤',
                    'ja': 'すべてのタグ',
                    'en': 'All Tags',
                    'ru': 'Все теги',
                    'ko': '모든 태그',
-                   'fr': 'Toutes les étiquettes'
+                   'fr': 'Toutes les étiquettes',
+                   'es': 'Todas las etiquetas'
                },
                'tag_multiple_translators': {
                    'zh': '多人翻译',
+                   'zh-TW': '多人翻譯',
                    'ja': '複数翻訳者',
                    'en': 'Multiple Translators',
                    'ru': 'Множественные переводчики',
                    'ko': '다중 번역가',
-                   'fr': 'Traducteurs multiples'
+                   'fr': 'Traducteurs multiples',
+                   'es': 'Traductores múltiples'
                },
                'apply_filter': {
                    'zh': '应用筛选',
+                   'zh-TW': '應用篩選',
                    'ja': 'フィルターを適用',
                    'en': 'Apply Filter',
                    'ru': 'Применить фильтр',
                    'ko': '필터 적용',
-                   'fr': 'Appliquer le filtre'
+                   'fr': 'Appliquer le filtre',
+                   'es': 'Aplicar filtro'
                },
                'clear_filter': {
                    'zh': '清除筛选',
+                   'zh-TW': '清除篩選',
                    'ja': 'フィルターをクリア',
                    'en': 'Clear Filter',
                    'ru': 'Очистить фильтр',
                    'ko': '필터 지우기',
-                   'fr': 'Effacer le filtre'
+                   'fr': 'Effacer le filtre',
+                   'es': 'Limpiar filtro'
                },
                'sort_by': {
                    'zh': '排序方式',
+                   'zh-TW': '排序方式',
                    'ja': '並び順',
                    'en': 'Sort By',
                    'ru': 'Сортировать по',
                    'ko': '정렬 기준',
-                   'fr': 'Trier par'
+                   'fr': 'Trier par',
+                   'es': 'Ordenar por'
                },
                'latest': {
                    'zh': '最新',
+                   'zh-TW': '最新',
                    'ja': '最新',
                    'en': 'Latest',
                    'ru': 'Новые',
                    'ko': '최신',
-                   'fr': 'Plus récent'
+                   'fr': 'Plus récent',
+                   'es': 'Más reciente'
                },
                'oldest': {
                    'zh': '最早',
+                   'zh-TW': '最早',
                    'ja': '最古',
                    'en': 'Oldest',
                    'ru': 'Старые',
                    'ko': '오래된',
-                   'fr': 'Plus ancien'
+                   'fr': 'Plus ancien',
+                   'es': 'Más antiguo'
                },
                'most_liked': {
                    'zh': '最多点赞',
+                   'zh-TW': '最多點讚',
                    'ja': 'いいね最多',
                    'en': 'Most Liked',
                    'ru': 'Больше лайков',
                    'ko': '좋아요 최다',
-                   'fr': 'Plus aimé'
+                   'fr': 'Plus aimé',
+                   'es': 'Más gustado'
                },
                'most_commented': {
                    'zh': '最多评论',
+                   'zh-TW': '最多評論',
                    'ja': 'コメント最多',
                    'en': 'Most Commented',
                    'ru': 'Больше комментариев',
                    'ko': '댓글 최다',
-                   'fr': 'Plus commenté'
+                   'fr': 'Plus commenté',
+                   'es': 'Más comentado'
                },
                'no_works_found': {
                    'zh': '未找到作品',
+                   'zh-TW': '未找到作品',
                    'ja': '作品が見つかりません',
                    'en': 'No works found',
                    'ru': 'Работы не найдены',
                    'ko': '작품을 찾을 수 없습니다',
-                   'fr': 'Aucune œuvre trouvée'
+                   'fr': 'Aucune œuvre trouvée',
+                   'es': 'No se encontraron obras'
                },
                'try_different_filters': {
                    'zh': '请尝试不同的筛选条件',
+                   'zh-TW': '請嘗試不同的篩選條件',
                    'ja': '異なるフィルター条件を試してください',
                    'en': 'Try different filter criteria',
                    'ru': 'Попробуйте другие критерии фильтра',
                    'ko': '다른 필터 조건을 시도해 보세요',
-                   'fr': 'Essayez des critères de filtre différents'
+                   'fr': 'Essayez des critères de filtre différents',
+                   'es': 'Intenta diferentes criterios de filtro'
                },
 
                'target_language_label': {
                    'zh': '目标语言',
+                   'zh-TW': '目標語言',
                    'ja': '目標言語',
                    'en': 'Target Language',
                    'ru': 'Целевой язык',
                    'ko': '목표 언어',
-                   'fr': 'Langue cible'
+                   'fr': 'Langue cible',
+                   'es': 'Idioma objetivo'
                },
                # 管理面板消息
                'admin_panel_title': {
                    'zh': '管理面板',
+                   'zh-TW': '管理面板',
                    'ja': '管理パネル',
                    'en': 'Admin Panel',
                    'ru': 'Панель администратора',
                    'ko': '관리 패널',
-                   'fr': 'Panneau d\'administration'
+                   'fr': 'Panneau d\'administration',
+                   'es': 'Panel de administración'
                },
                'total_users': {
                    'zh': '总用户数',
+                   'zh-TW': '總用戶數',
                    'ja': '総ユーザー数',
                    'en': 'Total Users',
                    'ru': 'Всего пользователей',
                    'ko': '총 사용자 수',
-                   'fr': 'Total des utilisateurs'
+                   'fr': 'Total des utilisateurs',
+                   'es': 'Total de usuarios'
                },
                'total_works': {
                    'zh': '总作品数',
+                   'zh-TW': '總作品數',
                    'ja': '総作品数',
                    'en': 'Total Works',
                    'ru': 'Всего работ',
                    'ko': '총 작품 수',
-                   'fr': 'Total des œuvres'
+                   'fr': 'Total des œuvres',
+                   'es': 'Total de obras'
                },
                'total_translations': {
                    'zh': '总翻译数',
+                   'zh-TW': '總翻譯數',
                    'ja': '総翻訳数',
                    'en': 'Total Translations',
                    'ru': 'Всего переводов',
                    'ko': '총 번역 수',
-                   'fr': 'Total des traductions'
+                   'fr': 'Total des traductions',
+                   'es': 'Total de traducciones'
                },
                'total_comments': {
                    'zh': '总评论数',
+                   'zh-TW': '總評論數',
                    'ja': '総コメント数',
                    'en': 'Total Comments',
                    'ru': 'Всего комментариев',
                    'ko': '총 댓글 수',
-                   'fr': 'Total des commentaires'
+                   'fr': 'Total des commentaires',
+                   'es': 'Total de comentarios'
                },
                'match_rate': {
                    'zh': '匹配率（已翻译比例）',
+                   'zh-TW': '匹配率（已翻譯比例）',
                    'ja': 'マッチ率（翻訳済み比率）',
                    'en': 'Match Rate (Translated %)',
                    'ru': 'Коэффициент соответствия (%)',
                    'ko': '매치율 (번역 완료 비율)',
-                   'fr': 'Taux de correspondance (%)'
+                   'fr': 'Taux de correspondance (%)',
+                   'es': 'Tasa de coincidencia (%)'
                },
                'avg_match_speed': {
                    'zh': '平均匹配速度',
+                   'zh-TW': '平均匹配速度',
                    'ja': '平均マッチ速度',
                    'en': 'Average Match Speed',
                    'ru': 'Средняя скорость соответствия',
                    'ko': '평균 매치 속도',
-                   'fr': 'Vitesse de correspondance moyenne'
+                   'fr': 'Vitesse de correspondance moyenne',
+                   'es': 'Velocidad promedio de coincidencia'
                },
                'match_stats_details': {
                    'zh': '匹配统计详情',
+                   'zh-TW': '匹配統計詳情',
                    'ja': 'マッチ統計詳細',
                    'en': 'Match Statistics Details',
                    'ru': 'Детали статистики соответствия',
                    'ko': '매치 통계 상세',
-                   'fr': 'Détails des statistiques de correspondance'
+                   'fr': 'Détails des statistiques de correspondance',
+                   'es': 'Detalles de estadísticas de coincidencia'
                },
                'match_rate_stats': {
                    'zh': '匹配率统计',
+                   'zh-TW': '匹配率統計',
                    'ja': 'マッチ率統計',
                    'en': 'Match Rate Statistics',
                    'ru': 'Статистика коэффициента соответствия',
                    'ko': '매치율 통계',
-                   'fr': 'Statistiques du taux de correspondance'
+                   'fr': 'Statistiques du taux de correspondance',
+                   'es': 'Estadísticas de tasa de coincidencia'
                },
                'match_speed_stats': {
                    'zh': '匹配速度统计',
+                   'zh-TW': '匹配速度統計',
                    'ja': 'マッチ速度統計',
                    'en': 'Match Speed Statistics',
                    'ru': 'Статистика скорости соответствия',
                    'ko': '매치 속도 통계',
-                   'fr': 'Statistiques de vitesse de correspondance'
+                   'fr': 'Statistiques de vitesse de correspondance',
+                   'es': 'Estadísticas de velocidad de coincidencia'
                },
                'total_works_exclude_seed': {
                    'zh': '总作品数（排除种子数据）',
+                   'zh-TW': '總作品數（排除種子數據）',
                    'ja': '総作品数（シードデータ除く）',
                    'en': 'Total Works (Exclude Seed Data)',
                    'ru': 'Всего работ (исключая тестовые данные)',
                    'ko': '총 작품 수 (시드 데이터 제외)',
-                   'fr': 'Total des œuvres (hors données de test)'
+                   'fr': 'Total des œuvres (hors données de test)',
+                   'es': 'Total de obras (excluir datos de prueba)'
                },
                'completed_translations': {
                    'zh': '已完成翻译',
+                   'zh-TW': '已完成翻譯',
                    'ja': '翻訳完了',
                    'en': 'Completed Translations',
                    'ru': 'Завершенные переводы',
                    'ko': '번역 완료',
-                   'fr': 'Traductions terminées'
+                   'fr': 'Traductions terminées',
+                   'es': 'Traducciones completadas'
                },
                'match_rate_percent': {
                    'zh': '匹配率',
+                   'zh-TW': '匹配率',
                    'ja': 'マッチ率',
                    'en': 'Match Rate',
                    'ru': 'Коэффициент соответствия',
                    'ko': '매치율',
-                   'fr': 'Taux de correspondance'
+                   'fr': 'Taux de correspondance',
+                   'es': 'Tasa de coincidencia'
                },
                'avg_match_speed_hours': {
                    'zh': '平均匹配速度',
+                   'zh-TW': '平均匹配速度',
                    'ja': '平均マッチ速度',
                    'en': 'Average Match Speed',
                    'ru': 'Средняя скорость соответствия',
                    'ko': '평균 매치 속도',
-                   'fr': 'Vitesse de correspondance moyenne'
+                   'fr': 'Vitesse de correspondance moyenne',
+                   'es': 'Velocidad promedio de coincidencia'
                },
                'fastest_match': {
                    'zh': '最快匹配',
+                   'zh-TW': '最快匹配',
                    'ja': '最速マッチ',
                    'en': 'Fastest Match',
                    'ru': 'Самое быстрое соответствие',
                    'ko': '최고속 매치',
-                   'fr': 'Correspondance la plus rapide'
+                   'fr': 'Correspondance la plus rapide',
+                   'es': 'Coincidencia más rápida'
                },
                'slowest_match': {
                    'zh': '最慢匹配',
+                   'zh-TW': '最慢匹配',
                    'ja': '最遅マッチ',
                    'en': 'Slowest Match',
                    'ru': 'Самое медленное соответствие',
                    'ko': '최저속 매치',
-                   'fr': 'Correspondance la plus lente'
+                   'fr': 'Correspondance la plus lente',
+                   'es': 'Coincidencia más lenta'
                },
                'hours': {
                    'zh': '小时',
+                   'zh-TW': '小時',
                    'ja': '時間',
                    'en': 'hours',
                    'ru': 'часов',
                    'ko': '시간',
-                   'fr': 'heures'
+                   'fr': 'heures',
+                   'es': 'horas'
                },
                'user_management': {
                    'zh': '用户管理',
+                   'zh-TW': '用戶管理',
                    'ja': 'ユーザー管理',
                    'en': 'User Management',
                    'ru': 'Управление пользователями',
                    'ko': '사용자 관리',
-                   'fr': 'Gestion des utilisateurs'
+                   'fr': 'Gestion des utilisateurs',
+                   'es': 'Gestión de usuarios'
                },
                'admin_requests_management': {
                    'zh': '管理员申请管理',
+                   'zh-TW': '管理員申請管理',
                    'ja': '管理者申請管理',
                    'en': 'Admin Requests Management',
                    'ru': 'Управление заявками администратора',
                    'ko': '관리자 신청 관리',
-                   'fr': 'Gestion des demandes d\'administrateur'
+                   'fr': 'Gestion des demandes d\'administrateur',
+                   'es': 'Gestión de solicitudes de administrador'
                },
                'user_id': {
                    'zh': 'ID',
+                   'zh-TW': 'ID',
                    'ja': 'ID',
                    'en': 'ID',
                    'ru': 'ID',
                    'ko': 'ID',
-                   'fr': 'ID'
+                   'fr': 'ID',
+                   'es': 'ID'
                },
                'username': {
                    'zh': '用户名',
+                   'zh-TW': '用戶名',
                    'ja': 'ユーザー名',
                    'en': 'Username',
                    'ru': 'Имя пользователя',
                    'ko': '사용자 이름',
-                   'fr': 'Nom d\'utilisateur'
+                   'fr': 'Nom d\'utilisateur',
+                   'es': 'Nombre de usuario'
                },
                'email': {
                    'zh': '邮箱',
+                   'zh-TW': '郵箱',
                    'ja': 'メール',
                    'en': 'Email',
                    'ru': 'Электронная почта',
                    'ko': '이메일',
-                   'fr': 'E-mail'
+                   'fr': 'E-mail',
+                   'es': 'Correo electrónico'
                },
                'role': {
                    'zh': '角色',
+                   'zh-TW': '角色',
                    'ja': '役割',
                    'en': 'Role',
                    'ru': 'Роль',
                    'ko': '역할',
-                   'fr': 'Rôle'
+                   'fr': 'Rôle',
+                   'es': 'Rol'
                },
                'registration_date': {
                    'zh': '注册时间',
+                   'zh-TW': '註冊時間',
                    'ja': '登録日',
                    'en': 'Registration Date',
                    'ru': 'Дата регистрации',
                    'ko': '가입일',
-                   'fr': 'Date d\'inscription'
+                   'fr': 'Date d\'inscription',
+                   'es': 'Fecha de registro'
                },
                'actions': {
                    'zh': '操作',
+                   'zh-TW': '操作',
                    'ja': '操作',
                    'en': 'Actions',
                    'ru': 'Действия',
                    'ko': '작업',
-                   'fr': 'Actions'
+                   'fr': 'Actions',
+                   'es': 'Acciones'
                },
                'role_admin': {
                    'zh': '管理员',
+                   'zh-TW': '管理員',
                    'ja': '管理者',
                    'en': 'Admin',
                    'ru': 'Администратор',
                    'ko': '관리자',
-                   'fr': 'Administrateur'
+                   'fr': 'Administrateur',
+                   'es': 'Administrador'
                },
                'role_user': {
                    'zh': '普通用户',
+                   'zh-TW': '普通用戶',
                    'ja': '一般ユーザー',
                    'en': 'User',
                    'ru': 'Пользователь',
                    'ko': '일반 사용자',
-                   'fr': 'Utilisateur'
+                   'fr': 'Utilisateur',
+                   'es': 'Usuario'
                },
                'change_role': {
                    'zh': '切换角色',
+                   'zh-TW': '切換角色',
                    'ja': '役割変更',
                    'en': 'Change Role',
                    'ru': 'Изменить роль',
                    'ko': '역할 변경',
-                   'fr': 'Changer le rôle'
+                   'fr': 'Changer le rôle',
+                   'es': 'Cambiar rol'
                },
                'work_management': {
                    'zh': '作品管理',
+                   'zh-TW': '作品管理',
                    'ja': '作品管理',
                    'en': 'Work Management',
                    'ru': 'Управление работами',
                    'ko': '작품 관리',
-                   'fr': 'Gestion des œuvres'
+                   'fr': 'Gestion des œuvres',
+                   'es': 'Gestión de obras'
                },
                'title': {
                    'zh': '标题',
+                   'zh-TW': '標題',
                    'ja': 'タイトル',
                    'en': 'Title',
                    'ru': 'Название',
                    'ko': '제목',
-                   'fr': 'Titre'
+                   'fr': 'Titre',
+                   'es': 'Título'
                },
                'creator': {
                    'zh': '创作者',
+                   'zh-TW': '創作者',
                    'ja': 'クリエイター',
                    'en': 'Creator',
                    'ru': 'Создатель',
                    'ko': '창작자',
-                   'fr': 'Créateur'
+                   'fr': 'Créateur',
+                   'es': 'Creador'
                },
                'language': {
                    'zh': '语言',
+                   'zh-TW': '語言',
                    'ja': '言語',
                    'en': 'Language',
                    'ru': 'Язык',
                    'ko': '언어',
-                   'fr': 'Langue'
+                   'fr': 'Langue',
+                   'es': 'Idioma'
                },
                'creation_date': {
                    'zh': '创建时间',
+                   'zh-TW': '創建時間',
                    'ja': '作成日',
                    'en': 'Creation Date',
                    'ru': 'Дата создания',
                    'ko': '생성일',
-                   'fr': 'Date de création'
+                   'fr': 'Date de création',
+                   'es': 'Fecha de creación'
                },
                'view': {
                    'zh': '查看',
+                   'zh-TW': '查看',
                    'ja': '詳細',
                    'en': 'View',
                    'ru': 'Просмотр',
                    'ko': '보기',
-                   'fr': 'Voir'
+                   'fr': 'Voir',
+                   'es': 'Ver'
                },
                'translation_management': {
                    'zh': '翻译管理',
+                   'zh-TW': '翻譯管理',
                    'ja': '翻訳管理',
                    'en': 'Translation Management',
                    'ru': 'Управление переводами',
                    'ko': '번역 관리',
-                   'fr': 'Gestion des traductions'
+                   'fr': 'Gestion des traductions',
+                   'es': 'Gestión de traducciones'
                },
                'work': {
                    'zh': '作品',
+                   'zh-TW': '作品',
                    'ja': '作品',
                    'en': 'Work',
                    'ru': 'Работа',
                    'ko': '작품',
-                   'fr': 'Œuvre'
+                   'fr': 'Œuvre',
+                   'es': 'Obra'
                },
                'translator': {
                    'zh': '翻译者',
+                   'zh-TW': '翻譯者',
                    'ja': '翻訳者',
                    'en': 'Translator',
                    'ru': 'Переводчик',
                    'ko': '번역가',
-                   'fr': 'Traducteur'
+                   'fr': 'Traducteur',
+                   'es': 'Traductor'
                },
                'status_draft': {
                    'zh': '草稿',
+                   'zh-TW': '草稿',
                    'ja': '下書き',
                    'en': 'Draft',
                    'ru': 'Черновик',
                    'ko': '초안',
-                   'fr': 'Brouillon'
+                   'fr': 'Brouillon',
+                   'es': 'Borrador'
                },
                'status_submitted': {
                    'zh': '已提交',
+                   'zh-TW': '已提交',
                    'ja': '提出済み',
                    'en': 'Submitted',
                    'ru': 'Отправлено',
                    'ko': '제출됨',
-                   'fr': 'Soumis'
+                   'fr': 'Soumis',
+                   'es': 'Enviado'
                },
                'status_approved': {
                    'zh': '已通过',
+                   'zh-TW': '已通過',
                    'ja': '承認済み',
                    'en': 'Approved',
                    'ru': 'Одобрено',
                    'ko': '승인됨',
-                   'fr': 'Approuvé'
+                   'fr': 'Approuvé',
+                   'es': 'Aprobado'
                },
                'status_rejected': {
                    'zh': '已拒绝',
+                   'zh-TW': '已拒絕',
                    'ja': '却下',
                    'en': 'Rejected',
                    'ru': 'Отклонено',
                    'ko': '거부됨',
-                   'fr': 'Rejeté'
+                   'fr': 'Rejeté',
+                   'es': 'Rechazado'
                },
                'export_development': {
                    'zh': '导出功能开发中...',
+                   'zh-TW': '導出功能開發中...',
                    'ja': 'エクスポート機能は開発中です...',
                    'en': 'Export feature is under development...',
                    'ru': 'Функция экспорта в разработке...',
                    'ko': '내보내기 기능 개발 중...',
-                   'fr': 'La fonction d\'exportation est en cours de développement...'
+                   'fr': 'La fonction d\'exportation est en cours de développement...',
+                   'es': 'La función de exportación está en desarrollo...'
                },
                'clear_development': {
                    'zh': '清理功能开发中...',
+                   'zh-TW': '清理功能開發中...',
                    'ja': 'クリア機能は開発中です...',
                    'en': 'Clear feature is under development...',
                    'ru': 'Функция очистки в разработке...',
                    'ko': '정리 기능 개발 중...',
-                   'fr': 'La fonction de nettoyage est en cours de développement...'
+                   'fr': 'La fonction de nettoyage est en cours de développement...',
+                   'es': 'La función de limpieza está en desarrollo...'
                },
                'confirm_clear_all_data': {
                    'zh': '确认清除所有数据？',
+                   'zh-TW': '確認清除所有數據？',
                    'ja': 'すべてのデータをクリアしますか？',
                    'en': 'Confirm clear all data?',
                    'ru': 'Подтвердить очистку всех данных?',
                    'ko': '모든 데이터를 지우시겠습니까?',
-                   'fr': 'Confirmer l\'effacement de toutes les données?'
+                   'fr': 'Confirmer l\'effacement de toutes les données?',
+                   'es': '¿Confirmar borrar todos los datos?'
                },
                # 分类消息
                'category_novel': {
                    'zh': '小说',
+                   'zh-TW': '小說',
                    'ja': '小説',
                    'en': 'Novel',
                    'ru': 'Роман',
                    'ko': '소설',
-                   'fr': 'Roman'
+                   'fr': 'Roman',
+                   'es': 'Novela'
                },
                'category_image': {
                    'zh': '图片',
+                   'zh-TW': '圖片',
                    'ja': '画像',
                    'en': 'Image',
                    'ru': 'Изображение',
                    'ko': '이미지',
-                   'fr': 'Image'
+                   'fr': 'Image',
+                   'es': 'Imagen'
                },
                'category_video': {
                    'zh': '视频・动画',
+                   'zh-TW': '視頻・動畫',
                    'ja': '動画・アニメ',
                    'en': 'Video & Animation',
                    'ru': 'Видео и анимация',
                    'ko': '비디오・애니메이션',
-                   'fr': 'Vidéo et animation'
+                   'fr': 'Vidéo et animation',
+                   'es': 'Video y animación'
                },
                'category_chat': {
                    'zh': '闲聊',
+                   'zh-TW': '閒聊',
                    'ja': '雑談',
                    'en': 'Chat',
                    'ru': 'Чат',
                    'ko': '잡담',
-                   'fr': 'Chat'
+                   'fr': 'Chat',
+                   'es': 'Chat'
                },
                'category_other': {
                    'zh': '其他',
+                   'zh-TW': '其他',
                    'ja': 'その他',
                    'en': 'Other',
                    'ru': 'Другое',
                    'ko': '기타',
-                   'fr': 'Autre'
+                   'fr': 'Autre',
+                   'es': 'Otro'
                },
                # works.html 需要的额外消息键
                'category_post_article': {
                    'zh': '投稿・文章',
+                   'zh-TW': '投稿・文章',
                    'ja': '投稿・文章',
                    'en': 'Post/Article',
                    'ru': 'Пост/Статья',
                    'ko': '게시물/기사',
-                   'fr': 'Publication/Article'
+                   'fr': 'Publication/Article',
+                   'es': 'Publicación/Artículo'
                },
                'category_comic': {
                    'zh': '漫画',
+                   'zh-TW': '漫畫',
                    'ja': '漫画',
                    'en': 'Comic',
                    'ru': 'Комикс',
                    'ko': '만화',
-                   'fr': 'Bande dessinée'
+                   'fr': 'Bande dessinée',
+                   'es': 'Cómic'
                },
                'category_audio': {
                    'zh': '音声',
+                   'zh-TW': '音聲',
                    'ja': '音声',
                    'en': 'Audio',
                    'ru': 'Аудио',
                    'ko': '오디오',
-                   'fr': 'Audio'
+                   'fr': 'Audio',
+                   'es': 'Audio'
                },
                'category_video_animation': {
                    'zh': '视频・动画',
+                   'zh-TW': '視頻・動畫',
                    'ja': '動画・アニメ',
                    'en': 'Video/Animation',
                    'ru': 'Видео/Анимация',
                    'ko': '비디오/애니메이션',
-                   'fr': 'Vidéo/Animation'
+                   'fr': 'Vidéo/Animation',
+                   'es': 'Video/Animación'
                },
                'category_discussion': {
                    'zh': '闲聊',
+                   'zh-TW': '閒聊',
                    'ja': '雑談',
                    'en': 'Chat',
                    'ru': 'Чат',
                    'ko': '잡담',
-                   'fr': 'Discussion'
+                   'fr': 'Discussion',
+                   'es': 'Discusión'
                },
                'all_status': {
                    'zh': '所有状态',
+                   'zh-TW': '所有狀態',
                    'ja': 'すべてのステータス',
                    'en': 'All Status',
                    'ru': 'Все статусы',
                    'ko': '모든 상태',
-                   'fr': 'Tous les statuts'
+                   'fr': 'Tous les statuts',
+                   'es': 'Todos los estados'
                },
                'status_pending': {
                    'zh': '待翻译',
+                   'zh-TW': '待翻譯',
                    'ja': '翻訳待ち',
                    'en': 'Pending Translation',
                    'ru': 'Ожидает перевода',
                    'ko': '번역 대기',
-                   'fr': 'En attente de traduction'
+                   'fr': 'En attente de traduction',
+                   'es': 'Pendiente de traducción'
                },
                'status_translating': {
                    'zh': '翻译中',
+                   'zh-TW': '翻譯中',
                    'ja': '翻訳中',
                    'en': 'Translating',
                    'ru': 'Переводится',
                    'ko': '번역 중',
-                   'fr': 'En cours de traduction'
+                   'fr': 'En cours de traduction',
+                   'es': 'Traduciendo'
                },
                'status_completed': {
                    'zh': '已完成',
+                   'zh-TW': '已完成',
                    'ja': '完了',
                    'en': 'Completed',
                    'ru': 'Завершено',
                    'ko': '완료',
-                   'fr': 'Terminé'
+                   'fr': 'Terminé',
+                   'es': 'Completado'
                },
                'apply_filter': {
                    'zh': '应用筛选',
+                   'zh-TW': '應用篩選',
                    'ja': 'フィルターを適用',
                    'en': 'Apply Filter',
                    'ru': 'Применить фильтр',
                    'ko': '필터 적용',
-                   'fr': 'Appliquer le filtre'
+                   'fr': 'Appliquer le filtre',
+                   'es': 'Aplicar filtro'
                },
                'clear_filter': {
                    'zh': '清除筛选',
+                   'zh-TW': '清除篩選',
                    'ja': 'フィルターをクリア',
                    'en': 'Clear Filter',
                    'ru': 'Очистить фильтр',
                    'ko': '필터 지우기',
-                   'fr': 'Effacer le filtre'
+                   'fr': 'Effacer le filtre',
+                   'es': 'Limpiar filtro'
                },
                'section_works': {
                    'zh': '作品',
+                   'zh-TW': '作品',
                    'ja': '作品',
                    'en': 'Works',
                    'ru': 'Работы',
                    'ko': '작품',
-                   'fr': 'Œuvres'
+                   'fr': 'Œuvres',
+                   'es': 'Obras'
                },
                'filtered': {
                    'zh': '已筛选',
+                   'zh-TW': '已篩選',
                    'ja': 'フィルター済み',
                    'en': 'Filtered',
                    'ru': 'Отфильтровано',
                    'ko': '필터됨',
-                   'fr': 'Filtré'
+                   'fr': 'Filtré',
+                   'es': 'Filtrado'
                },
                'upload_work': {
                    'zh': '上传作品',
+                   'zh-TW': '上傳作品',
                    'ja': '作品をアップロード',
                    'en': 'Upload Work',
                    'ru': 'Загрузить работу',
                    'ko': '작품 업로드',
-                   'fr': 'Télécharger une œuvre'
+                   'fr': 'Télécharger une œuvre',
+                   'es': 'Subir obra'
                },
                'avatar_alt': {
                    'zh': '头像',
+                   'zh-TW': '頭像',
                    'ja': 'アバター',
                    'en': 'Avatar',
                    'ru': 'Аватар',
                    'ko': '아바타',
-                   'fr': 'Avatar'
+                   'fr': 'Avatar',
+                   'es': 'Avatar'
                },
                'previous_page': {
                    'zh': '上一页',
+                   'zh-TW': '上一頁',
                    'ja': '前へ',
                    'en': 'Previous',
                    'ru': 'Предыдущая',
                    'ko': '이전',
-                   'fr': 'Précédent'
+                   'fr': 'Précédent',
+                   'es': 'Anterior'
                },
                'next_page': {
                    'zh': '下一页',
+                   'zh-TW': '下一頁',
                    'ja': '次へ',
                    'en': 'Next',
                    'ru': 'Следующая',
                    'ko': '다음',
-                   'fr': 'Suivant'
+                   'fr': 'Suivant',
+                   'es': 'Siguiente'
                },
                'no_works_found': {
                    'zh': '暂无作品',
+                   'zh-TW': '暫無作品',
                    'ja': '作品が見つかりません',
                    'en': 'No works found',
                    'ru': 'Работы не найдены',
                    'ko': '작품을 찾을 수 없습니다',
-                   'fr': 'Aucune œuvre trouvée'
+                   'fr': 'Aucune œuvre trouvée',
+                   'es': 'No se encontraron obras'
                },
                'no_works_description': {
                    'zh': '没有找到符合条件的作品',
+                   'zh-TW': '沒有找到符合條件的作品',
                    'ja': '条件に合う作品がありません',
                    'en': 'No works match your criteria',
                    'ru': 'Работы, соответствующие вашим критериям, не найдены',
                    'ko': '조건에 맞는 작품이 없습니다',
-                   'fr': 'Aucune œuvre ne correspond à vos critères'
+                   'fr': 'Aucune œuvre ne correspond à vos critères',
+                   'es': 'No se encontraron obras que coincidan con tus criterios'
                },
                'upload_first_work': {
                    'zh': '上传第一个作品',
+                   'zh-TW': '上傳第一個作品',
                    'ja': '最初の作品をアップロード',
                    'en': 'Upload your first work',
                    'ru': 'Загрузите свою первую работу',
                    'ko': '첫 번째 작품을 업로드하세요',
-                   'fr': 'Téléchargez votre première œuvre'
+                   'fr': 'Téléchargez votre première œuvre',
+                   'es': 'Sube tu primera obra'
                },
                # work_detail.html 需要的额外消息键
                'edit': {
                    'zh': '编辑',
+                   'zh-TW': '編輯',
                    'ja': '編集',
                    'en': 'Edit',
                    'ru': 'Редактировать',
                    'ko': '편집',
-                   'fr': 'Modifier'
+                   'fr': 'Modifier',
+                   'es': 'Editar'
                },
                'delete': {
                    'zh': '删除',
+                   'zh-TW': '刪除',
                    'ja': '削除',
                    'en': 'Delete',
                    'ru': 'Удалить',
                    'ko': '삭제',
-                   'fr': 'Supprimer'
+                   'fr': 'Supprimer',
+                   'es': 'Eliminar'
                },
                'admin_edit': {
                    'zh': '管理员编辑',
+                   'zh-TW': '管理員編輯',
                    'ja': '管理者編集',
                    'en': 'Admin Edit',
                    'ru': 'Редактирование администратора',
                    'ko': '관리자 편집',
-                   'fr': 'Modification admin'
+                   'fr': 'Modification admin',
+                   'es': 'Edición de administrador'
                },
                'admin_delete': {
                    'zh': '管理员删除',
+                   'zh-TW': '管理員刪除',
                    'ja': '管理者削除',
                    'en': 'Admin Delete',
                    'ru': 'Удаление администратора',
                    'ko': '관리자 삭제',
-                   'fr': 'Suppression admin'
+                   'fr': 'Suppression admin',
+                   'es': 'Eliminación de administrador'
                },
                'creator': {
                    'zh': '创作者',
+                   'zh-TW': '創作者',
                    'ja': 'クリエイター',
                    'en': 'Creator',
                    'ru': 'Создатель',
                    'ko': '창작자',
-                   'fr': 'Créateur'
+                   'fr': 'Créateur',
+                   'es': 'Creador'
                },
                # admin_requests.html 需要的额外消息键
                'admin_requests_management': {
                    'zh': '管理员申请管理',
+                   'zh-TW': '管理員申請管理',
                    'ja': '管理者申請管理',
                    'en': 'Admin Requests Management',
                    'ru': 'Управление заявками администратора',
                    'ko': '관리자 신청 관리',
-                   'fr': 'Gestion des demandes d\'administrateur'
+                   'fr': 'Gestion des demandes d\'administrateur',
+                   'es': 'Gestión de solicitudes de administrador'
                },
                'pending_requests': {
                    'zh': '待审核申请',
+                   'zh-TW': '待審核申請',
                    'ja': '待审核申請',
                    'en': 'Pending Requests',
                    'ru': 'Ожидающие заявки',
                    'ko': '대기 중인 신청',
-                   'fr': 'Demandes en attente'
+                   'fr': 'Demandes en attente',
+                   'es': 'Solicitudes pendientes'
                },
                'approve': {
                    'zh': '批准',
+                   'zh-TW': '批准',
                    'ja': '承認',
                    'en': 'Approve',
                    'ru': 'Одобрить',
                    'ko': '승인',
-                   'fr': 'Approuver'
+                   'fr': 'Approuver',
+                   'es': 'Aprobar'
                },
                'reject': {
                    'zh': '拒绝',
+                   'zh-TW': '拒絕',
                    'ja': '却下',
                    'en': 'Reject',
                    'ru': 'Отклонить',
                    'ko': '거부',
-                   'fr': 'Rejeter'
+                   'fr': 'Rejeter',
+                   'es': 'Rechazar'
                },
                'application_reason': {
                    'zh': '申请理由：',
+                   'zh-TW': '申請理由：',
                    'ja': '申請理由：',
                    'en': 'Application Reason:',
                    'ru': 'Причина заявки:',
                    'ko': '신청 이유:',
-                   'fr': 'Raison de la demande:'
+                   'fr': 'Raison de la demande:',
+                   'es': 'Razón de la solicitud:'
                },
                'approved_requests': {
                    'zh': '已批准申请',
+                   'zh-TW': '已批准申請',
                    'ja': '承認済み申請',
                    'en': 'Approved Requests',
                    'ru': 'Одобренные заявки',
                    'ko': '승인된 신청',
-                   'fr': 'Demandes approuvées'
+                   'fr': 'Demandes approuvées',
+                   'es': 'Solicitudes aprobadas'
                },
                'approved': {
                    'zh': '已批准',
+                   'zh-TW': '已批准',
                    'ja': '承認済み',
                    'en': 'Approved',
                    'ru': 'Одобрено',
                    'ko': '승인됨',
-                   'fr': 'Approuvé'
+                   'fr': 'Approuvé',
+                   'es': 'Aprobado'
                },
                'review_notes': {
                    'zh': '审核备注：',
+                   'zh-TW': '審核備註：',
                    'ja': '審査メモ：',
                    'en': 'Review Notes:',
                    'ru': 'Заметки проверки:',
                    'ko': '검토 메모:',
-                   'fr': 'Notes de révision:'
+                   'fr': 'Notes de révision:',
+                   'es': 'Notas de revisión:'
                },
                'rejected_requests': {
                    'zh': '已拒绝申请',
+                   'zh-TW': '已拒絕申請',
                    'ja': '却下済み申請',
                    'en': 'Rejected Requests',
                    'ru': 'Отклоненные заявки',
                    'ko': '거부된 신청',
-                   'fr': 'Demandes rejetées'
+                   'fr': 'Demandes rejetées',
+                   'es': 'Solicitudes rechazadas'
                },
                'rejected': {
                    'zh': '已拒绝',
+                   'zh-TW': '已拒絕',
                    'ja': '却下済み',
                    'en': 'Rejected',
                    'ru': 'Отклонено',
                    'ko': '거부됨',
-                   'fr': 'Rejeté'
+                   'fr': 'Rejeté',
+                   'es': 'Rechazado'
                },
                'rejection_reason': {
                    'zh': '拒绝理由：',
+                   'zh-TW': '拒絕理由：',
                    'ja': '却下理由：',
                    'en': 'Rejection Reason:',
                    'ru': 'Причина отклонения:',
                    'ko': '거부 이유:',
-                   'fr': 'Raison du rejet:'
+                   'fr': 'Raison du rejet:',
+                   'es': 'Razón del rechazo:'
                },
                'no_admin_requests': {
                    'zh': '暂无管理员申请',
+                   'zh-TW': '暫無管理員申請',
                    'ja': '管理者申請がありません',
                    'en': 'No admin requests',
                    'ru': 'Нет заявок администратора',
                    'ko': '관리자 신청이 없습니다',
-                   'fr': 'Aucune demande d\'administrateur'
+                   'fr': 'Aucune demande d\'administrateur',
+                   'es': 'No hay solicitudes de administrador'
                },
                'approve_application': {
                    'zh': '批准申请',
+                   'zh-TW': '批准申請',
                    'ja': '申請を承認',
                    'en': 'Approve Application',
                    'ru': 'Одобрить заявку',
                    'ko': '신청 승인',
-                   'fr': 'Approuver la demande'
+                   'fr': 'Approuver la demande',
+                   'es': 'Aprobar solicitud'
                },
                'review_notes_optional': {
                    'zh': '审核备注（可选）',
+                   'zh-TW': '審核備註（可選）',
                    'ja': '審査メモ（オプション）',
                    'en': 'Review Notes (Optional)',
                    'ru': 'Заметки проверки (необязательно)',
                    'ko': '검토 메모 (선택사항)',
-                   'fr': 'Notes de révision (optionnel)'
+                   'fr': 'Notes de révision (optionnel)',
+                   'es': 'Notas de revisión (opcional)'
                },
                'cancel': {
                    'zh': '取消',
+                   'zh-TW': '取消',
                    'ja': 'キャンセル',
                    'en': 'Cancel',
                    'ru': 'Отмена',
                    'ko': '취소',
-                   'fr': 'Annuler'
+                   'fr': 'Annuler',
+                   'es': 'Cancelar'
                },
                'reject_application': {
                    'zh': '拒绝申请',
+                   'zh-TW': '拒絕申請',
                    'ja': '申請を却下',
                    'en': 'Reject Application',
                    'ru': 'Отклонить заявку',
                    'ko': '신청 거부',
-                   'fr': 'Rejeter la demande'
+                   'fr': 'Rejeter la demande',
+                   'es': 'Rechazar solicitud'
                },
                'rejection_reason_optional': {
                    'zh': '拒绝理由（可选）',
+                   'zh-TW': '拒絕理由（可選）',
                    'ja': '却下理由（オプション）',
                    'en': 'Rejection Reason (Optional)',
                    'ru': 'Причина отклонения (необязательно)',
                    'ko': '거부 이유 (선택사항)',
-                   'fr': 'Raison du rejet (optionnel)'
+                   'fr': 'Raison du rejet (optionnel)',
+                   'es': 'Razón del rechazo (opcional)'
                },
                # index.html 需要的额外消息键
                'home': {
                    'zh': '首页',
+                   'zh-TW': '首頁',
                    'ja': 'ホーム',
                    'en': 'Home',
                    'ru': 'Главная',
                    'ko': '홈',
-                   'fr': 'Accueil'
+                   'fr': 'Accueil',
+                   'es': 'Inicio'
                },
                'hero_title': {
                    'zh': '基于兴趣的翻译平台',
+                   'zh-TW': '基於興趣的翻譯平台',
                    'ja': '興味に基づいた翻訳プラットフォーム',
                    'en': 'Interest-Based Translation Platform',
                    'ru': 'Платформа переводов на основе интересов',
                    'ko': '관심사 기반 번역 플랫폼',
-                   'fr': 'Plateforme de traduction basée sur les intérêts'
+                   'fr': 'Plateforme de traduction basée sur les intérêts',
+                   'es': 'Plataforma de traducción basada en intereses'
                },
                'hero_subtitle': {
                    'zh': '根据您的兴趣，翻译和分享来自世界各地的精彩内容',
+                   'zh-TW': '根據您的興趣，翻譯和分享來自世界各地的精彩內容',
                    'ja': 'あなたの興味に合わせて、世界中の素晴らしいコンテンツを翻訳し、共有しましょう',
                    'en': 'Translate and share amazing content from around the world based on your interests',
                    'ru': 'Переводите и делитесь удивительным контентом со всего мира на основе ваших интересов',
                    'ko': '당신의 관심사에 따라 전 세계의 놀라운 콘텐츠를 번역하고 공유하세요',
-                   'fr': 'Traduisez et partagez du contenu incroyable du monde entier basé sur vos intérêts'
+                   'fr': 'Traduisez et partagez du contenu incroyable du monde entier basé sur vos intérêts',
+                   'es': 'Traduce y comparte contenido increíble de todo el mundo basado en tus intereses'
                },
                'get_started': {
                    'zh': '立即开始',
+                   'zh-TW': '立即開始',
                    'ja': '今すぐ始める',
                    'en': 'Get Started',
                    'ru': 'Начать',
                    'ko': '시작하기',
-                   'fr': 'Commencer'
+                   'fr': 'Commencer',
+                   'es': 'Comenzar'
                },
                'explore_works': {
                    'zh': '探索作品',
+                   'zh-TW': '探索作品',
                    'ja': '作品を探す',
                    'en': 'Explore Works',
                    'ru': 'Исследовать работы',
                    'ko': '작품 탐색',
-                   'fr': 'Explorer les œuvres'
+                   'fr': 'Explorer les œuvres',
+                   'es': 'Explorar obras'
                },
                'platform_features': {
                    'zh': '平台特色',
+                   'zh-TW': '平台特色',
                    'ja': 'プラットフォームの特徴',
                    'en': 'Platform Features',
                    'ru': 'Особенности платформы',
                    'ko': '플랫폼 특징',
-                   'fr': 'Fonctionnalités de la plateforme'
+                   'fr': 'Fonctionnalités de la plateforme',
+                   'es': 'Características de la plataforma'
                },
                'interest_driven': {
                    'zh': '兴趣驱动',
+                   'zh-TW': '興趣驅動',
                    'ja': '趣味ベース',
                    'en': 'Interest Driven',
                    'ru': 'Интерес',
                    'ko': '관심사 주도',
-                   'fr': 'Intérêt'
+                   'fr': 'Intérêt',
+                   'es': 'Impulsado por intereses'
                },
                'interest_driven_desc': {
                    'zh': '来自世界各地的翻译者、创作者和读者，因为相同的兴趣汇聚于此',
+                   'zh-TW': '來自世界各地的翻譯者、創作者和讀者，因為相同的興趣匯聚於此',
                    'ja': '世界中の翻訳者、クリエイター、読者が同じ興味で集まる',
                    'en': 'Translators, creators, and readers from around the world gather here because of shared interests',
                    'ru': 'Переводчики, создатели и читатели со всего мира собираются здесь из-за общих интересов',
                    'ko': '전 세계의 번역가, 크리에이터, 독자들이 같은 관심사로 모입니다',
-                   'fr': 'Traducteurs, créateurs et lecteurs du monde entier se rassemblent ici grâce à des intérêts communs'
+                   'fr': 'Traducteurs, créateurs et lecteurs du monde entier se rassemblent ici grâce à des intérêts communs',
+                   'es': 'Traductores, creadores y lectores de todo el mundo se reúnen aquí por intereses compartidos'
                },
                'completely_free': {
                    'zh': '完全免费',
+                   'zh-TW': '完全免費',
                    'ja': '完全無料',
                    'en': 'Completely Free',
                    'ru': 'Полностью бесплатно',
                    'ko': '완전 무료',
-                   'fr': 'Entièrement gratuit'
+                   'fr': 'Entièrement gratuit',
+                   'es': 'Completamente gratuito'
                },
                'completely_free_desc': {
                    'zh': '在这里，翻译者可以获得喜爱创作者的正式授权。而创作者也可以得到翻译者们为爱发电的翻译',
+                   'zh-TW': '在這裡，翻譯者可以獲得喜愛創作者的正式授權。而創作者也可以得到翻譯者們為愛發電的翻譯',
                    'ja': 'ここでは、翻訳者は好きなクリエイターの正式な許可を得ることができ、クリエイターも翻訳者たちの愛情あふれる翻訳を得ることができます',
                    'en': 'Here, translators can get official authorization from their favorite creators, and creators can receive passionate translations from translators',
                    'ru': 'Здесь переводчики могут получить официальное разрешение от своих любимых создателей, а создатели могут получить страстные переводы от переводчиков',
                    'ko': '여기서 번역가들은 좋아하는 크리에이터의 공식 허가를 받을 수 있고, 크리에이터들도 번역가들의 열정적인 번역을 받을 수 있습니다',
-                   'fr': 'Ici, les traducteurs peuvent obtenir l\'autorisation officielle de leurs créateurs préférés, et les créateurs peuvent recevoir des traductions passionnées des traducteurs'
+                   'fr': 'Ici, les traducteurs peuvent obtenir l\'autorisation officielle de leurs créateurs préférés, et les créateurs peuvent recevoir des traductions passionnées des traducteurs',
+                   'es': 'Aquí, los traductores pueden obtener autorización oficial de sus creadores favoritos, y los creadores pueden recibir traducciones apasionadas de los traductores'
                },
                'quality_assurance': {
                    'zh': '质量保证',
+                   'zh-TW': '質量保證',
                    'ja': '品質保証',
                    'en': 'Quality Assurance',
                    'ru': 'Контроль качества',
                    'ko': '품질 보증',
-                   'fr': 'Assurance qualité'
+                   'fr': 'Assurance qualité',
+                   'es': 'Garantía de calidad'
                },
                'quality_assurance_desc': {
                    'zh': '通过高水平的翻译者和读者的点评保证翻译质量，刚入门的翻译家也能在此获得成长',
+                   'zh-TW': '通過高水平的翻譯者和讀者的點評保證翻譯質量，剛入門的翻譯家也能在此獲得成長',
                    'ja': '高レベルの翻訳者と読者のレビューによる翻訳品質の保証、初心者翻訳者もここで成長できます',
                    'en': 'Translation quality guaranteed through high-level translators and reader reviews, beginner translators can also grow here',
                    'ru': 'Качество перевода гарантируется высококлассными переводчиками и отзывами читателей, начинающие переводчики также могут расти здесь',
                    'ko': '고수준의 번역가와 독자들의 리뷰를 통한 번역 품질 보장, 초보 번역가들도 여기서 성장할 수 있습니다',
-                   'fr': 'Qualité de traduction garantie par des traducteurs de haut niveau et des critiques de lecteurs, les traducteurs débutants peuvent aussi grandir ici'
+                   'fr': 'Qualité de traduction garantie par des traducteurs de haut niveau et des critiques de lecteurs, les traducteurs débutants peuvent aussi grandir ici',
+                   'es': 'Calidad de traducción garantizada a través de traductores de alto nivel y reseñas de lectores, los traductores principiantes también pueden crecer aquí'
                },
                'popular_works': {
                    'zh': '最热作品',
+                   'zh-TW': '最熱作品',
                    'ja': '人気の作品',
                    'en': 'Popular Works',
                    'ru': 'Популярные работы',
                    'ko': '인기 작품',
-                   'fr': 'Œuvres populaires'
+                   'fr': 'Œuvres populaires',
+                   'es': 'Obras populares'
                },
                'view_all': {
                    'zh': '查看全部',
+                   'zh-TW': '查看全部',
                    'ja': 'すべて見る',
                    'en': 'View All',
                    'ru': 'Посмотреть все',
                    'ko': '모두 보기',
-                   'fr': 'Voir tout'
+                   'fr': 'Voir tout',
+                   'es': 'Ver todo'
                },
                'recent_works': {
                    'zh': '最新作品',
+                   'zh-TW': '最新作品',
                    'ja': '最新の作品',
                    'en': 'Recent Works',
                    'ru': 'Недавние работы',
                    'ko': '최근 작품',
-                   'fr': 'Œuvres récentes'
+                   'fr': 'Œuvres récentes',
+                   'es': 'Obras recientes'
                },
                'get_started_today': {
                    'zh': '立即开始',
+                   'zh-TW': '立即開始',
                    'ja': '今すぐ始めましょう',
                    'en': 'Get Started Today',
                    'ru': 'Начните сегодня',
                    'ko': '오늘 시작하세요',
-                   'fr': 'Commencez aujourd\'hui'
+                   'fr': 'Commencez aujourd\'hui',
+                   'es': 'Comienza hoy'
                },
                'get_started_today_desc': {
                    'zh': '发现来自世界各地的精彩内容，加入我们的翻译社区',
+                   'zh-TW': '發現來自世界各地的精彩內容，加入我們的翻譯社區',
                    'ja': '世界中の素晴らしいコンテンツを発見し、翻訳コミュニティに参加しましょう',
                    'en': 'Discover amazing content from around the world and join our translation community',
                    'ru': 'Откройте для себя удивительный контент со всего мира и присоединяйтесь к нашему сообществу переводчиков',
                    'ko': '전 세계의 놀라운 콘텐츠를 발견하고 번역 커뮤니티에 참여하세요',
-                   'fr': 'Découvrez du contenu incroyable du monde entier et rejoignez notre communauté de traduction'
+                   'fr': 'Découvrez du contenu incroyable du monde entier et rejoignez notre communauté de traduction',
+                   'es': 'Descubre contenido increíble de todo el mundo y únete a nuestra comunidad de traducción'
                },
                # work_detail.html 需要的状态消息键
                'status_draft': {
                    'zh': '草稿',
+                   'zh-TW': '草稿',
                    'ja': '下書き',
                    'en': 'Draft',
                    'ru': 'Черновик',
                    'ko': '초안',
-                   'fr': 'Brouillon'
+                   'fr': 'Brouillon',
+                   'es': 'Borrador'
                },
                'status_submitted': {
                    'zh': '已提交',
+                   'zh-TW': '已提交',
                    'ja': '提出済み',
                    'en': 'Submitted',
                    'ru': 'Отправлено',
                    'ko': '제출됨',
-                   'fr': 'Soumis'
+                   'fr': 'Soumis',
+                   'es': 'Enviado'
                },
                'status_approved': {
                    'zh': '已通过',
+                   'zh-TW': '已通過',
                    'ja': '承認済み',
                    'en': 'Approved',
                    'ru': 'Одобрено',
                    'ko': '승인됨',
-                   'fr': 'Approuvé'
+                   'fr': 'Approuvé',
+                   'es': 'Aprobado'
                },
                'status_rejected': {
                    'zh': '已拒绝',
+                   'zh-TW': '已拒絕',
                    'ja': '却下',
                    'en': 'Rejected',
                    'ru': 'Отклонено',
                    'ko': '거부됨',
-                   'fr': 'Rejeté'
+                   'fr': 'Rejeté',
+                   'es': 'Rechazado'
                },
                # change_password.html 需要的消息键
                'change_password': {
                    'zh': '修改密码',
+                   'zh-TW': '修改密碼',
                    'ja': 'パスワード変更',
                    'en': 'Change Password',
                    'ru': 'Изменить пароль',
                    'ko': '비밀번호 변경',
-                   'fr': 'Changer le mot de passe'
+                   'fr': 'Changer le mot de passe',
+                   'es': 'Cambiar contraseña'
                },
                'current_password': {
                    'zh': '当前密码',
+                   'zh-TW': '當前密碼',
                    'ja': '現在のパスワード',
                    'en': 'Current Password',
                    'ru': 'Текущий пароль',
                    'ko': '현재 비밀번호',
-                   'fr': 'Mot de passe actuel'
+                   'fr': 'Mot de passe actuel',
+                   'es': 'Contraseña actual'
                },
                'new_password': {
                    'zh': '新密码',
+                   'zh-TW': '新密碼',
                    'ja': '新しいパスワード',
                    'en': 'New Password',
                    'ru': 'Новый пароль',
                    'ko': '새 비밀번호',
-                   'fr': 'Nouveau mot de passe'
+                   'fr': 'Nouveau mot de passe',
+                   'es': 'Nueva contraseña'
                },
                'confirm_new_password': {
                    'zh': '确认新密码',
+                   'zh-TW': '確認新密碼',
                    'ja': '新しいパスワード確認',
                    'en': 'Confirm New Password',
                    'ru': 'Подтвердить новый пароль',
                    'ko': '새 비밀번호 확인',
-                   'fr': 'Confirmer le nouveau mot de passe'
+                   'fr': 'Confirmer le nouveau mot de passe',
+                   'es': 'Confirmar nueva contraseña'
                },
                'change_password_btn': {
                    'zh': '修改密码',
+                   'zh-TW': '修改密碼',
                    'ja': 'パスワードを変更',
                    'en': 'Change Password',
                    'ru': 'Изменить пароль',
                    'ko': '비밀번호 변경',
-                   'fr': 'Changer le mot de passe'
+                   'fr': 'Changer le mot de passe',
+                   'es': 'Cambiar contraseña'
                },
                'back': {
                    'zh': '返回',
+                   'zh-TW': '返回',
                    'ja': '戻る',
                    'en': 'Back',
                    'ru': 'Назад',
                    'ko': '돌아가기',
-                   'fr': 'Retour'
+                   'fr': 'Retour',
+                   'es': 'Volver'
                },
                'password_mismatch': {
                    'zh': '新密码和确认密码不匹配',
+                   'zh-TW': '新密碼和確認密碼不匹配',
                    'ja': '新しいパスワードと確認パスワードが一致しません',
                    'en': 'New password and confirmation password do not match',
                    'ru': 'Новый пароль и подтверждение пароля не совпадают',
                    'ko': '새 비밀번호와 확인 비밀번호가 일치하지 않습니다',
-                   'fr': 'Le nouveau mot de passe et la confirmation ne correspondent pas'
+                   'fr': 'Le nouveau mot de passe et la confirmation ne correspondent pas',
+                   'es': 'La nueva contraseña y la confirmación no coinciden'
                },
                'password_min_length': {
                    'zh': '密码长度至少为8位',
+                   'zh-TW': '密碼長度至少為8位',
                    'ja': 'パスワードは8文字以上である必要があります',
                    'en': 'Password must be at least 8 characters long',
                    'ru': 'Пароль должен содержать не менее 8 символов',
                    'ko': '비밀번호는 최소 8자 이상이어야 합니다',
-                   'fr': 'Le mot de passe doit contenir au moins 8 caractères'
+                   'fr': 'Le mot de passe doit contenir au moins 8 caractères',
+                   'es': 'La contraseña debe tener al menos 8 caracteres'
                },
                # edit_translation.html 需要的消息键
                'save_changes': {
                    'zh': '保存修改',
+                   'zh-TW': '保存修改',
                    'ja': '変更を保存',
                    'en': 'Save Changes',
                    'ru': 'Сохранить изменения',
                    'ko': '변경사항 저장',
-                   'fr': 'Enregistrer les modifications'
+                   'fr': 'Enregistrer les modifications',
+                   'es': 'Guardar cambios'
                },
                'delete_translation': {
                    'zh': '删除翻译',
+                   'zh-TW': '刪除翻譯',
                    'ja': '翻訳を削除',
                    'en': 'Delete Translation',
                    'ru': 'Удалить перевод',
                    'ko': '번역 삭제',
-                   'fr': 'Supprimer la traduction'
+                   'fr': 'Supprimer la traduction',
+                   'es': 'Eliminar traducción'
                },
                'edit_tips': {
                    'zh': '编辑提示',
+                   'zh-TW': '編輯提示',
                    'ja': '編集ヒント',
                    'en': 'Edit Tips',
                    'ru': 'Советы по редактированию',
                    'ko': '편집 팁',
-                   'fr': 'Conseils d\'édition'
+                   'fr': 'Conseils d\'édition',
+                   'es': 'Consejos de edición'
                },
                'edit_tip_1': {
                    'zh': '修改后翻译状态将重置为"草稿"',
+                   'zh-TW': '修改後翻譯狀態將重置為「草稿」',
                    'ja': '変更後、翻訳ステータスは「下書き」にリセットされます',
                    'en': 'Translation status will be reset to "Draft" after modification',
                    'ru': 'Статус перевода будет сброшен на "Черновик" после изменения',
                    'ko': '수정 후 번역 상태가 "초안"으로 재설정됩니다',
-                   'fr': 'Le statut de traduction sera remis à "Brouillon" après modification'
+                   'fr': 'Le statut de traduction sera remis à "Brouillon" après modification',
+                   'es': 'El estado de la traducción se restablecerá a "Borrador" después de la modificación'
                },
                'edit_tip_2': {
                    'zh': '保持原文的语调和风格',
+                   'zh-TW': '保持原文的語調和風格',
                    'ja': '原文の語調とスタイルを保持する',
                    'en': 'Maintain the tone and style of the original text',
                    'ru': 'Сохраняйте тон и стиль оригинального текста',
                    'ko': '원문의 어조와 스타일을 유지하세요',
-                   'fr': 'Maintenez le ton et le style du texte original'
+                   'fr': 'Maintenez le ton et le style du texte original',
+                   'es': 'Mantén el tono y estilo del texto original'
                },
                'edit_tip_3': {
                    'zh': '确保翻译准确无误',
+                   'zh-TW': '確保翻譯準確無誤',
                    'ja': '翻訳の正確性を確保する',
                    'en': 'Ensure translation accuracy',
                    'ru': 'Обеспечьте точность перевода',
                    'ko': '번역의 정확성을 보장하세요',
-                   'fr': 'Assurez-vous de la précision de la traduction'
+                   'fr': 'Assurez-vous de la précision de la traduction',
+                   'es': 'Asegúrate de la precisión de la traducción'
                },
                'edit_tip_4': {
                    'zh': '注意文化差异和表达习惯',
+                   'zh-TW': '注意文化差異和表達習慣',
                    'ja': '文化的な違いと表現習慣に注意する',
                    'en': 'Pay attention to cultural differences and expression habits',
                    'ru': 'Обратите внимание на культурные различия и привычки выражения',
                    'ko': '문화적 차이와 표현 습관에 주의하세요',
-                   'fr': 'Faites attention aux différences culturelles et aux habitudes d\'expression'
+                   'fr': 'Faites attention aux différences culturelles et aux habitudes d\'expression',
+                   'es': 'Presta atención a las diferencias culturales y hábitos de expresión'
                },
                'edit_tip_5': {
                    'zh': '保持段落结构和格式',
+                   'zh-TW': '保持段落結構和格式',
                    'ja': '段落構造とフォーマットを保持する',
                    'en': 'Maintain paragraph structure and formatting',
                    'ru': 'Сохраняйте структуру абзацев и форматирование',
                    'ko': '단락 구조와 형식을 유지하세요',
-                   'fr': 'Maintenez la structure des paragraphes et le formatage'
+                   'fr': 'Maintenez la structure des paragraphes et le formatage',
+                   'es': 'Mantén la estructura de párrafos y formato'
                },
                'edit_tools': {
                    'zh': '编辑工具',
+                   'zh-TW': '編輯工具',
                    'ja': '編集ツール',
                    'en': 'Edit Tools',
                    'ru': 'Инструменты редактирования',
                    'ko': '편집 도구',
-                   'fr': 'Outils d\'édition'
+                   'fr': 'Outils d\'édition',
+                   'es': 'Herramientas de edición'
                },
                'copy_original': {
                    'zh': '复制原文',
+                   'zh-TW': '複製原文',
                    'ja': '原文をコピー',
                    'en': 'Copy Original',
                    'ru': 'Скопировать оригинал',
                    'ko': '원문 복사',
-                   'fr': 'Copier l\'original'
+                   'fr': 'Copier l\'original',
+                   'es': 'Copiar original'
                },
                'clear_translation': {
                    'zh': '清空翻译',
+                   'zh-TW': '清空翻譯',
                    'ja': '翻訳をクリア',
                    'en': 'Clear Translation',
                    'ru': 'Очистить перевод',
                    'ko': '번역 지우기',
-                   'fr': 'Effacer la traduction'
+                   'fr': 'Effacer la traduction',
+                   'es': 'Limpiar traducción'
                },
                'word_count': {
                    'zh': '字数统计',
+                   'zh-TW': '字數統計',
                    'ja': '文字数統計',
                    'en': 'Word Count',
                    'ru': 'Подсчет слов',
                    'ko': '단어 수 통계',
-                   'fr': 'Comptage de mots'
+                   'fr': 'Comptage de mots',
+                   'es': 'Conteo de palabras'
                },
                'statistics': {
                    'zh': '统计信息',
+                   'zh-TW': '統計資訊',
                    'ja': '統計情報',
                    'en': 'Statistics',
                    'ru': 'Статистика',
                    'ko': '통계 정보',
-                   'fr': 'Statistiques'
+                   'fr': 'Statistiques',
+                   'es': 'Estadísticas'
                },
                'original_characters': {
                    'zh': '原文字符',
+                   'zh-TW': '原文字符',
                    'ja': '原文文字',
                    'en': 'Original Characters',
                    'ru': 'Символы оригинала',
                    'ko': '원문 문자',
-                   'fr': 'Caractères originaux'
+                   'fr': 'Caractères originaux',
+                   'es': 'Caracteres originales'
                },
                'translation_characters': {
                    'zh': '翻译字符',
+                   'zh-TW': '翻譯字符',
                    'ja': '翻訳文字',
                    'en': 'Translation Characters',
                    'ru': 'Символы перевода',
                    'ko': '번역 문자',
-                   'fr': 'Caractères de traduction'
+                   'fr': 'Caractères de traduction',
+                   'es': 'Caracteres de traducción'
                },
         # 个人信息编辑界面消息
         'bio': {
             'zh': '个人简介',
+            'zh-TW': '個人簡介',
             'ja': '自己紹介',
             'en': 'Bio',
             'ru': 'Биография',
             'ko': '자기소개',
-            'fr': 'Biographie'
+            'fr': 'Biographie',
+            'es': 'Biografía'
         },
         'bio_placeholder': {
             'zh': '请输入个人简介（例如：翻译工作者，擅长中文、日文、英文翻译）',
+            'zh-TW': '請輸入個人簡介（例如：翻譯工作者，擅長中文、日文、英文翻譯）',
             'ja': '自己紹介を入力してください（例：翻訳者として活動中。日本語、英語、中国語ができます）',
             'en': 'Enter your bio (e.g., Translator specializing in Chinese, Japanese, and English)',
             'ru': 'Введите биографию (например: Переводчик, специализирующийся на китайском, японском и английском языках)',
             'ko': '자기소개를 입력하세요 (예: 중국어, 일본어, 영어 번역 전문가)',
-            'fr': 'Entrez votre biographie (ex: Traducteur spécialisé en chinois, japonais et anglais)'
+            'fr': 'Entrez votre biographie (ex: Traducteur spécialisé en chinois, japonais et anglais)',
+            'es': 'Ingresa tu biografía (ej: Traductor especializado en chino, japonés e inglés)'
         },
         'bio_help_text': {
             'zh': '请描述您的语言能力和专业领域',
+            'zh-TW': '請描述您的語言能力和專業領域',
             'ja': 'あなたの言語能力や専門分野について書いてください',
             'en': 'Please describe your language skills and areas of expertise',
             'ru': 'Пожалуйста, опишите ваши языковые навыки и области экспертизы',
             'ko': '언어 능력과 전문 분야를 설명해 주세요',
-            'fr': 'Veuillez décrire vos compétences linguistiques et domaines d\'expertise'
+            'fr': 'Veuillez décrire vos compétences linguistiques et domaines d\'expertise',
+            'es': 'Por favor describe tus habilidades lingüísticas y áreas de experiencia'
         },
         'avatar_help_text': {
             'zh': '请选择图片文件（JPG、PNG、GIF）',
+            'zh-TW': '請選擇圖片檔案（JPG、PNG、GIF）',
             'ja': '画像ファイルを選択してください（JPG、PNG、GIF）',
             'en': 'Please select an image file (JPG, PNG, GIF)',
             'ru': 'Пожалуйста, выберите файл изображения (JPG, PNG, GIF)',
             'ko': '이미지 파일을 선택해 주세요 (JPG, PNG, GIF)',
-            'fr': 'Veuillez sélectionner un fichier image (JPG, PNG, GIF)'
+            'fr': 'Veuillez sélectionner un fichier image (JPG, PNG, GIF)',
+            'es': 'Por favor selecciona un archivo de imagen (JPG, PNG, GIF)'
         },
         'preferred_language_help_text': {
             'zh': '请选择网站显示语言',
+            'zh-TW': '請選擇網站顯示語言',
             'ja': 'サイトの表示言語を選択してください',
             'en': 'Please select the site display language',
             'ru': 'Пожалуйста, выберите язык отображения сайта',
             'ko': '사이트 표시 언어를 선택해 주세요',
-            'fr': 'Veuillez sélectionner la langue d\'affichage du site'
+            'fr': 'Veuillez sélectionner la langue d\'affichage du site',
+            'es': 'Por favor selecciona el idioma de visualización del sitio'
         },
         'save_changes': {
             'zh': '保存修改',
+            'zh-TW': '保存修改',
             'ja': '変更を保存',
             'en': 'Save Changes',
             'ru': 'Сохранить изменения',
             'ko': '변경사항 저장',
-            'fr': 'Enregistrer les modifications'
+            'fr': 'Enregistrer les modifications',
+            'es': 'Guardar cambios'
         },
         # work_detail.html 需要的消息键
         'reject_translation': {
             'zh': '拒绝翻译',
+            'zh-TW': '拒絕翻譯',
             'ja': '翻訳を却下',
             'en': 'Reject Translation',
             'ru': 'Отклонить перевод',
             'ko': '번역 거부',
-            'fr': 'Rejeter la traduction'
+            'fr': 'Rejeter la traduction',
+            'es': 'Rechazar traducción'
         },
         'reject_reason': {
             'zh': '拒绝理由（可选）',
+            'zh-TW': '拒絕理由（可選）',
             'ja': '却下理由（オプション）',
             'en': 'Rejection Reason (Optional)',
             'ru': 'Причина отклонения (необязательно)',
             'ko': '거부 이유 (선택사항)',
-            'fr': 'Raison du rejet (optionnel)'
+            'fr': 'Raison du rejet (optionnel)',
+            'es': 'Razón del rechazo (opcional)'
         },
         'reject_reason_placeholder': {
             'zh': '请输入拒绝翻译的理由...',
+            'zh-TW': '請輸入拒絕翻譯的理由...',
             'ja': '翻訳を却下する理由を入力してください...',
             'en': 'Please enter the reason for rejecting the translation...',
             'ru': 'Пожалуйста, введите причину отклонения перевода...',
             'ko': '번역을 거부하는 이유를 입력하세요...',
-            'fr': 'Veuillez entrer la raison du rejet de la traduction...'
+            'fr': 'Veuillez entrer la raison du rejet de la traduction...',
+            'es': 'Por favor ingresa la razón para rechazar la traducción...'
         },
         'edit_reason': {
             'zh': '编辑理由',
+            'zh-TW': '編輯理由',
             'ja': '編集理由',
             'en': 'Edit Reason',
             'ru': 'Причина редактирования',
             'ko': '편집 이유',
-            'fr': 'Raison de la modification'
+            'fr': 'Raison de la modification',
+            'es': 'Razón de la edición'
         },
         'edit_reason_placeholder': {
             'zh': '请输入编辑理由...',
+            'zh-TW': '請輸入編輯理由...',
             'ja': '編集理由を入力してください...',
             'en': 'Please enter the edit reason...',
             'ru': 'Пожалуйста, введите причину редактирования...',
             'ko': '편집 이유를 입력하세요...',
-            'fr': 'Veuillez entrer la raison de la modification...'
+            'fr': 'Veuillez entrer la raison de la modification...',
+            'es': 'Por favor ingresa la razón de la edición...'
         },
         'notify_creator_and_translator': {
             'zh': '此操作将通知作品作者和翻译者。',
+            'zh-TW': '此操作將通知作品作者和翻譯者。',
             'ja': 'この操作は作品の作者と翻訳者に通知します。',
             'en': 'This action will notify the creator and translator.',
             'ru': 'Это действие уведомит автора и переводчика.',
             'ko': '이 작업은 작품의 작성자와 번역자에게 알림을 보냅니다.',
-            'fr': 'Cette action informera le créateur et le traducteur.'
+            'fr': 'Cette action informera le créateur et le traducteur.',
+            'es': 'Esta acción notificará al creador y al traductor.'
         },
         'delete_reason': {
             'zh': '删除理由',
+            'zh-TW': '刪除理由',
             'ja': '削除理由',
             'en': 'Delete Reason',
             'ru': 'Причина удаления',
             'ko': '삭제 이유',
-            'fr': 'Raison de la suppression'
+            'fr': 'Raison de la suppression',
+            'es': 'Razón de eliminación'
         },
         'delete_reason_placeholder': {
             'zh': '请输入删除理由...',
+            'zh-TW': '請輸入刪除理由...',
             'ja': '削除理由を入力してください...',
             'en': 'Please enter the delete reason...',
             'ru': 'Пожалуйста, введите причину удаления...',
             'ko': '삭제 이유를 입력하세요...',
-            'fr': 'Veuillez entrer la raison de la suppression...'
+            'fr': 'Veuillez entrer la raison de la suppression...',
+            'es': 'Por favor ingresa la razón de eliminación...'
         },
         'comment_required': {
             'zh': '请输入评论内容',
+            'zh-TW': '請輸入評論內容',
             'ja': 'コメント内容を入力してください',
             'en': 'Please enter comment content',
             'ru': 'Пожалуйста, введите содержание комментария',
             'ko': '댓글 내용을 입력하세요',
-            'fr': 'Veuillez entrer le contenu du commentaire'
+            'fr': 'Veuillez entrer le contenu du commentaire',
+            'es': 'Por favor ingresa el contenido del comentario'
         },
         'translation_not_found': {
             'zh': '未找到翻译',
+            'zh-TW': '未找到翻譯',
             'ja': '翻訳が見つかりません',
             'en': 'Translation not found',
             'ru': 'Перевод не найден',
             'ko': '번역을 찾을 수 없습니다',
-            'fr': 'Traduction introuvable'
+            'fr': 'Traduction introuvable',
+            'es': 'Traducción no encontrada'
         },
         'comment_submit_failed': {
             'zh': '评论提交失败，请重试',
+            'zh-TW': '評論提交失敗，請重試',
             'ja': 'コメントの送信に失敗しました。再試行してください',
             'en': 'Comment submission failed, please try again',
             'ru': 'Отправка комментария не удалась, попробуйте еще раз',
             'ko': '댓글 제출에 실패했습니다. 다시 시도해 주세요',
-            'fr': 'Échec de la soumission du commentaire, veuillez réessayer'
+            'fr': 'Échec de la soumission du commentaire, veuillez réessayer',
+            'es': 'Error al enviar comentario, por favor inténtalo de nuevo'
         },
         'no_comments_yet': {
             'zh': '暂无评论',
+            'zh-TW': '暫無評論',
             'ja': 'まだコメントがありません',
             'en': 'No comments yet',
             'ru': 'Пока нет комментариев',
             'ko': '아직 댓글이 없습니다',
-            'fr': 'Aucun commentaire pour le moment'
+            'fr': 'Aucun commentaire pour le moment',
+            'es': 'Aún no hay comentarios'
         },
         'delete_comment': {
             'zh': '删除',
+            'zh-TW': '刪除',
             'ja': '削除',
             'en': 'Delete',
             'ru': 'Удалить',
             'ko': '삭제',
-            'fr': 'Supprimer'
+            'fr': 'Supprimer',
+            'es': 'Eliminar'
         },
         'operation_failed': {
             'zh': '操作失败，请重试',
+            'zh-TW': '操作失敗，請重試',
             'ja': '操作に失敗しました。再試行してください',
             'en': 'Operation failed, please try again',
             'ru': 'Операция не удалась, попробуйте еще раз',
             'ko': '작업에 실패했습니다. 다시 시도해 주세요',
-            'fr': 'L\'opération a échoué, veuillez réessayer'
+            'fr': 'L\'opération a échoué, veuillez réessayer',
+            'es': 'Operación fallida, por favor inténtalo de nuevo'
         },
         # apply_admin.html 需要的消息键
         'admin_application': {
             'zh': '管理员申请',
+            'zh-TW': '管理員申請',
             'ja': '管理者申請',
             'en': 'Admin Application',
             'ru': 'Заявка на администратора',
             'ko': '관리자 신청',
-            'fr': 'Demande d\'administrateur'
+            'fr': 'Demande d\'administrateur',
+            'es': 'Solicitud de administrador'
         },
         'application_description': {
             'zh': '申请说明',
+            'zh-TW': '申請說明',
             'ja': '申請について',
             'en': 'Application Description',
             'ru': 'Описание заявки',
             'ko': '신청 설명',
-            'fr': 'Description de la demande'
+            'fr': 'Description de la demande',
+            'es': 'Descripción de la solicitud'
         },
         'admin_application_reason': {
             'zh': '申请管理员权限需要详细说明以下理由：',
+            'zh-TW': '申請管理員權限需要詳細說明以下理由：',
             'ja': '管理者権限を申請するには、以下の理由を詳しく説明してください：',
             'en': 'To apply for admin privileges, please explain the following reasons in detail:',
             'ru': 'Для подачи заявки на права администратора, пожалуйста, подробно объясните следующие причины:',
             'ko': '관리자 권한을 신청하려면 다음 이유를 자세히 설명해 주세요:',
-            'fr': 'Pour demander les privilèges d\'administrateur, veuillez expliquer en détail les raisons suivantes:'
+            'fr': 'Pour demander les privilèges d\'administrateur, veuillez expliquer en détail les raisons suivantes:',
+            'es': 'Para solicitar privilegios de administrador, por favor explique en detalle las siguientes razones:'
         },
         'why_admin_reason': {
             'zh': '为什么想要成为管理员',
+            'zh-TW': '為什麼想要成為管理員',
             'ja': 'なぜ管理者になりたいのか',
             'en': 'Why you want to become an admin',
             'ru': 'Почему вы хотите стать администратором',
             'ko': '왜 관리자가 되고 싶은지',
-            'fr': 'Pourquoi vous voulez devenir administrateur'
+            'fr': 'Pourquoi vous voulez devenir administrateur',
+            'es': 'Por qué quieres convertirte en administrador'
         },
         'what_contribution': {
             'zh': '能够做出什么样的贡献',
+            'zh-TW': '能夠做出什麼樣的貢獻',
             'ja': 'どのような貢献ができるのか',
             'en': 'What kind of contribution you can make',
             'ru': 'Какой вклад вы можете внести',
             'ko': '어떤 기여를 할 수 있는지',
-            'fr': 'Quel type de contribution vous pouvez apporter'
+            'fr': 'Quel type de contribution vous pouvez apporter',
+            'es': 'Qué tipo de contribución puedes hacer'
         },
         'how_improve_community': {
             'zh': '如何致力于改善社区',
+            'zh-TW': '如何致力於改善社區',
             'ja': 'コミュニティの改善にどのように取り組むか',
             'en': 'How you will work to improve the community',
             'ru': 'Как вы будете работать над улучшением сообщества',
             'ko': '커뮤니티 개선을 위해 어떻게 노력할 것인지',
-            'fr': 'Comment vous travaillerez à améliorer la communauté'
+            'fr': 'Comment vous travaillerez à améliorer la communauté',
+            'es': 'Cómo trabajarás para mejorar la comunidad'
         },
         'application_reason': {
             'zh': '申请理由',
+            'zh-TW': '申請理由',
             'ja': '申請理由',
             'en': 'Application Reason',
             'ru': 'Причина заявки',
             'ko': '신청 이유',
-            'fr': 'Raison de la demande'
+            'fr': 'Raison de la demande',
+            'es': 'Razón de la solicitud'
         },
         'application_reason_placeholder': {
             'zh': '请详细填写申请理由...',
+            'zh-TW': '請詳細填寫申請理由...',
             'ja': '申請理由を詳しく記入してください...',
             'en': 'Please fill in the application reason in detail...',
             'ru': 'Пожалуйста, подробно заполните причину заявки...',
             'ko': '신청 이유를 자세히 작성해 주세요...',
-            'fr': 'Veuillez remplir en détail la raison de la demande...'
+            'fr': 'Veuillez remplir en détail la raison de la demande...',
+            'es': 'Por favor completa en detalle la razón de la solicitud...'
         },
         'submit_application': {
             'zh': '提交申请',
+            'zh-TW': '提交申請',
             'ja': '申請を提出',
             'en': 'Submit Application',
             'ru': 'Отправить заявку',
             'ko': '신청 제출',
-            'fr': 'Soumettre la demande'
+            'fr': 'Soumettre la demande',
+            'es': 'Enviar solicitud'
         },
         # apply_reviewer.html 需要的消息键
         'reviewer_application': {
             'zh': '校正者申请',
+            'zh-TW': '校正者申請',
             'ja': '校正者申請',
             'en': 'Reviewer Application',
             'ru': 'Заявка на рецензента',
             'ko': '교정자 신청',
-            'fr': 'Demande de correcteur'
+            'fr': 'Demande de correcteur',
+            'es': 'Solicitud de revisor'
         },
         'reviewer_role': {
             'zh': '校正者的职责：',
+            'zh-TW': '校正者的職責：',
             'ja': '校正者の役割：',
             'en': 'Reviewer Role:',
             'ru': 'Роль рецензента:',
             'ko': '교정자의 역할:',
-            'fr': 'Rôle du correcteur:'
+            'fr': 'Rôle du correcteur:',
+            'es': 'Rol del revisor:'
         },
         'reviewer_role_1': {
             'zh': '对翻译者的翻译内容进行校正和改进',
+            'zh-TW': '對翻譯者的翻譯內容進行校正和改進',
             'ja': '翻訳者の翻訳内容を校正・改善する',
             'en': 'Review and improve translators\' translation content',
             'ru': 'Рецензировать и улучшать содержание переводов переводчиков',
             'ko': '번역가의 번역 내용을 교정하고 개선합니다',
-            'fr': 'Réviser et améliorer le contenu des traductions des traducteurs'
+            'fr': 'Réviser et améliorer le contenu des traductions des traducteurs',
+            'es': 'Revisar y mejorar el contenido de traducción de los traductores'
         },
         'reviewer_role_2': {
             'zh': '为翻译质量提升做出贡献',
+            'zh-TW': '為翻譯品質提升做出貢獻',
             'ja': '翻訳の品質向上に貢献する',
             'en': 'Contribute to improving translation quality',
             'ru': 'Вносить вклад в улучшение качества перевода',
             'ko': '번역 품질 향상에 기여합니다',
-            'fr': 'Contribuer à l\'amélioration de la qualité de traduction'
+            'fr': 'Contribuer à l\'amélioration de la qualité de traduction',
+            'es': 'Contribuir a mejorar la calidad de la traducción'
         },
         'reviewer_role_3': {
             'zh': '其他用户可以对校正内容进行点赞',
+            'zh-TW': '其他用戶可以對校正內容進行點讚',
             'ja': '他のユーザーが校正内容にいいねできる',
             'en': 'Other users can like the review content',
             'ru': 'Другие пользователи могут лайкать содержание рецензии',
             'ko': '다른 사용자가 교정 내용에 좋아요를 할 수 있습니다',
-            'fr': 'D\'autres utilisateurs peuvent aimer le contenu de révision'
+            'fr': 'D\'autres utilisateurs peuvent aimer le contenu de révision',
+            'es': 'Otros usuarios pueden dar me gusta al contenido de revisión'
         },
         'reviewer_role_4': {
             'zh': '为翻译社区发展做出贡献',
+            'zh-TW': '為翻譯社區發展做出貢獻',
             'ja': '翻訳コミュニティの発展に寄与する',
             'en': 'Contribute to the development of the translation community',
             'ru': 'Вносить вклад в развитие сообщества переводчиков',
             'ko': '번역 커뮤니티 발전에 기여합니다',
-            'fr': 'Contribuer au développement de la communauté de traduction'
+            'fr': 'Contribuer au développement de la communauté de traduction',
+            'es': 'Contribuir al desarrollo de la comunidad de traducción'
         },
         'reviewer_responsibility': {
             'zh': '校正者的责任：',
+            'zh-TW': '校正者的責任：',
             'ja': '校正者の責任：',
             'en': 'Reviewer Responsibilities:',
             'ru': 'Обязанности рецензента:',
             'ko': '교정자의 책임:',
-            'fr': 'Responsabilités du correcteur:'
+            'fr': 'Responsabilités du correcteur:',
+            'es': 'Responsabilidades del revisor:'
         },
         'reviewer_resp_1': {
             'zh': '提供准确和适当的校正',
+            'zh-TW': '提供準確和適當的校正',
             'ja': '正確で適切な校正を提供する',
             'en': 'Provide accurate and appropriate corrections',
             'ru': 'Предоставлять точные и подходящие исправления',
             'ko': '정확하고 적절한 교정을 제공합니다',
-            'fr': 'Fournir des corrections précises et appropriées'
+            'fr': 'Fournir des corrections précises et appropriées',
+            'es': 'Proporcionar correcciones precisas y apropiadas'
         },
         'reviewer_resp_2': {
             'zh': '提供建设性和有用的反馈',
+            'zh-TW': '提供建設性和有用的反饋',
             'ja': '建設的で役立つフィードバックを提供する',
             'en': 'Provide constructive and useful feedback',
             'ru': 'Предоставлять конструктивную и полезную обратную связь',
             'ko': '건설적이고 유용한 피드백을 제공합니다',
-            'fr': 'Fournir des commentaires constructifs et utiles'
+            'fr': 'Fournir des commentaires constructifs et utiles',
+            'es': 'Proporcionar retroalimentación constructiva y útil'
         },
         'reviewer_resp_3': {
             'zh': '尊重翻译者的努力',
+            'zh-TW': '尊重翻譯者的努力',
             'ja': '翻訳者の努力を尊重する',
             'en': 'Respect the efforts of translators',
             'ru': 'Уважать усилия переводчиков',
             'ko': '번역가의 노력을 존중합니다',
-            'fr': 'Respecter les efforts des traducteurs'
+            'fr': 'Respecter les efforts des traducteurs',
+            'es': 'Respetar los esfuerzos de los traductores'
         },
         'reviewer_resp_4': {
             'zh': '遵守社区规则',
+            'zh-TW': '遵守社區規則',
             'ja': 'コミュニティのルールに従う',
             'en': 'Follow community rules',
             'ru': 'Соблюдать правила сообщества',
             'ko': '커뮤니티 규칙을 따릅니다',
-            'fr': 'Suivre les règles de la communauté'
+            'fr': 'Suivre les règles de la communauté',
+            'es': 'Seguir las reglas de la comunidad'
         },
         'become_reviewer': {
             'zh': '成为校正者',
+            'zh-TW': '成為校正者',
             'ja': '校正者になる',
             'en': 'Become a Reviewer',
             'ru': 'Стать рецензентом',
             'ko': '교정자가 되기',
-            'fr': 'Devenir correcteur'
+            'fr': 'Devenir correcteur',
+            'es': 'Convertirse en revisor'
         },
         # apply_translator.html 需要的消息键
         'translator_test': {
             'zh': '翻译者测试',
+            'zh-TW': '翻譯者測試',
             'ja': '翻訳者テスト',
             'en': 'Translator Test',
             'ru': 'Тест переводчика',
             'ko': '번역가 테스트',
-            'fr': 'Test de traducteur'
+            'fr': 'Test de traducteur',
+            'es': 'Prueba de traductor'
         },
         'test_not_ready': {
             'zh': '目前测验内容尚未准备，点击下方确认按钮即可成为翻译者。',
+            'zh-TW': '目前測驗內容尚未準備，點擊下方確認按鈕即可成為翻譯者。',
             'ja': '現在テスト内容はまだ準備されていません。下の確認ボタンをクリックすると翻訳者になれます。',
             'en': 'The test content is not ready yet. Click the confirm button below to become a translator.',
             'ru': 'Содержание теста пока не готово. Нажмите кнопку подтверждения ниже, чтобы стать переводчиком.',
             'ko': '현재 테스트 내용이 아직 준비되지 않았습니다. 아래 확인 버튼을 클릭하면 번역가가 될 수 있습니다.',
-            'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir traducteur.'
+            'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir traducteur.',
+            'es': 'El contenido de la prueba aún no está listo. Haz clic en el botón de confirmación de abajo para convertirte en traductor.'
         },
         # apply_reviewer.html 需要的消息键
         'reviewer_test': {
             'zh': '校正者测试',
+            'zh-TW': '校正者測試',
             'ja': '校正者テスト',
             'en': 'Reviewer Test',
             'ru': 'Тест рецензента',
             'ko': '교정자 테스트',
-            'fr': 'Test de correcteur'
+            'fr': 'Test de correcteur',
+            'es': 'Prueba de revisor'
         },
         'reviewer_test_not_ready': {
             'zh': '目前测验内容尚未准备，点击下方确认按钮即可成为校正者。',
+            'zh-TW': '目前測驗內容尚未準備，點擊下方確認按鈕即可成為校正者。',
             'ja': '現在テスト内容はまだ準備されていません。下の確認ボタンをクリックすると校正者になれます。',
             'en': 'The test content is not ready yet. Click the confirm button below to become a reviewer.',
             'ru': 'Содержание теста пока не готово. Нажмите кнопку подтверждения ниже, чтобы стать рецензентом.',
             'ko': '현재 테스트 내용이 아직 준비되지 않았습니다. 아래 확인 버튼을 클릭하면 교정자가 될 수 있습니다.',
-            'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir correcteur.'
+            'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir correcteur.',
+            'es': 'El contenido de la prueba aún no está listo. Haz clic en el botón de confirmación de abajo para convertirte en revisor.'
         },
         'confirm': {
             'zh': '确认',
+            'zh-TW': '確認',
             'ja': '確認',
             'en': 'Confirm',
             'ru': 'Подтвердить',
             'ko': '확인',
-            'fr': 'Confirmer'
+            'fr': 'Confirmer',
+            'es': 'Confirmar'
         },
         }
     
@@ -5521,11 +6486,13 @@ def get_system_message(message_type, user_id, **kwargs):
     system_messages = {
         'translation_request_to_author': {
             'zh': f'用户 {kwargs.get("translator_name", "")} 申请翻译你的作品《{kwargs.get("work_title", "")}》，期待/要求：{kwargs.get("expectation", "无")}，请前往作品详情页同意或拒绝。',
+            'zh-TW': f'用戶 {kwargs.get("translator_name", "")} 申請翻譯你的作品《{kwargs.get("work_title", "")}》，期待/要求：{kwargs.get("expectation", "無")}，請前往作品詳情頁同意或拒絕。',
             'ja': f'ユーザー {kwargs.get("translator_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の翻訳を申請しました。期待/要求：{kwargs.get("expectation", "なし")}。作品詳細ページで承認または拒否してください。',
             'en': f'User {kwargs.get("translator_name", "")} has requested to translate your work "{kwargs.get("work_title", "")}". Expectation/Requirements: {kwargs.get("expectation", "None")}. Please go to the work detail page to approve or reject.',
             'ru': f'Пользователь {kwargs.get("translator_name", "")} запросил перевод вашей работы "{kwargs.get("work_title", "")}". Ожидания/Требования: {kwargs.get("expectation", "Нет")}. Пожалуйста, перейдите на страницу деталей работы для одобрения или отклонения.',
             'ko': f'사용자 {kwargs.get("translator_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}" 번역을 요청했습니다. 기대/요구사항: {kwargs.get("expectation", "없음")}. 작품 상세 페이지에서 승인 또는 거부해 주세요.',
-            'fr': f'L\'utilisateur {kwargs.get("translator_name", "")} a demandé à traduire votre œuvre "{kwargs.get("work_title", "")}". Attentes/Exigences: {kwargs.get("expectation", "Aucune")}. Veuillez aller à la page de détails de l\'œuvre pour approuver ou rejeter.'
+            'fr': f'L\'utilisateur {kwargs.get("translator_name", "")} a demandé à traduire votre œuvre "{kwargs.get("work_title", "")}". Attentes/Exigences: {kwargs.get("expectation", "Aucune")}. Veuillez aller à la page de détails de l\'œuvre pour approuver ou rejeter.',
+            'es': f'El usuario {kwargs.get("translator_name", "")} ha solicitado traducir tu obra "{kwargs.get("work_title", "")}". Expectativas/Requisitos: {kwargs.get("expectation", "Ninguno")}. Por favor ve a la página de detalles de la obra para aprobar o rechazar.'
         },
         'translation_request_to_translator': {
             'en': f'You have successfully submitted a translation request for the work "{kwargs.get("work_title", "")}". Waiting for author processing.',
@@ -5533,7 +6500,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'작품 "{kwargs.get("work_title", "")}" 번역 요청을 성공적으로 제출했습니다. 저자 처리 대기 중입니다.',
             'fr': f'Vous avez soumis avec succès une demande de traduction pour l\'œuvre "{kwargs.get("work_title", "")}". En attente du traitement par l\'auteur.',
             'zh': f'作品《{kwargs.get("work_title", "")}》的翻译申请，等待作者处理。',
-            'ja': f'作品《{kwargs.get("work_title", "")}》の翻訳申請を正常に提出しました。作者の処理をお待ちください。'
+            'zh-TW': f'作品《{kwargs.get("work_title", "")}》的翻譯申請，等待作者處理。',
+            'ja': f'作品《{kwargs.get("work_title", "")}》の翻訳申請を正常に提出しました。作者の処理をお待ちください。',
+            'es': f'Has enviado exitosamente una solicitud de traducción para la obra "{kwargs.get("work_title", "")}". Esperando el procesamiento del autor.'
         },
         'request_approved_to_translator': {
             'en': f'Your translation request has been approved. Work: {kwargs.get("work_title", "")}',
@@ -5541,7 +6510,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'번역 요청이 승인되었습니다. 작품: {kwargs.get("work_title", "")}',
             'fr': f'Votre demande de traduction a été approuvée. Œuvre: {kwargs.get("work_title", "")}',
             'zh': f'您的翻译请求已获得批准。作品：{kwargs.get("work_title", "")}',
-            'ja': f'翻訳リクエストが承認されました。作品：{kwargs.get("work_title", "")}'
+            'zh-TW': f'您的翻譯請求已獲得批准。作品：{kwargs.get("work_title", "")}',
+            'ja': f'翻訳リクエストが承認されました。作品：{kwargs.get("work_title", "")}',
+            'es': f'Tu solicitud de traducción ha sido aprobada. Obra: {kwargs.get("work_title", "")}'
         },
         'request_rejected_to_translator': {
             'en': f'Your translation request was rejected. Work: {kwargs.get("work_title", "")}',
@@ -5549,7 +6520,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'번역 요청이 거부되었습니다. 작품: {kwargs.get("work_title", "")}',
             'fr': f'Votre demande de traduction a été rejetée. Œuvre: {kwargs.get("work_title", "")}',
             'zh': f'您的翻译请求被拒绝了。作品：{kwargs.get("work_title", "")}',
-            'ja': f'翻訳リクエストが拒否されました。作品：{kwargs.get("work_title", "")}'
+            'zh-TW': f'您的翻譯請求被拒絕了。作品：{kwargs.get("work_title", "")}',
+            'ja': f'翻訳リクエストが拒否されました。作品：{kwargs.get("work_title", "")}',
+            'es': f'Tu solicitud de traducción fue rechazada. Obra: {kwargs.get("work_title", "")}'
         },
         'trusted_by_author': {
             'en': f'User {kwargs.get("author_name", "")} has set you as a trusted translator.',
@@ -5557,7 +6530,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'사용자 {kwargs.get("author_name", "")}가 귀하를 신뢰할 수 있는 번역자로 설정했습니다.',
             'fr': f'L\'utilisateur {kwargs.get("author_name", "")} vous a défini comme traducteur de confiance.',
             'zh': f'用户 {kwargs.get("author_name", "")} 已将您设为信赖的翻译者。',
-            'ja': f'ユーザー {kwargs.get("author_name", "")} があなたを信頼できる翻訳者として設定しました。'
+            'zh-TW': f'用戶 {kwargs.get("author_name", "")} 已將您設為信賴的翻譯者。',
+            'ja': f'ユーザー {kwargs.get("author_name", "")} があなたを信頼できる翻訳者として設定しました。',
+            'es': f'El usuario {kwargs.get("author_name", "")} te ha establecido como traductor de confianza.'
         },
         'untrusted_by_author': {
             'en': f'User {kwargs.get("author_name", "")} has removed you from trusted translators.',
@@ -5565,23 +6540,29 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'사용자 {kwargs.get("author_name", "")}가 신뢰할 수 있는 번역자 목록에서 귀하를 제거했습니다.',
             'fr': f'L\'utilisateur {kwargs.get("author_name", "")} vous a retiré des traducteurs de confiance.',
             'zh': f'用户 {kwargs.get("author_name", "")} 已取消对您的信赖。',
-            'ja': f'ユーザー {kwargs.get("author_name", "")} があなたへの信頼を解除しました。'
+            'zh-TW': f'用戶 {kwargs.get("author_name", "")} 已取消對您的信賴。',
+            'ja': f'ユーザー {kwargs.get("author_name", "")} があなたへの信頼を解除しました。',
+            'es': f'El usuario {kwargs.get("author_name", "")} te ha removido de los traductores de confianza.'
         },
         'friend_request_sent': {
+            'zh': '用户 {sender_name} 向您发送了好友请求。',
+            'zh-TW': '用戶 {sender_name} 向您發送了好友請求。',
+            'ja': 'ユーザー {sender_name} があなたに友達リクエストを送信しました。',
             'en': 'User {sender_name} has sent you a friend request.',
             'ru': 'Пользователь {sender_name} отправил вам запрос в друзья.',
             'ko': '사용자 {sender_name}가 귀하에게 친구 요청을 보냈습니다.',
             'fr': 'L\'utilisateur {sender_name} vous a envoyé une demande d\'ami.',
-            'zh': '用户 {sender_name} 向您发送了好友请求。',
-            'ja': 'ユーザー {sender_name} があなたに友達リクエストを送信しました。'
+            'es': 'El usuario {sender_name} te ha enviado una solicitud de amistad.'
         },
         'friend_request_accepted': {
+            'zh': '用户 {receiver_name} 已接受您的好友请求。',
+            'zh-TW': '用戶 {receiver_name} 已接受您的好友請求。',
+            'ja': 'あなたの友達リクエストが {receiver_name} によって承認されました。',
             'en': 'Your friend request has been accepted by {receiver_name}.',
             'ru': 'Ваш запрос в друзья был принят пользователем {receiver_name}.',
             'ko': '친구 요청이 {receiver_name}에 의해 승인되었습니다.',
             'fr': 'Votre demande d\'ami a été acceptée par {receiver_name}.',
-            'zh': '用户 {receiver_name} 已接受您的好友请求。',
-            'ja': 'あなたの友達リクエストが {receiver_name} によって承認されました。'
+            'es': 'Tu solicitud de amistad ha sido aceptada por {receiver_name}.'
         },
         'friend_request_rejected': {
             'en': 'Your friend request has been rejected by {receiver_name}.',
@@ -5589,7 +6570,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': '친구 요청이 {receiver_name}에 의해 거부되었습니다.',
             'fr': 'Votre demande d\'ami a été rejetée par {receiver_name}.',
             'zh': '用户 {receiver_name} 拒绝了您的好友请求。',
-            'ja': 'ユーザー {receiver_name} があなたの友達リクエストを拒否しました。'
+            'zh-TW': '用戶 {receiver_name} 拒絕了您的好友請求。',
+            'ja': 'ユーザー {receiver_name} があなたの友達リクエストを拒否しました。',
+            'es': 'Tu solicitud de amistad ha sido rechazada por {receiver_name}.'
         },
         'translation_accepted_by_author': {
             'en': f'Congratulations! Your translation "{kwargs.get("work_title", "")}" has been accepted by the author and liked!',
@@ -5597,7 +6580,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'축하합니다! 귀하의 번역 "{kwargs.get("work_title", "")}"이 저자에 의해 승인되고 좋아요를 받았습니다!',
             'fr': f'Félicitations ! Votre traduction "{kwargs.get("work_title", "")}" a été acceptée par l\'auteur et aimée !',
             'zh': f'恭喜！您的翻译《{kwargs.get("work_title", "")}》已被作者接受并点赞！',
-            'ja': f'おめでとうございます！あなたの翻訳《{kwargs.get("work_title", "")}》が作者によって承認され、いいねされました！'
+            'zh-TW': f'恭喜！您的翻譯《{kwargs.get("work_title", "")}》已被作者接受並點讚！',
+            'ja': f'おめでとうございます！あなたの翻訳《{kwargs.get("work_title", "")}》が作者によって承認され、いいねされました！',
+            'es': f'¡Felicitaciones! Tu traducción "{kwargs.get("work_title", "")}" ha sido aceptada por el autor y recibió un me gusta!'
         },
         'like_milestone': {
             'en': f'Congratulations! Your {kwargs.get("content_type", "")} has received {kwargs.get("like_count", "")} likes!',
@@ -5605,7 +6590,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'축하합니다! 귀하의 {kwargs.get("content_type", "")}가 {kwargs.get("like_count", "")}개의 좋아요를 받았습니다!',
             'fr': f'Félicitations ! Votre {kwargs.get("content_type", "")} a reçu {kwargs.get("like_count", "")} j\'aime !',
             'zh': f'恭喜！您的{kwargs.get("content_type", "")}获得了{kwargs.get("like_count", "")}个点赞！',
-            'ja': f'おめでとうございます！あなたの{kwargs.get("content_type", "")}が{kwargs.get("like_count", "")}個のいいねを獲得しました！'
+            'zh-TW': f'恭喜！您的{kwargs.get("content_type", "")}獲得了{kwargs.get("like_count", "")}個點讚！',
+            'ja': f'おめでとうございます！あなたの{kwargs.get("content_type", "")}が{kwargs.get("like_count", "")}個のいいねを獲得しました！',
+            'es': f'¡Felicitaciones! Tu {kwargs.get("content_type", "")} ha recibido {kwargs.get("like_count", "")} me gusta!'
         },
         'translation_submitted_to_author': {
             'en': f'User {kwargs.get("translator_name", "")} has submitted a translation for your work "{kwargs.get("work_title", "")}".',
@@ -5613,7 +6600,9 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'사용자 {kwargs.get("translator_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 대한 번역을 제출했습니다.',
             'fr': f'L\'utilisateur {kwargs.get("translator_name", "")} a soumis une traduction pour votre œuvre "{kwargs.get("work_title", "")}".',
             'zh': f'用户 {kwargs.get("translator_name", "")} 为您的作品《{kwargs.get("work_title", "")}》提交了翻译。',
-            'ja': f'ユーザー {kwargs.get("translator_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の翻訳を提出しました。'
+            'zh-TW': f'用戶 {kwargs.get("translator_name", "")} 為您的作品《{kwargs.get("work_title", "")}》提交了翻譯。',
+            'ja': f'ユーザー {kwargs.get("translator_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の翻訳を提出しました。',
+            'es': f'El usuario {kwargs.get("translator_name", "")} ha enviado una traducción para tu obra "{kwargs.get("work_title", "")}".'
         },
         'translation_accepted_to_author': {
             'en': f'You have accepted the translation of "{kwargs.get("work_title", "")}" by user {kwargs.get("translator_name", "")}.',
@@ -5621,125 +6610,181 @@ def get_system_message(message_type, user_id, **kwargs):
             'ko': f'사용자 {kwargs.get("translator_name", "")}의 "{kwargs.get("work_title", "")}" 번역을 승인했습니다.',
             'fr': f'Vous avez accepté la traduction de "{kwargs.get("work_title", "")}" par l\'utilisateur {kwargs.get("translator_name", "")}.',
             'zh': f'您已接受用户 {kwargs.get("translator_name", "")} 对作品《{kwargs.get("work_title", "")}》的翻译。',
-            'ja': f'ユーザー {kwargs.get("translator_name", "")} の作品《{kwargs.get("work_title", "")}》の翻訳を承認しました。'
+            'zh-TW': f'您已接受用戶 {kwargs.get("translator_name", "")} 對作品《{kwargs.get("work_title", "")}》的翻譯。',
+            'ja': f'ユーザー {kwargs.get("translator_name", "")} の作品《{kwargs.get("work_title", "")}》の翻訳を承認しました。',
+            'es': f'Has aceptado la traducción de "{kwargs.get("work_title", "")}" por el usuario {kwargs.get("translator_name", "")}.'
         },
         'translation_rejected_by_author': {
             'zh': f'您的翻译《{kwargs.get("work_title", "")}》被作者 {kwargs.get("author_name", "")} 拒绝了。',
+            'zh-TW': f'您的翻譯《{kwargs.get("work_title", "")}》被作者 {kwargs.get("author_name", "")} 拒絕了。',
             'ja': f'あなたの翻訳《{kwargs.get("work_title", "")}》が作者 {kwargs.get("author_name", "")} によって拒否されました。',
             'en': f'Your translation "{kwargs.get("work_title", "")}" was rejected by the author {kwargs.get("author_name", "")}.',
             'ru': f'Ваш перевод "{kwargs.get("work_title", "")}" был отклонен автором {kwargs.get("author_name", "")}.',
             'ko': f'귀하의 번역 "{kwargs.get("work_title", "")}"이 저자 {kwargs.get("author_name", "")}에 의해 거부되었습니다.',
-            'fr': f'Votre traduction "{kwargs.get("work_title", "")}" a été rejetée par l\'auteur {kwargs.get("author_name", "")}.'
+            'fr': f'Votre traduction "{kwargs.get("work_title", "")}" a été rejetée par l\'auteur {kwargs.get("author_name", "")}.',
+            'es': f'Tu traducción "{kwargs.get("work_title", "")}" fue rechazada por el autor {kwargs.get("author_name", "")}.'
         },
         # 翻译者请求相关系统消息
         'translator_request_sent': {
             'zh': f'您已成功向作者发送要求，作品《{kwargs.get("work_title", "")}》。等待作者回复。',
+            'zh-TW': f'您已成功向作者發送要求，作品《{kwargs.get("work_title", "")}》。等待作者回覆。',
             'ja': f'作者への要求を正常に送信しました。作品《{kwargs.get("work_title", "")}》。作者の返信をお待ちください。',
             'en': f'You have successfully sent a request to the author for the work "{kwargs.get("work_title", "")}". Waiting for author response.',
             'ru': f'Вы успешно отправили запрос автору для работы "{kwargs.get("work_title", "")}". Ожидание ответа автора.',
             'ko': f'작품 "{kwargs.get("work_title", "")}"에 대해 작가에게 요청을 성공적으로 보냈습니다. 작가의 답변을 기다리고 있습니다.',
-            'fr': f'Vous avez envoyé avec succès une demande à l\'auteur pour l\'œuvre "{kwargs.get("work_title", "")}". En attente de la réponse de l\'auteur.'
+            'fr': f'Vous avez envoyé avec succès une demande à l\'auteur pour l\'œuvre "{kwargs.get("work_title", "")}". En attente de la réponse de l\'auteur.',
+            'es': f'Has enviado exitosamente una solicitud al autor para la obra "{kwargs.get("work_title", "")}". Esperando la respuesta del autor.'
         },
         'translator_request_received': {
             'zh': f'翻译者 {kwargs.get("translator_name", "")} 对您的作品《{kwargs.get("work_title", "")}》提出了要求，请前往消息中心查看并回复。',
+            'zh-TW': f'翻譯者 {kwargs.get("translator_name", "")} 對您的作品《{kwargs.get("work_title", "")}》提出了要求，請前往消息中心查看並回覆。',
             'ja': f'翻訳者 {kwargs.get("translator_name", "")} があなたの作品《{kwargs.get("work_title", "")}》に要求を提出しました。メッセージセンターで確認して返信してください。',
             'en': f'Translator {kwargs.get("translator_name", "")} has made a request for your work "{kwargs.get("work_title", "")}". Please go to the message center to view and respond.',
             'ru': f'Переводчик {kwargs.get("translator_name", "")} предъявил требования к вашей работе "{kwargs.get("work_title", "")}". Пожалуйста, перейдите в центр сообщений для просмотра и ответа.',
             'ko': f'번역가 {kwargs.get("translator_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 대해 요청을 제출했습니다. 메시지 센터에서 확인하고 답변해 주세요.',
-            'fr': f'Le traducteur {kwargs.get("translator_name", "")} a fait une demande pour votre œuvre "{kwargs.get("work_title", "")}". Veuillez aller au centre de messages pour voir et répondre.'
+            'fr': f'Le traducteur {kwargs.get("translator_name", "")} a fait une demande pour votre œuvre "{kwargs.get("work_title", "")}". Veuillez aller au centre de messages pour voir et répondre.',
+            'es': f'El traductor {kwargs.get("translator_name", "")} ha hecho una solicitud para tu obra "{kwargs.get("work_title", "")}". Por favor ve al centro de mensajes para ver y responder.'
         },
 
         'translator_request_approved': {
             'zh': f'作者 {kwargs.get("author_name", "")} 已同意您对作品《{kwargs.get("work_title", "")}》的要求。',
+            'zh-TW': f'作者 {kwargs.get("author_name", "")} 已同意您對作品《{kwargs.get("work_title", "")}》的要求。',
             'ja': f'作者 {kwargs.get("author_name", "")} があなたの作品《{kwargs.get("work_title", "")}》への要求を承認しました。',
             'en': f'Author {kwargs.get("author_name", "")} has approved your request for the work "{kwargs.get("work_title", "")}".',
             'ru': f'Автор {kwargs.get("author_name", "")} одобрил ваш запрос к работе "{kwargs.get("work_title", "")}".',
             'ko': f'작가 {kwargs.get("author_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 대한 요청을 승인했습니다.',
-            'fr': f'L\'auteur {kwargs.get("author_name", "")} a approuvé votre demande pour l\'œuvre "{kwargs.get("work_title", "")}".'
+            'fr': f'L\'auteur {kwargs.get("author_name", "")} a approuvé votre demande pour l\'œuvre "{kwargs.get("work_title", "")}".',
+            'es': f'El autor {kwargs.get("author_name", "")} ha aprobado tu solicitud para la obra "{kwargs.get("work_title", "")}".'
         },
         'translator_request_rejected': {
             'zh': f'作者 {kwargs.get("author_name", "")} 已拒绝您对作品《{kwargs.get("work_title", "")}》的要求。',
+            'zh-TW': f'作者 {kwargs.get("author_name", "")} 已拒絕您對作品《{kwargs.get("work_title", "")}》的要求。',
             'ja': f'作者 {kwargs.get("author_name", "")} があなたの作品《{kwargs.get("work_title", "")}》への要求を拒否しました。',
             'en': f'Author {kwargs.get("author_name", "")} has rejected your request for the work "{kwargs.get("work_title", "")}".',
             'ru': f'Автор {kwargs.get("author_name", "")} отклонил ваш запрос к работе "{kwargs.get("work_title", "")}".',
             'ko': f'작가 {kwargs.get("author_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 대한 요청을 거부했습니다.',
-            'fr': f'L\'auteur {kwargs.get("author_name", "")} a rejeté votre demande pour l\'œuvre "{kwargs.get("work_title", "")}".'
+            'fr': f'L\'auteur {kwargs.get("author_name", "")} a rejeté votre demande pour l\'œuvre "{kwargs.get("work_title", "")}".',
+            'es': f'El autor {kwargs.get("author_name", "")} ha rechazado tu solicitud para la obra "{kwargs.get("work_title", "")}".'
         },
         'translation_rejected_to_translator': {
             'zh': f'您的翻译《{kwargs.get("work_title", "")}》被作者拒绝了。',
+            'zh-TW': f'您的翻譯《{kwargs.get("work_title", "")}》被作者拒絕了。',
             'ja': f'あなたの翻訳《{kwargs.get("work_title", "")}》が作者によって拒否されました。',
             'en': f'Your translation "{kwargs.get("work_title", "")}" was rejected by the author.',
             'ru': f'Ваш перевод "{kwargs.get("work_title", "")}" был отклонен автором.',
             'ko': f'귀하의 번역 "{kwargs.get("work_title", "")}"이 저자에 의해 거부되었습니다.',
-            'fr': f'Votre traduction "{kwargs.get("work_title", "")}" a été rejetée par l\'auteur.'
+            'fr': f'Votre traduction "{kwargs.get("work_title", "")}" a été rejetée par l\'auteur.',
+            'es': f'Tu traducción "{kwargs.get("work_title", "")}" fue rechazada por el autor.'
         },
         'translation_rejected_to_author': {
+            'zh': f'您已拒绝用户 {kwargs.get("translator_name", "")} 对作品《{kwargs.get("work_title", "")}》的翻译。',
+            'zh-TW': f'您已拒絕用戶 {kwargs.get("translator_name", "")} 對作品《{kwargs.get("work_title", "")}》的翻譯。',
+            'ja': f'ユーザー {kwargs.get("translator_name", "")} の作品《{kwargs.get("work_title", "")}》の翻訳を拒否しました。',
             'en': f'You have rejected the translation of "{kwargs.get("work_title", "")}" by user {kwargs.get("translator_name", "")}.',
             'ru': f'Вы отклонили перевод работы "{kwargs.get("work_title", "")}" пользователя {kwargs.get("translator_name", "")}.',
             'ko': f'사용자 {kwargs.get("translator_name", "")}의 "{kwargs.get("work_title", "")}" 번역을 거부했습니다.',
             'fr': f'Vous avez rejeté la traduction de "{kwargs.get("work_title", "")}" par l\'utilisateur {kwargs.get("translator_name", "")}.',
-            'zh': f'您已拒绝用户 {kwargs.get("translator_name", "")} 对作品《{kwargs.get("work_title", "")}》的翻译。',
-            'ja': f'ユーザー {kwargs.get("translator_name", "")} の作品《{kwargs.get("work_title", "")}》の翻訳を拒否しました。'
+            'es': f'Has rechazado la traducción de "{kwargs.get("work_title", "")}" por el usuario {kwargs.get("translator_name", "")}.'
         },
                         'admin_request_approved': {
                             'zh': '恭喜！您的管理员申请已获得批准，现在您拥有管理员权限。',
-                            'ja': 'おめでとうございます！管理者申請が承認されました。現在管理者権限をお持ちです。'
+                            'zh-TW': '恭喜！您的管理員申請已獲得批准，現在您擁有管理員權限。',
+                            'ja': 'おめでとうございます！管理者申請が承認されました。現在管理者権限をお持ちです。',
+                            'en': 'Congratulations! Your admin application has been approved. You now have admin privileges.',
+                            'ru': 'Поздравляем! Ваша заявка на администратора была одобрена. Теперь у вас есть права администратора.',
+                            'ko': '축하합니다! 관리자 신청이 승인되었습니다. 이제 관리자 권한을 가지고 있습니다.',
+                            'fr': 'Félicitations! Votre demande d\'administrateur a été approuvée. Vous avez maintenant les privilèges d\'administrateur.',
+                            'es': '¡Felicitaciones! Tu solicitud de administrador ha sido aprobada. Ahora tienes privilegios de administrador.'
                         },
                         'admin_request_rejected': {
                             'zh': '很抱歉，您的管理员申请被拒绝了。',
-                            'ja': '申し訳ございませんが、管理者申請が拒否されました。'
+                            'zh-TW': '很抱歉，您的管理員申請被拒絕了。',
+                            'ja': '申し訳ございませんが、管理者申請が拒否されました。',
+                            'en': 'Sorry, your admin application was rejected.',
+                            'ru': 'К сожалению, ваша заявка на администратора была отклонена.',
+                            'ko': '죄송합니다. 관리자 신청이 거부되었습니다.',
+                            'fr': 'Désolé, votre demande d\'administrateur a été rejetée.',
+                            'es': 'Lo siento, tu solicitud de administrador fue rechazada.'
                         },
                         'admin_work_deleted': {
                             'zh': f'管理员 {kwargs.get("admin_name", "")} 删除了您的作品《{kwargs.get("work_title", "")}》。',
-                            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》を削除しました。'
+                            'zh-TW': f'管理員 {kwargs.get("admin_name", "")} 刪除了您的作品《{kwargs.get("work_title", "")}》。',
+                            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》を削除しました。',
+                            'en': f'Admin {kwargs.get("admin_name", "")} deleted your work "{kwargs.get("work_title", "")}".',
+                            'ru': f'Администратор {kwargs.get("admin_name", "")} удалил вашу работу "{kwargs.get("work_title", "")}".',
+                            'ko': f'관리자 {kwargs.get("admin_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"을 삭제했습니다.',
+                            'fr': f'L\'administrateur {kwargs.get("admin_name", "")} a supprimé votre œuvre "{kwargs.get("work_title", "")}".',
+                            'es': f'El administrador {kwargs.get("admin_name", "")} eliminó tu obra "{kwargs.get("work_title", "")}".'
                         },
                         'admin_work_edited': {
                             'zh': f'管理员 {kwargs.get("admin_name", "")} 编辑了您的作品《{kwargs.get("work_title", "")}》。',
-                            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》を編集しました。'
+                            'zh-TW': f'管理員 {kwargs.get("admin_name", "")} 編輯了您的作品《{kwargs.get("work_title", "")}》。',
+                            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》を編集しました。',
+                            'en': f'Admin {kwargs.get("admin_name", "")} edited your work "{kwargs.get("work_title", "")}".',
+                            'ru': f'Администратор {kwargs.get("admin_name", "")} отредактировал вашу работу "{kwargs.get("work_title", "")}".',
+                            'ko': f'관리자 {kwargs.get("admin_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"을 편집했습니다.',
+                            'fr': f'L\'administrateur {kwargs.get("admin_name", "")} a modifié votre œuvre "{kwargs.get("work_title", "")}".',
+                            'es': f'El administrador {kwargs.get("admin_name", "")} editó tu obra "{kwargs.get("work_title", "")}".'
                         },
                                 'admin_comment_deleted': {
             'zh': f'管理员 {kwargs.get("admin_name", "")} 删除了您在作品《{kwargs.get("work_title", "")}》中的评论。',
-            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》のコメントを削除しました。'
+            'zh-TW': f'管理員 {kwargs.get("admin_name", "")} 刪除了您在作品《{kwargs.get("work_title", "")}》中的評論。',
+            'ja': f'管理者 {kwargs.get("admin_name", "")} があなたの作品《{kwargs.get("work_title", "")}》のコメントを削除しました。',
+            'en': f'Admin {kwargs.get("admin_name", "")} deleted your comment in work "{kwargs.get("work_title", "")}".',
+            'ru': f'Администратор {kwargs.get("admin_name", "")} удалил ваш комментарий в работе "{kwargs.get("work_title", "")}".',
+            'ko': f'관리자 {kwargs.get("admin_name", "")}가 작품 "{kwargs.get("work_title", "")}"에서 귀하의 댓글을 삭제했습니다.',
+            'fr': f'L\'administrateur {kwargs.get("admin_name", "")} a supprimé votre commentaire dans l\'œuvre "{kwargs.get("work_title", "")}".',
+            'es': f'El administrador {kwargs.get("admin_name", "")} eliminó tu comentario en la obra "{kwargs.get("work_title", "")}".'
         },
         'correction_submitted_to_creator': {
             'zh': f'校正者 {kwargs.get("reviewer_name", "")} 为您的作品《{kwargs.get("work_title", "")}》提交了校正。',
+            'zh-TW': f'校正者 {kwargs.get("reviewer_name", "")} 為您的作品《{kwargs.get("work_title", "")}》提交了校正。',
             'ja': f'校正者 {kwargs.get("reviewer_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の校正を提出しました。',
             'en': f'Reviewer {kwargs.get("reviewer_name", "")} has submitted a correction for your work "{kwargs.get("work_title", "")}".',
             'ru': f'Рецензент {kwargs.get("reviewer_name", "")} отправил исправление для вашей работы "{kwargs.get("work_title", "")}".',
             'ko': f'교정자 {kwargs.get("reviewer_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 대한 교정을 제출했습니다.',
-            'fr': f'Le réviseur {kwargs.get("reviewer_name", "")} a soumis une correction pour votre œuvre "{kwargs.get("work_title", "")}".'
+            'fr': f'Le réviseur {kwargs.get("reviewer_name", "")} a soumis une correction pour votre œuvre "{kwargs.get("work_title", "")}".',
+            'es': f'El revisor {kwargs.get("reviewer_name", "")} ha enviado una corrección para tu obra "{kwargs.get("work_title", "")}".'
         },
         'work_comment_received': {
             'zh': f'用户 {kwargs.get("commenter_name", "")} 对您的作品《{kwargs.get("work_title", "")}》发表了评论："{kwargs.get("comment_content", "")}"',
+            'zh-TW': f'用戶 {kwargs.get("commenter_name", "")} 對您的作品《{kwargs.get("work_title", "")}》發表了評論：「{kwargs.get("comment_content", "")}」',
             'ja': f'ユーザー {kwargs.get("commenter_name", "")} があなたの作品《{kwargs.get("work_title", "")}》にコメントを投稿しました：「{kwargs.get("comment_content", "")}」',
             'en': f'User {kwargs.get("commenter_name", "")} commented on your work "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ru': f'Пользователь {kwargs.get("commenter_name", "")} прокомментировал вашу работу "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ko': f'사용자 {kwargs.get("commenter_name", "")}가 귀하의 작품 "{kwargs.get("work_title", "")}"에 댓글을 달았습니다: "{kwargs.get("comment_content", "")}"',
-            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre œuvre "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
+            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre œuvre "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
+            'es': f'El usuario {kwargs.get("commenter_name", "")} comentó en tu obra "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
         },
         'translation_comment_received': {
             'zh': f'用户 {kwargs.get("commenter_name", "")} 对您在作品《{kwargs.get("work_title", "")}》中的翻译发表了评论："{kwargs.get("comment_content", "")}"',
+            'zh-TW': f'用戶 {kwargs.get("commenter_name", "")} 對您在作品《{kwargs.get("work_title", "")}》中的翻譯發表了評論：「{kwargs.get("comment_content", "")}」',
             'ja': f'ユーザー {kwargs.get("commenter_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の翻訳にコメントを投稿しました：「{kwargs.get("comment_content", "")}」',
             'en': f'User {kwargs.get("commenter_name", "")} commented on your translation of "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ru': f'Пользователь {kwargs.get("commenter_name", "")} прокомментировал ваш перевод работы "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ko': f'사용자 {kwargs.get("commenter_name", "")}가 귀하의 "{kwargs.get("work_title", "")}" 번역에 댓글을 달았습니다: "{kwargs.get("comment_content", "")}"',
-            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre traduction de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
+            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre traduction de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
+            'es': f'El usuario {kwargs.get("commenter_name", "")} comentó en tu traducción de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
         },
         'correction_comment_received': {
             'zh': f'用户 {kwargs.get("commenter_name", "")} 对您在作品《{kwargs.get("work_title", "")}》中的校正发表了评论："{kwargs.get("comment_content", "")}"',
+            'zh-TW': f'用戶 {kwargs.get("commenter_name", "")} 對您在作品《{kwargs.get("work_title", "")}》中的校正發表了評論：「{kwargs.get("comment_content", "")}」',
             'ja': f'ユーザー {kwargs.get("commenter_name", "")} があなたの作品《{kwargs.get("work_title", "")}》の校正にコメントを投稿しました：「{kwargs.get("comment_content", "")}」',
             'en': f'User {kwargs.get("commenter_name", "")} commented on your correction of "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ru': f'Пользователь {kwargs.get("commenter_name", "")} прокомментировал вашу правку работы "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
             'ko': f'사용자 {kwargs.get("commenter_name", "")}가 귀하의 "{kwargs.get("work_title", "")}" 교정에 댓글을 달았습니다: "{kwargs.get("comment_content", "")}"',
-            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre correction de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
+            'fr': f'L\'utilisateur {kwargs.get("commenter_name", "")} a commenté votre correction de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"',
+            'es': f'El usuario {kwargs.get("commenter_name", "")} comentó en tu corrección de "{kwargs.get("work_title", "")}": "{kwargs.get("comment_content", "")}"'
         },
         'correction_submitted_to_translator': {
             'zh': f'校正者 {kwargs.get("reviewer_name", "")} 为您的翻译《{kwargs.get("work_title", "")}》提交了校正。',
+            'zh-TW': f'校正者 {kwargs.get("reviewer_name", "")} 為您的翻譯《{kwargs.get("work_title", "")}》提交了校正。',
             'ja': f'校正者 {kwargs.get("reviewer_name", "")} があなたの翻訳《{kwargs.get("work_title", "")}》の校正を提出しました。',
             'en': f'Reviewer {kwargs.get("reviewer_name", "")} has submitted a correction for your translation "{kwargs.get("work_title", "")}".',
             'ru': f'Рецензент {kwargs.get("reviewer_name", "")} отправил исправление для вашего перевода "{kwargs.get("work_title", "")}".',
             'ko': f'교정자 {kwargs.get("reviewer_name", "")}가 귀하의 번역 "{kwargs.get("work_title", "")}"에 대한 교정을 제출했습니다.',
-            'fr': f'Le réviseur {kwargs.get("reviewer_name", "")} a soumis une correction pour votre traduction "{kwargs.get("work_title", "")}".'
+            'fr': f'Le réviseur {kwargs.get("reviewer_name", "")} a soumis une correction pour votre traduction "{kwargs.get("work_title", "")}".',
+            'es': f'El revisor {kwargs.get("reviewer_name", "")} ha enviado una corrección para tu traducción "{kwargs.get("work_title", "")}".'
         }
     }
     
@@ -6109,12 +7154,12 @@ def utility_processor():
             return '中文'
         
         language_names = {
-            'zh': {'zh': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois'},
-            'ja': {'zh': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais'},
-            'en': {'zh': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais'},
-            'ru': {'zh': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe'},
-            'ko': {'zh': '韩文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen'},
-            'fr': {'zh': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français'}
+            'zh': {'zh': '中文', 'zh-TW': '中文', 'ja': '中国語', 'en': 'Chinese', 'ru': 'Китайский', 'ko': '중국어', 'fr': 'Chinois', 'es': 'Chino'},
+            'ja': {'zh': '日文', 'zh-TW': '日文', 'ja': '日本語', 'en': 'Japanese', 'ru': 'Японский', 'ko': '일본어', 'fr': 'Japonais', 'es': 'Japonés'},
+            'en': {'zh': '英文', 'zh-TW': '英文', 'ja': '英語', 'en': 'English', 'ru': 'Английский', 'ko': '영어', 'fr': 'Anglais', 'es': 'Inglés'},
+            'ru': {'zh': '俄文', 'zh-TW': '俄文', 'ja': 'ロシア語', 'en': 'Russian', 'ru': 'Русский', 'ko': '러시아어', 'fr': 'Russe', 'es': 'Ruso'},
+            'ko': {'zh': '韩文', 'zh-TW': '韓文', 'ja': '韓国語', 'en': 'Korean', 'ru': 'Корейский', 'ko': '한국어', 'fr': 'Coréen', 'es': 'Coreano'},
+            'fr': {'zh': '法文', 'zh-TW': '法文', 'ja': 'フランス語', 'en': 'French', 'ru': 'Французский', 'ko': '프랑스어', 'fr': 'Français', 'es': 'Francés'}
         }
         
         # 获取当前界面语言
@@ -7608,7 +8653,7 @@ def api_search_users():
 
 @app.route('/setlang/<lang>')
 def set_language(lang):
-    if lang in ['zh', 'ja', 'en', 'ru', 'ko', 'fr']:
+    if lang in ['zh', 'zh-TW', 'ja', 'en', 'ru', 'ko', 'fr', 'es']:
         session['lang'] = lang
         # 如果用户已登录，同时更新用户的偏好语言设置
         if is_logged_in():

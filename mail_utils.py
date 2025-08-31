@@ -16,11 +16,13 @@ def get_from_name_by_lang(lang: str = 'zh') -> str:
     """根据语言获取发件者名称"""
     from_names = {
         'zh': '基于兴趣的翻译平台',
+        'zh-TW': '基於興趣的翻譯平台',
         'ja': '興味ベースの翻訳プラットフォーム',
         'en': 'Interest-Based Translation Platform',
         'ru': 'Платформа перевода на основе интересов',
         'ko': '관심 기반 번역 플랫폼',
-        'fr': 'Plateforme de traduction basée sur les intérêts'
+        'fr': 'Plateforme de traduction basée sur les intérêts',
+        'es': 'Plataforma de Traducción Basada en Intereses'
     }
     return from_names.get(lang, from_names['zh'])
 
@@ -32,6 +34,8 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
     if message_type == 'friend':
         if user_lang == 'zh':
             title = '好友通知'
+        elif user_lang == 'zh-TW':
+            title = '好友通知'
         elif user_lang == 'ja':
             title = '友達通知'
         elif user_lang == 'en':
@@ -42,12 +46,16 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
             title = '친구 알림'
         elif user_lang == 'fr':
             title = 'Notification d\'ami'
+        elif user_lang == 'es':
+            title = 'Notificación de Amigo'
         else:
             title = '好友通知'
         icon = '👥'
     elif message_type == 'translation':
         if user_lang == 'zh':
             title = '翻译通知'
+        elif user_lang == 'zh-TW':
+            title = '翻譯通知'
         elif user_lang == 'ja':
             title = '翻訳通知'
         elif user_lang == 'en':
@@ -58,12 +66,16 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
             title = '번역 알림'
         elif user_lang == 'fr':
             title = 'Notification de traduction'
+        elif user_lang == 'es':
+            title = 'Notificación de Traducción'
         else:
             title = '翻译通知'
         icon = '🌐'
     elif message_type == 'system':
         if user_lang == 'zh':
             title = '系统通知'
+        elif user_lang == 'zh-TW':
+            title = '系統通知'
         elif user_lang == 'ja':
             title = 'システム通知'
         elif user_lang == 'en':
@@ -74,11 +86,15 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
             title = '시스템 알림'
         elif user_lang == 'fr':
             title = 'Notification système'
+        elif user_lang == 'es':
+            title = 'Notificación del Sistema'
         else:
             title = '系统通知'
         icon = '🔔'
     else:
         if user_lang == 'zh':
+            title = '平台通知'
+        elif user_lang == 'zh-TW':
             title = '平台通知'
         elif user_lang == 'ja':
             title = 'プラットフォーム通知'
@@ -90,6 +106,8 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
             title = '플랫폼 알림'
         elif user_lang == 'fr':
             title = 'Notification de plateforme'
+        elif user_lang == 'es':
+            title = 'Notificación de Plataforma'
         else:
             title = '平台通知'
         icon = '📧'
@@ -103,6 +121,10 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
         time_label = '发送时间'
         sender_label = '发件者'
         disclaimer = '此邮件由系统自动发送，请勿直接回复。'
+    elif user_lang == 'zh-TW':
+        time_label = '發送時間'
+        sender_label = '發件者'
+        disclaimer = '此郵件由系統自動發送，請勿直接回覆。'
     elif user_lang == 'ja':
         time_label = '送信時間'
         sender_label = '送信者'
@@ -123,6 +145,10 @@ def create_simple_text_email(content: str, message_type: str = 'general', user_l
         time_label = 'Heure d\'envoi'
         sender_label = 'Expéditeur'
         disclaimer = 'Cet e-mail est automatiquement envoyé par le système. Veuillez ne pas répondre directement.'
+    elif user_lang == 'es':
+        time_label = 'Hora de Envío'
+        sender_label = 'Remitente'
+        disclaimer = 'Este correo electrónico es enviado automáticamente por el sistema. Por favor no responda directamente.'
     else:
         time_label = '发送时间'
         sender_label = '发件者'
