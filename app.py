@@ -19,10 +19,29 @@ except ImportError:
     pass
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forum.db'
+# --- DB config: use DATABASE_URL (Supabase/Railway). Default to SQLite for local dev.
+db_url = os.getenv('DATABASE_URL', 'sqlite:///forum.db')
+if db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+if 'postgresql+psycopg2://' in db_url and 'sslmode=' not in db_url:
+    sep = '&' if '?' in db_url else '?'
+    db_url = f'{db_url}{sep}sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'my-very-strong-and-unique-secret-key-2024')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 db = SQLAlchemy(app)
+
+# Helper: SQL for boolean defaults depending on backend
+def bool_default(val: bool) -> str:
+    try:
+        backend = db.engine.url.get_backend_name()
+    except Exception:
+        backend = 'sqlite'
+    if backend.startswith('postgres'):
+        return 'TRUE' if val else 'FALSE'
+    # SQLite accepts 1/0 for booleans
+    return '1' if val else '0'
 
 # 确保上传文件夹存在
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -35,13 +54,13 @@ try:
         user_cols = [c['name'] for c in inspector.get_columns('user')]
         if 'email_notifications_enabled' not in user_cols:
             with db.engine.connect() as conn:
-                conn.execute(db.text('ALTER TABLE user ADD COLUMN email_notifications_enabled BOOLEAN DEFAULT 1'))
+                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN email_notifications_enabled BOOLEAN DEFAULT {bool_default(True)}"))
         if 'is_reviewer' not in user_cols:
             with db.engine.connect() as conn:
-                conn.execute(db.text('ALTER TABLE user ADD COLUMN is_reviewer BOOLEAN DEFAULT 0'))
+                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_reviewer BOOLEAN DEFAULT {bool_default(False)}"))
         if 'is_creator' not in user_cols:
             with db.engine.connect() as conn:
-                conn.execute(db.text('ALTER TABLE user ADD COLUMN is_creator BOOLEAN DEFAULT 0'))
+                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_creator BOOLEAN DEFAULT {bool_default(False)}"))
         if 'experience' not in user_cols:
             with db.engine.connect() as conn:
                 conn.execute(db.text('ALTER TABLE user ADD COLUMN experience INTEGER DEFAULT 0'))
