@@ -48,27 +48,29 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
 # 启动时自动补充缺失列（SQLite 简易处理）
-try:
-    with app.app_context():
-        inspector = db.inspect(db.engine)
-        user_cols = [c['name'] for c in inspector.get_columns('user')]
-        if 'email_notifications_enabled' not in user_cols:
-            with db.engine.connect() as conn:
-                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN email_notifications_enabled BOOLEAN DEFAULT {bool_default(True)}"))
-        if 'is_reviewer' not in user_cols:
-            with db.engine.connect() as conn:
-                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_reviewer BOOLEAN DEFAULT {bool_default(False)}"))
-        if 'is_creator' not in user_cols:
-            with db.engine.connect() as conn:
-                conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_creator BOOLEAN DEFAULT {bool_default(False)}"))
-        if 'experience' not in user_cols:
-            with db.engine.connect() as conn:
-                conn.execute(db.text('ALTER TABLE user ADD COLUMN experience INTEGER DEFAULT 0'))
-        if 'preferred_language' not in user_cols:
-            with db.engine.connect() as conn:
-                conn.execute(db.text('ALTER TABLE user ADD COLUMN preferred_language VARCHAR(10) DEFAULT \'zh\''))
-except Exception:
-    pass
+def init_database():
+    try:
+        with app.app_context():
+            inspector = db.inspect(db.engine)
+            user_cols = [c['name'] for c in inspector.get_columns('user')]
+            if 'email_notifications_enabled' not in user_cols:
+                with db.engine.connect() as conn:
+                    conn.execute(db.text(f"ALTER TABLE user ADD COLUMN email_notifications_enabled BOOLEAN DEFAULT {bool_default(True)}"))
+            if 'is_reviewer' not in user_cols:
+                with db.engine.connect() as conn:
+                    conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_reviewer BOOLEAN DEFAULT {bool_default(False)}"))
+            if 'is_creator' not in user_cols:
+                with db.engine.connect() as conn:
+                    conn.execute(db.text(f"ALTER TABLE user ADD COLUMN is_creator BOOLEAN DEFAULT {bool_default(False)}"))
+            if 'experience' not in user_cols:
+                with db.engine.connect() as conn:
+                    conn.execute(db.text('ALTER TABLE user ADD COLUMN experience INTEGER DEFAULT 0'))
+            if 'preferred_language' not in user_cols:
+                with db.engine.connect() as conn:
+                    conn.execute(db.text('ALTER TABLE user ADD COLUMN preferred_language VARCHAR(10) DEFAULT \'zh\''))
+    except Exception as e:
+        print(f"数据库初始化警告: {e}")
+        pass
 
 
 
@@ -160,11 +162,15 @@ def ensure_session_language():
 def get_message(key, lang=None, **kwargs):
     if lang is None:
         # 优先使用用户的偏好语言，如果没有则使用会话语言
-        if is_logged_in():
-            user = get_current_user()
-            lang = getattr(user, 'preferred_language', 'zh')
-        else:
-            lang = session.get('lang', 'zh')
+        try:
+            if is_logged_in():
+                user = get_current_user()
+                lang = getattr(user, 'preferred_language', 'zh')
+            else:
+                lang = session.get('lang', 'zh')
+        except RuntimeError:
+            # 在应用上下文之外时，使用默认语言
+            lang = 'zh'
     
     messages = {
         'username_exists': {
@@ -6296,7 +6302,7 @@ def get_message(key, lang=None, **kwargs):
             'fr': 'Soumettre la demande',
             'es': 'Enviar solicitud'
         },
-        # apply_reviewer.html 需要的消息键
+        # test_reviewer.html 需要的消息键
         'reviewer_application': {
             'zh': '校正者申请',
             'zh-TW': '校正者申請',
@@ -6438,7 +6444,7 @@ def get_message(key, lang=None, **kwargs):
             'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir traducteur.',
             'es': 'El contenido de la prueba aún no está listo. Haz clic en el botón de confirmación de abajo para convertirte en traductor.'
         },
-        # apply_reviewer.html 需要的消息键
+        # test_reviewer.html 需要的消息键
         'reviewer_test': {
             'zh': '校正者测试',
             'zh-TW': '校正者測試',
@@ -8997,10 +9003,10 @@ def apply_translator():
         db.session.commit()
         flash(get_message('become_translator'), 'success')
         return redirect(url_for('profile'))
-    return render_template('apply_translator.html')
+    return render_template('test_translator.html')
 
-@app.route('/apply/reviewer', methods=['GET', 'POST'])
-def apply_reviewer():
+@app.route('/test/reviewer', methods=['GET', 'POST'])
+def test_reviewer():
     if not is_logged_in():
         return redirect(url_for('login'))
     user = get_current_user()
@@ -9015,7 +9021,7 @@ def apply_reviewer():
         db.session.commit()
         flash(get_message('become_reviewer'), 'success')
         return redirect(url_for('profile'))
-    return render_template('apply_reviewer.html')
+    return render_template('test_reviewer.html')
 
 @app.route('/apply/admin', methods=['GET', 'POST'])
 def apply_admin():
@@ -9324,6 +9330,15 @@ def delete_work(work_id):
         # 删除关联的收藏
         Favorite.query.filter_by(work_id=work_id).delete()
         
+        # 删除关联的翻译者点赞
+        TranslatorLike.query.filter_by(work_id=work_id).delete()
+        
+        # 删除关联的校正者点赞
+        ReviewerLike.query.filter_by(work_id=work_id).delete()
+        
+        # 删除关联的消息（包括点赞通知等）
+        Message.query.filter_by(work_id=work_id).delete()
+        
         # 最后删除作品
         db.session.delete(work)
         db.session.commit()
@@ -9341,6 +9356,7 @@ def delete_work(work_id):
                 receiver_id=work_creator_id,
                 content=author_message_content,
                 type='system'
+                # 注意：不设置work_id，因为作品已经被删除
             )
             db.session.add(author_message)
             
@@ -9357,6 +9373,7 @@ def delete_work(work_id):
                         receiver_id=translator_id,
                         content=translator_message_content,
                         type='system'
+                        # 注意：不设置work_id，因为作品已经被删除
                     )
                     db.session.add(translator_message)
             
@@ -11170,15 +11187,22 @@ def handle_exception(e):
     return render_template('error.html', error=str(e)), 500
 
 if __name__ == '__main__':
-    with app.app_context():
-        # 检查数据库文件是否存在
-        db_path = 'instance/forum.db'
-        if not os.path.exists(db_path):
-            print("数据库文件不存在，正在初始化...")
-            db.create_all()
-            print("数据库初始化完成")
-        else:
-            print("数据库文件已存在，跳过初始化")
+    try:
+        with app.app_context():
+            # 检查数据库文件是否存在
+            db_path = 'instance/forum.db'
+            if not os.path.exists(db_path):
+                print("数据库文件不存在，正在初始化...")
+                db.create_all()
+                print("数据库初始化完成")
+            else:
+                print("数据库文件已存在，跳过初始化")
+            
+            # 初始化数据库
+            init_database()
+    except Exception as e:
+        print(f"启动时数据库初始化失败: {e}")
+        print("继续启动应用...")
     
     # 获取端口，Render会提供PORT环境变量
     port = int(os.environ.get('PORT', 5000))

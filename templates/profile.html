@@ -308,7 +308,7 @@
                     </a>
                     {% endif %}
                     {% if not user.is_reviewer and user.is_translator %}
-                    <a href="{{ url_for('apply_reviewer') }}" class="btn btn-outline-info">
+                    <a href="{{ url_for('test_reviewer') }}" class="btn btn-outline-info">
                         <i class="fas fa-check-circle me-2"></i>{{ get_message('become_reviewer') }}
                     </a>
                     {% endif %}

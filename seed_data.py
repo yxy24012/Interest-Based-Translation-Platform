@@ -8,7 +8,7 @@ import shutil
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db, User, Work, Translation, Comment, Like, Favorite, Correction
+from app import app, db, User, Work, Translation, Comment, Like, Favorite, Correction
 
 
 def _generate_localized_username_and_bio(base_name: str, preferred_language: str):
@@ -438,5 +438,16 @@ def create_default_admin():
         else:
             print(f"admin用户已存在且设置正确: {admin_user.username} ({admin_user.email})")
         return admin_user
+
+
+def main():
+    """主函数：创建数据库种子数据"""
+    with app.app_context():
+        print("开始创建数据库种子数据...")
+        seed_database()
+        print("数据库种子数据创建完成！")
+
+if __name__ == '__main__':
+    main()
 
 

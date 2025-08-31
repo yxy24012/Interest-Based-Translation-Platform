@@ -1,25 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}{{ get_message('translator_test') if get_message('translator_test') else '翻译者测试' }} - 興味に基づいた翻訳プラットフォーム{% endblock %}
+{% block title %}{{ get_message('reviewer_test') if get_message('reviewer_test') else '校正者测试' }} - 興味に基づいた翻訳プラットフォーム{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="card">
             <div class="card-header text-center">
-                <h3 class="mb-0"><i class="fas fa-language me-2"></i>{{ get_message('translator_test') if get_message('translator_test') else '翻译者测试' }}</h3>
+                <h3 class="mb-0"><i class="fas fa-check-circle me-2"></i>{{ get_message('reviewer_test') if get_message('reviewer_test') else '校正者测试' }}</h3>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
-                    {{ get_message('test_not_ready') if get_message('test_not_ready') else '目前测验内容尚未准备，点击下方确认按钮即可成为翻译者。' }}
+                    {{ get_message('reviewer_test_not_ready') if get_message('reviewer_test_not_ready') else '目前测验内容尚未准备，点击下方确认按钮即可成为校正者。' }}
                 </div>
                 
                 <form method="POST">
-
-                    
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="btn btn-info btn-lg">
                             <i class="fas fa-check me-2"></i>{{ get_message('confirm') if get_message('confirm') else '确认' }}
                         </button>
                         <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">
@@ -31,4 +29,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
