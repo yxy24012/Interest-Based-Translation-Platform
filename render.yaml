@@ -9,3 +9,5 @@ services:
         value: 3.9.16
       - key: DEBUG
         value: false
+      - key: INIT_DB
+        value: false

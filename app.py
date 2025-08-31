@@ -11152,8 +11152,14 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
-        # create_default_admin() 已移至seed_data.py中
+        # 检查数据库文件是否存在
+        db_path = 'instance/forum.db'
+        if not os.path.exists(db_path):
+            print("数据库文件不存在，正在初始化...")
+            db.create_all()
+            print("数据库初始化完成")
+        else:
+            print("数据库文件已存在，跳过初始化")
     
     # 获取端口，Render会提供PORT环境变量
     port = int(os.environ.get('PORT', 5000))
