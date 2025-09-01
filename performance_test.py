@@ -1,180 +1,110 @@
 # -*- coding: utf-8 -*-
 """
 性能测试脚本
-测试数据库优化前后的响应速度
+用于评估Vercel环境下的应用性能
 """
 
 import time
 import requests
-from app import app, db
-from sqlalchemy import text
+import statistics
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-def test_database_connection():
-    """测试数据库连接速度"""
-    print("🔍 测试数据库连接速度...")
+def test_endpoint_performance(url, endpoint, num_requests=10):
+    """测试单个端点的性能"""
+    times = []
+    errors = 0
     
-    with app.app_context():
+    print(f"测试端点: {endpoint}")
+    
+    for i in range(num_requests):
         try:
             start_time = time.time()
-            with db.engine.connect() as conn:
-                result = conn.execute(text("SELECT 1"))
-                result.fetchone()
-            connection_time = time.time() - start_time
+            response = requests.get(f"{url}{endpoint}", timeout=30)
+            end_time = time.time()
             
-            print(f"✅ 数据库连接时间: {connection_time:.4f}秒")
-            return connection_time
-            
+            if response.status_code == 200:
+                times.append(end_time - start_time)
+                print(f"  请求 {i+1}: {times[-1]:.3f}秒")
+            else:
+                errors += 1
+                print(f"  请求 {i+1}: 错误状态码 {response.status_code}")
+                
         except Exception as e:
-            print(f"❌ 数据库连接失败: {e}")
-            return None
-
-def test_simple_query():
-    """测试简单查询速度"""
-    print("🔍 测试简单查询速度...")
+            errors += 1
+            print(f"  请求 {i+1}: 错误 - {e}")
     
-    with app.app_context():
-        try:
-            start_time = time.time()
-            with db.engine.connect() as conn:
-                result = conn.execute(text("SELECT COUNT(*) FROM work"))
-                count = result.fetchone()[0]
-            query_time = time.time() - start_time
-            
-            print(f"✅ 作品数量查询时间: {query_time:.4f}秒 (结果: {count}个作品)")
-            return query_time
-            
-        except Exception as e:
-            print(f"❌ 查询失败: {e}")
-            return None
+    if times:
+        avg_time = statistics.mean(times)
+        min_time = min(times)
+        max_time = max(times)
+        print(f"  ✅ 平均响应时间: {avg_time:.3f}秒")
+        print(f"  📊 最快: {min_time:.3f}秒, 最慢: {max_time:.3f}秒")
+        print(f"  ❌ 错误数: {errors}")
+        return {
+            'endpoint': endpoint,
+            'avg_time': avg_time,
+            'min_time': min_time,
+            'max_time': max_time,
+            'errors': errors,
+            'success_rate': (num_requests - errors) / num_requests * 100
+        }
+    else:
+        print(f"  ❌ 所有请求都失败了")
+        return None
 
-def test_complex_query():
-    """测试复杂查询速度（模拟首页热门作品查询）"""
-    print("🔍 测试复杂查询速度（热门作品）...")
+def test_concurrent_performance(url, endpoint, num_concurrent=5, requests_per_thread=2):
+    """测试并发性能"""
+    print(f"\n测试并发性能: {endpoint} ({num_concurrent} 并发, 每个线程 {requests_per_thread} 请求)")
     
-    with app.app_context():
-        try:
-            start_time = time.time()
-            with db.engine.connect() as conn:
-                result = conn.execute(text("""
-                    SELECT w.id, w.title, COUNT(l.id) as like_count
-                    FROM work w
-                    LEFT JOIN "like" l ON w.id = l.target_id AND l.target_type = 'work'
-                    GROUP BY w.id, w.title
-                    ORDER BY like_count DESC
-                    LIMIT 6
-                """))
-                works = result.fetchall()
-            query_time = time.time() - start_time
-            
-            print(f"✅ 热门作品查询时间: {query_time:.4f}秒 (结果: {len(works)}个作品)")
-            return query_time
-            
-        except Exception as e:
-            print(f"❌ 复杂查询失败: {e}")
-            return None
+    def worker():
+        return test_endpoint_performance(url, endpoint, requests_per_thread)
+    
+    start_time = time.time()
+    with ThreadPoolExecutor(max_workers=num_concurrent) as executor:
+        futures = [executor.submit(worker) for _ in range(num_concurrent)]
+        results = []
+        for future in as_completed(futures):
+            result = future.result()
+            if result:
+                results.append(result)
+    
+    end_time = time.time()
+    total_time = end_time - start_time
+    
+    if results:
+        avg_response_times = [r['avg_time'] for r in results]
+        total_avg = statistics.mean(avg_response_times)
+        print(f"  📈 并发测试完成: {total_time:.3f}秒")
+        print(f"  🎯 平均响应时间: {total_avg:.3f}秒")
+        print(f"  📊 吞吐量: {num_concurrent * requests_per_thread / total_time:.2f} 请求/秒")
 
-def test_website_response():
-    """测试网站响应速度"""
-    print("🔍 测试网站响应速度...")
-    
-    urls = [
-        "https://interest-based-translation-platform.vercel.app/",
-        "https://interest-based-translation-platform.vercel.app/works",
-        "https://interest-based-translation-platform.vercel.app/messages"
+def main():
+    """主测试函数"""
+    # 测试URL（请替换为您的实际URL）
+    test_urls = [
+        "https://interest-based-translation-platform.vercel.app",
+        "https://interest-based-translation-pla-git-3679f1-yang-xingyus-projects.vercel.app"
     ]
     
-    results = {}
+    # 测试端点
+    endpoints = [
+        "/",
+        "/works",
+        "/profile",
+        "/static/favicon.ico"
+    ]
     
-    for url in urls:
-        try:
-            start_time = time.time()
-            response = requests.get(url, timeout=30)
-            response_time = time.time() - start_time
-            
-            page_name = url.split('/')[-1] if url.split('/')[-1] else 'home'
-            results[page_name] = {
-                'time': response_time,
-                'status': response.status_code,
-                'size': len(response.content)
-            }
-            
-            print(f"✅ {page_name}: {response_time:.4f}秒 (状态: {response.status_code})")
-            
-        except Exception as e:
-            print(f"❌ {url}: 请求失败 - {e}")
-            results[url] = {'error': str(e)}
-    
-    return results
-
-def run_performance_test():
-    """运行完整的性能测试"""
-    print("🚀 开始性能测试...")
-    print("=" * 60)
-    
-    # 数据库测试
-    print("\n📊 数据库性能测试:")
-    print("-" * 40)
-    
-    connection_time = test_database_connection()
-    simple_query_time = test_simple_query()
-    complex_query_time = test_complex_query()
-    
-    # 网站响应测试
-    print("\n🌐 网站响应测试:")
-    print("-" * 40)
-    
-    website_results = test_website_response()
-    
-    # 结果汇总
-    print("\n📈 性能测试结果汇总:")
-    print("=" * 60)
-    
-    if connection_time:
-        print(f"数据库连接: {connection_time:.4f}秒")
-    
-    if simple_query_time:
-        print(f"简单查询: {simple_query_time:.4f}秒")
-    
-    if complex_query_time:
-        print(f"复杂查询: {complex_query_time:.4f}秒")
-    
-    print("\n网站页面响应时间:")
-    for page, result in website_results.items():
-        if 'time' in result:
-            print(f"  {page}: {result['time']:.4f}秒")
-        else:
-            print(f"  {page}: 测试失败")
-    
-    # 性能评估
-    print("\n🎯 性能评估:")
-    print("-" * 40)
-    
-    if connection_time and connection_time < 0.1:
-        print("✅ 数据库连接: 优秀")
-    elif connection_time and connection_time < 0.5:
-        print("⚠️ 数据库连接: 良好")
-    else:
-        print("❌ 数据库连接: 需要优化")
-    
-    if complex_query_time and complex_query_time < 0.5:
-        print("✅ 复杂查询: 优秀")
-    elif complex_query_time and complex_query_time < 2.0:
-        print("⚠️ 复杂查询: 良好")
-    else:
-        print("❌ 复杂查询: 需要优化")
-    
-    # 网站响应评估
-    slow_pages = []
-    for page, result in website_results.items():
-        if 'time' in result and result['time'] > 2.0:
-            slow_pages.append(page)
-    
-    if not slow_pages:
-        print("✅ 网站响应: 优秀")
-    elif len(slow_pages) <= 1:
-        print("⚠️ 网站响应: 良好")
-    else:
-        print(f"❌ 网站响应: 需要优化 (慢页面: {', '.join(slow_pages)})")
+    for url in test_urls:
+        print(f"\n{'='*60}")
+        print(f"测试URL: {url}")
+        print(f"{'='*60}")
+        
+        # 单线程测试
+        for endpoint in endpoints:
+            test_endpoint_performance(url, endpoint, num_requests=5)
+        
+        # 并发测试
+        test_concurrent_performance(url, "/", num_concurrent=3, requests_per_thread=2)
 
 if __name__ == '__main__':
-    run_performance_test()
+    main()
