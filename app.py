@@ -7516,19 +7516,15 @@ def index():
     # 未登录且未显式选择语言时，首页默认使用英文
     if not is_logged_in() and 'lang' not in session:
         session['lang'] = 'en'
+    
+    # 使用优化的查询方法
+    from query_optimizer import get_optimized_recent_works, get_optimized_hot_works
+    
     # 获取最新作品（用于预览）
-    recent_works = Work.query.order_by(Work.created_at.desc()).limit(6).all()
+    recent_works = get_optimized_recent_works(limit=6)
     
     # 获取最热作品（按点赞数排序）
-    hot_works = db.session.query(Work, func.count(Like.id).label('like_count')).\
-        outerjoin(Like, Work.id == Like.target_id).\
-        filter(Like.target_type == 'work').\
-        group_by(Work.id).\
-        order_by(func.count(Like.id).desc()).\
-        limit(6).all()
-    
-    # 提取作品对象
-    hot_works = [work for work, like_count in hot_works]
+    hot_works = get_optimized_hot_works(limit=6)
     
     return render_template('index.html', recent_works=recent_works, hot_works=hot_works)
 
@@ -7542,31 +7538,29 @@ def works():
     status = request.args.get('status', '')
     tags = request.args.get('tags', '')
     
-    query = Work.query
+    # 使用优化的查询方法
+    from query_optimizer import get_optimized_works_with_pagination
     
-    if search:
-        query = query.filter(Work.title.contains(search) | Work.content.contains(search))
-    if category:
-        query = query.filter(Work.category == category)
-    if original_language:
-        query = query.filter(Work.original_language == original_language)
-    if target_language:
-        query = query.filter(Work.target_language == target_language)
-    if status:
-        query = query.filter(Work.status == status)
+    filters = {
+        'search': search,
+        'category': category,
+        'original_language': original_language,
+        'target_language': target_language,
+        'status': status
+    }
+    
+    # 处理标签筛选
     if tags:
-        # 处理标签筛选 - 支持多个标签值
         tag_list = request.args.getlist('tags') if isinstance(request.args.getlist('tags'), list) else [tags]
         for tag in tag_list:
             if tag == 'multiple_translators':
-                query = query.filter(Work.allow_multiple_translators == True)
-            # 可以扩展其他标签筛选逻辑
+                filters['allow_multiple_translators'] = True
     
-    works = query.order_by(Work.created_at.desc()).paginate(
-        page=page, per_page=10, error_out=False
-    )
+    # 使用优化的分页查询
+    works = get_optimized_works_with_pagination(page=page, per_page=10, **filters)
     
-    categories = db.session.query(Work.category).distinct().all()
+    # 优化分类查询 - 使用缓存或减少查询
+    categories = db.session.query(Work.category).distinct().filter(Work.category.isnot(None)).all()
     categories = [cat[0] for cat in categories if cat[0]]
     
     return render_template('works.html', works=works, categories=categories, search=search, category=category, original_language=original_language, target_language=target_language, status=status, tags=tags, AuthorLike=AuthorLike, Like=Like)
