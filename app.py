@@ -123,6 +123,21 @@ def init_database():
             if 'preferred_language' not in user_cols:
                 with db.engine.connect() as conn:
                     conn.execute(db.text('ALTER TABLE user ADD COLUMN preferred_language VARCHAR(10) DEFAULT \'zh\''))
+            
+            # 检查并更新 avatar 字段类型（如果需要）
+            if 'avatar' in user_cols:
+                avatar_col = next(c for c in inspector.get_columns('user') if c['name'] == 'avatar')
+                if hasattr(avatar_col, 'type') and str(avatar_col['type']).startswith('VARCHAR'):
+                    # 如果是 VARCHAR 类型，尝试更新为 TEXT
+                    try:
+                        backend = db.engine.url.get_backend_name()
+                        if backend.startswith('postgres'):
+                            with db.engine.connect() as conn:
+                                conn.execute(db.text("ALTER TABLE \"user\" ALTER COLUMN avatar TYPE TEXT"))
+                                conn.commit()
+                                print("✅ 已更新 avatar 字段类型为 TEXT")
+                    except Exception as e:
+                        print(f"⚠️  更新 avatar 字段类型失败: {e}")
     except Exception as e:
         print(f"数据库初始化警告: {e}")
         pass
@@ -6888,7 +6903,7 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False, default='user')  # admin, creator, translator, user
     bio = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    avatar = db.Column(db.String(200))
+    avatar = db.Column(db.Text)
     is_translator = db.Column(db.Boolean, default=False)
     is_reviewer = db.Column(db.Boolean, default=False)
     is_creator = db.Column(db.Boolean, default=False)
