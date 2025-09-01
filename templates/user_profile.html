@@ -525,7 +525,7 @@
                         <div class="card h-100 border-success">
                             <div class="card-body" style="cursor: pointer;" onclick="window.location.href='{{ url_for('work_detail', work_id=like.work.id) }}';">
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="{{ url_for('uploaded_file', filename=like.author.avatar) if like.author.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                    <img src="{{ get_avatar_url(like.author) }}" 
                                          class="rounded-circle me-2" style="width:30px;height:30px;object-fit:cover;" alt="头像">
                                     <div>
                                         <small class="text-muted">{{ like.author.username }}</small>

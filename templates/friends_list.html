@@ -55,7 +55,7 @@
                                             <div class="card-body text-center">
                                                 <div class="mb-3">
                                                     <a href="{{ url_for('user_profile', user_id=friend_id) }}" class="text-decoration-none">
-                                                        <img src="{{ url_for('uploaded_file', filename=get_user_by_id(friend_id).avatar) if get_user_by_id(friend_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                        <img src="{{ get_avatar_url(get_user_by_id(friend_id)) }}" 
                                                              class="rounded-circle shadow" 
                                                              style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
                                                     </a>
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="row align-items-center">
                             <div class="col-auto">
                                 <a href="/user/${user.id}" class="text-decoration-none">
-                                    <img src="${user.avatar ? '/uploads/' + user.avatar : '/static/default_avatar.png'}" 
+                                    <img src="${user.avatar ? '/avatar/' + user.id : '/static/default_avatar.png'}" 
                                          class="rounded-circle" 
                                          style="width:50px;height:50px;object-fit:cover;cursor:pointer;">
                                 </a>

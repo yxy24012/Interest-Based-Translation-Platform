@@ -434,7 +434,7 @@
                                        onmouseover="this.style.transform='scale(1.1)'" 
                                        onmouseout="this.style.transform='scale(1)'"
                                        onclick="event.stopPropagation();">
-                                        <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                        <img src="{{ get_avatar_url(work.creator) }}" 
                                              class="rounded-circle" style="width: 20px; height: 20px; object-fit: cover; cursor: pointer;" 
                                              alt="{{ get_message('avatar_alt') if get_message('avatar_alt') else '头像' }}">
                                     </a>

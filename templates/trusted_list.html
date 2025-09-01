@@ -20,7 +20,7 @@
                                         <div class="card-body text-center">
                                             <div class="mb-3">
                                                 <a href="{{ url_for('user_profile', user_id=t.translator_id) }}" class="text-decoration-none">
-                                                    <img src="{{ url_for('uploaded_file', filename=get_user_by_id(t.translator_id).avatar) if get_user_by_id(t.translator_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                    <img src="{{ get_avatar_url(get_user_by_id(t.translator_id)) }}" 
                                                          class="rounded-circle shadow" 
                                                          style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
                                                 </a>
@@ -77,7 +77,7 @@
                                         <div class="card-body text-center">
                                             <div class="mb-3">
                                                 <a href="{{ url_for('user_profile', user_id=t.user_id) }}" class="text-decoration-none">
-                                                    <img src="{{ url_for('uploaded_file', filename=get_user_by_id(t.user_id).avatar) if get_user_by_id(t.user_id).avatar else url_for('static', filename='default_avatar.png') }}" 
+                                                    <img src="{{ get_avatar_url(get_user_by_id(t.user_id)) }}" 
                                                          class="rounded-circle shadow" 
                                                          style="width:80px;height:80px;object-fit:cover;border:3px solid #eee;cursor:pointer;">
                                                 </a>

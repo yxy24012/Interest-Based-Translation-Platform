@@ -793,7 +793,7 @@
                                            style="transition: transform 0.2s ease;" 
                                            onmouseover="this.style.transform='scale(1.1)'" 
                                            onmouseout="this.style.transform='scale(1)'">
-                                            <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                            <img src="{{ get_avatar_url(work.creator) }}" 
                                                  class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover; cursor: pointer;" 
                                                  alt="{{ get_message('avatar') }}">
                                         </a>
@@ -960,7 +960,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ url_for('uploaded_file', filename=translation.translator.avatar) if translation.translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                    <img src="{{ get_avatar_url(translation.translator) }}" 
                                          class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
                                     <div>
                                         <h6 class="mb-1">
@@ -1082,7 +1082,7 @@
                                 <div class="border rounded p-3 mb-3" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ url_for('uploaded_file', filename=correction.reviewer.avatar) if correction.reviewer.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                            <img src="{{ get_avatar_url(correction.reviewer) }}" 
                                                  class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
                                             <div>
                                                 <h6 class="mb-0">
@@ -1292,7 +1292,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
                                 {% set translator = get_user_by_id(request.translator_id) %}
-                                <img src="{{ url_for('uploaded_file', filename=translator.avatar) if translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                <img src="{{ get_avatar_url(translator) }}" 
                                      class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1">
@@ -1342,7 +1342,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
                                 {% set translator = get_user_by_id(request.translator_id) %}
-                                <img src="{{ url_for('uploaded_file', filename=translator.avatar) if translator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                <img src="{{ get_avatar_url(translator) }}" 
                                      class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1">
@@ -1394,7 +1394,7 @@
                         <div class="space-y-3">
                             {% for comment in work_comments %}
                             <div class="d-flex mb-3">
-                                <img src="{{ url_for('uploaded_file', filename=comment.author.avatar) if comment.author.avatar else url_for('static', filename='default_avatar.png') }}" 
+                                <img src="{{ get_avatar_url(comment.author) }}" 
                                      class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center mb-1">
@@ -1635,7 +1635,7 @@
                        style="transition: transform 0.2s ease;" 
                        onmouseover="this.style.transform='scale(1.05)'" 
                        onmouseout="this.style.transform='scale(1)'">
-                        <img src="{{ url_for('uploaded_file', filename=work.creator.avatar) if work.creator.avatar else url_for('static', filename='default_avatar.png') }}" 
+                        <img src="{{ get_avatar_url(work.creator) }}" 
                              class="rounded-circle mb-3 shadow-sm" style="width:80px;height:80px;object-fit:cover;border:3px solid #e9ecef; cursor: pointer;" alt="{{ get_message('avatar') }}">
                     </a>
                     <a href="{{ url_for('user_profile', user_id=work.creator.id) }}" 
@@ -2320,7 +2320,7 @@ function renderWorkComments(container, comments) {
     
     let html = '';
     comments.forEach(comment => {
-        const avatarSrc = comment.author_avatar ? `/uploads/${comment.author_avatar}` : '/static/default_avatar.png';
+        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/static/default_avatar.png';
         html += `
             <div class="d-flex mb-3">
                 <img src="${avatarSrc}" class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
@@ -2416,7 +2416,7 @@ function renderComments(container, comments) {
     
     let html = '';
     comments.forEach(comment => {
-        const avatarSrc = comment.author_avatar ? `/uploads/${comment.author_avatar}` : '/static/default_avatar.png';
+        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/static/default_avatar.png';
         html += `
             <div class="d-flex mb-3">
                 <img src="${avatarSrc}" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
