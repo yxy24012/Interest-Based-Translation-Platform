@@ -21,6 +21,14 @@ try:
 except ImportError:
     pass
 
+# 导入性能优化配置
+try:
+    from vercel_performance_config import create_optimized_engine, CACHE_CONFIG, STATIC_CACHE_CONFIG
+except ImportError:
+    create_optimized_engine = None
+    CACHE_CONFIG = {}
+    STATIC_CACHE_CONFIG = {}
+
 app = Flask(__name__)
 # --- DB config: use DATABASE_URL (Supabase/Railway). Default to SQLite for local dev.
 db_url = os.getenv('DATABASE_URL', 'sqlite:///forum.db')
@@ -29,10 +37,28 @@ if db_url.startswith('postgres://'):
 if 'postgresql+psycopg2://' in db_url and 'sslmode=' not in db_url:
     sep = '&' if '?' in db_url else '?'
     db_url = f'{db_url}{sep}sslmode=require'
+
+# 应用性能优化配置
+if create_optimized_engine and IS_VERCEL:
+    optimized_engine = create_optimized_engine()
+    if optimized_engine:
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            'pool_size': 5,
+            'max_overflow': 10,
+            'pool_timeout': 20,
+            'pool_recycle': 3600,
+            'pool_pre_ping': True,
+            'echo': False
+        }
+
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'my-very-strong-and-unique-secret-key-2024')
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# 应用静态文件缓存配置
+if STATIC_CACHE_CONFIG:
+    app.config.update(STATIC_CACHE_CONFIG)
 
 # 检测是否在 Vercel 环境
 IS_VERCEL = os.getenv('VERCEL') == '1'
