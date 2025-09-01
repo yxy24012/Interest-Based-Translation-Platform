@@ -4,11 +4,18 @@ Vercel性能优化配置
 """
 
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.pool import QueuePool
 
-# Vercel环境检测
+# 检测是否在 Vercel 环境
 IS_VERCEL = os.getenv('VERCEL') == '1'
+
+try:
+    from sqlalchemy import create_engine
+    from sqlalchemy.pool import QueuePool
+    SQLALCHEMY_AVAILABLE = True
+except ImportError:
+    SQLALCHEMY_AVAILABLE = False
+
+
 
 # 数据库连接池配置（针对Vercel优化）
 VERCEL_DB_CONFIG = {
@@ -49,14 +56,18 @@ def get_optimized_db_url():
 
 def create_optimized_engine():
     """创建优化的数据库引擎"""
-    if not IS_VERCEL:
+    if not IS_VERCEL or not SQLALCHEMY_AVAILABLE:
         return None
     
-    db_url = get_optimized_db_url()
-    if 'sqlite' in db_url:
+    try:
+        db_url = get_optimized_db_url()
+        if 'sqlite' in db_url:
+            return None
+        
+        return create_engine(
+            db_url,
+            **VERCEL_DB_CONFIG
+        )
+    except Exception as e:
+        print(f"⚠️ 创建优化引擎失败: {e}")
         return None
-    
-    return create_engine(
-        db_url,
-        **VERCEL_DB_CONFIG
-    )

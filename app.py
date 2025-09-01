@@ -21,6 +21,9 @@ try:
 except ImportError:
     pass
 
+# 检测是否在 Vercel 环境
+IS_VERCEL = os.getenv('VERCEL') == '1'
+
 # 导入性能优化配置
 try:
     from vercel_performance_config import create_optimized_engine, CACHE_CONFIG, STATIC_CACHE_CONFIG
@@ -65,9 +68,6 @@ if STATIC_CACHE_CONFIG:
 # 注册性能监控中间件
 if add_performance_headers:
     app.after_request(add_performance_headers)
-
-# 检测是否在 Vercel 环境
-IS_VERCEL = os.getenv('VERCEL') == '1'
 
 db = SQLAlchemy(app)
 
