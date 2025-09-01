@@ -225,7 +225,7 @@
         <div class="card mb-4">
             <div class="card-body text-center">
                 <div class="position-relative mb-3">
-                    <img src="{{ url_for('uploaded_file', filename=user.avatar) if user.avatar else url_for('static', filename='default_avatar.png') }}" 
+                    <img src="{{ url_for('user_avatar', user_id=user.id) }}" 
                          class="rounded-circle" style="width:120px;height:120px;object-fit:cover;" alt="{{ get_message('avatar') }}">
                     {% if session.get('user_id') == user.id %}
                     <a href="{{ url_for('edit_profile') }}" class="btn btn-sm btn-primary position-absolute" style="bottom:0;right:0;">

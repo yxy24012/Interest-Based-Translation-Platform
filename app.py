@@ -10,6 +10,9 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import or_, and_, func
 from sqlalchemy import event
 from mail_utils import send_email, is_smtp_configured
+import base64
+import io
+from PIL import Image
 
 # 加载 .env 文件
 try:
@@ -30,6 +33,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'my-very-strong-and-unique-secret-key-2024')
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# 检测是否在 Vercel 环境
+IS_VERCEL = os.getenv('VERCEL') == '1'
+
 db = SQLAlchemy(app)
 
 # Helper: SQL for boolean defaults depending on backend
@@ -43,9 +50,57 @@ def bool_default(val: bool) -> str:
     # SQLite accepts 1/0 for booleans
     return '1' if val else '0'
 
-# 确保上传文件夹存在
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
+# 确保上传文件夹存在（仅在非 Vercel 环境）
+if not IS_VERCEL and not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
+
+# 头像处理函数
+def process_avatar_upload(file, user_id):
+    """处理头像上传，支持文件系统和数据库存储"""
+    if not file or not file.filename:
+        return None
+    
+    try:
+        # 读取图片文件
+        image_data = file.read()
+        
+        # 使用 PIL 处理图片
+        image = Image.open(io.BytesIO(image_data))
+        
+        # 调整图片大小（可选）
+        max_size = (200, 200)
+        image.thumbnail(max_size, Image.Resampling.LANCZOS)
+        
+        # 转换为 RGB 模式（如果是 RGBA）
+        if image.mode in ('RGBA', 'LA'):
+            background = Image.new('RGB', image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[-1] if image.mode == 'RGBA' else None)
+            image = background
+        
+        # 保存为 JPEG 格式
+        output = io.BytesIO()
+        image.save(output, format='JPEG', quality=85)
+        processed_image_data = output.getvalue()
+        
+        if IS_VERCEL:
+            # 在 Vercel 环境中，将图片数据编码为 base64 并存储到数据库
+            encoded_data = base64.b64encode(processed_image_data).decode('utf-8')
+            return f"data:image/jpeg;base64,{encoded_data}"
+        else:
+            # 在本地环境中，保存到文件系统
+            filename = secure_filename(file.filename)
+            ext = filename.rsplit('.', 1)[-1].lower()
+            avatar_filename = f"avatar_{user_id}.jpg"
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], avatar_filename)
+            
+            with open(file_path, 'wb') as f:
+                f.write(processed_image_data)
+            
+            return avatar_filename
+            
+    except Exception as e:
+        print(f"头像处理错误: {e}")
+        return None
 
 # 启动时自动补充缺失列（SQLite 简易处理）
 def init_database():
@@ -7197,6 +7252,19 @@ def utility_processor():
         
         return '中文'  # 默认返回中文
     
+    def get_avatar_url(user):
+        """获取用户头像URL的辅助函数"""
+        if user and user.avatar:
+            if user.avatar.startswith('data:image'):
+                # 对于 base64 编码的头像，使用专门的路由
+                return url_for('user_avatar', user_id=user.id)
+            else:
+                # 对于文件系统中的头像
+                return url_for('uploaded_file', filename=user.avatar)
+        else:
+            # 默认头像
+            return url_for('static', filename='default_avatar.png')
+    
     def format_message_content(content, work_id=None, message_id=None, liker_id=None):
         """格式化消息内容，将作品标题和用户名转换为超链接"""
         import re
@@ -7419,6 +7487,7 @@ def utility_processor():
         'get_work_title': get_work_title,
         'get_user_by_id': get_user_by_id,
         'get_user_language_display_name': get_user_language_display_name,
+        'get_avatar_url': get_avatar_url,
         'get_message': get_message,
         'format_message_content': format_message_content,
         'TrustedTranslator': TrustedTranslator,
@@ -7756,11 +7825,9 @@ def edit_profile():
         # 处理头像上传
         file = request.files.get('avatar')
         if file and file.filename:
-            filename = secure_filename(file.filename)
-            ext = filename.rsplit('.', 1)[-1].lower()
-            avatar_filename = f"avatar_{user.id}.{ext}"
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], avatar_filename))
-            user.avatar = avatar_filename
+            avatar_result = process_avatar_upload(file, user.id)
+            if avatar_result:
+                user.avatar = avatar_result
         
         db.session.commit()
         
@@ -9396,6 +9463,29 @@ def delete_work(work_id):
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/avatar/<int:user_id>')
+def user_avatar(user_id):
+    """专门的头像路由，支持 base64 编码的头像"""
+    try:
+        user = User.query.get(user_id)
+        if user and user.avatar:
+            if user.avatar.startswith('data:image'):
+                # 处理 base64 编码的头像
+                from flask import Response
+                import base64
+                # 提取 base64 数据
+                header, encoded = user.avatar.split(",", 1)
+                image_data = base64.b64decode(encoded)
+                return Response(image_data, mimetype='image/jpeg')
+            else:
+                # 处理文件系统中的头像
+                return send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
+    except Exception as e:
+        print(f"头像获取错误: {e}")
+    
+    # 返回默认头像
+    return send_from_directory('static', 'default_avatar.png')
 
 @app.route('/trust/<int:translator_id>', methods=['POST'])
 def trust_translator(translator_id):

@@ -7,7 +7,7 @@
       <div class="d-flex mb-3 {% if msg.sender.id == session.get('user_id') %}justify-content-end{% else %}justify-content-start{% endif %}">
         {% if msg.sender.id != session.get('user_id') %}
           <a href="{{ url_for('user_profile', user_id=msg.sender.id) }}">
-            <img src="{{ url_for('uploaded_file', filename=msg.sender.avatar) if msg.sender.avatar else url_for('static', filename='default_avatar.png') }}" class="rounded-circle me-2 shadow" style="width:36px;height:36px;object-fit:cover;border:2px solid #eee;">
+            <img src="{{ get_avatar_url(msg.sender) }}" class="rounded-circle me-2 shadow" style="width:36px;height:36px;object-fit:cover;border:2px solid #eee;">
           </a>
         {% endif %}
         <div>
@@ -30,7 +30,7 @@
         </div>
         {% if msg.sender.id == session.get('user_id') %}
           <a href="{{ url_for('user_profile', user_id=msg.sender.id) }}">
-            <img src="{{ url_for('uploaded_file', filename=msg.sender.avatar) if msg.sender.avatar else url_for('static', filename='default_avatar.png') }}" class="rounded-circle ms-2" style="width:40px;height:40px;object-fit:cover;" alt="{{ get_message('avatar') }}">
+            <img src="{{ get_avatar_url(msg.sender) }}" class="rounded-circle ms-2" style="width:40px;height:40px;object-fit:cover;" alt="{{ get_message('avatar') }}">
           </a>
         {% endif %}
       </div>

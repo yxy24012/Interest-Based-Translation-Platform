@@ -210,8 +210,8 @@
         <div class="card mb-4">
             <div class="card-body text-center">
                 <div class="position-relative mb-3">
-                    <img src="{{ url_for('uploaded_file', filename=user.avatar) if user.avatar else url_for('static', filename='default_avatar.png') }}" 
-                         class="rounded-circle" style="width:120px;height:120px;object-fit:cover;" alt="{{ get_message('avatar') }}">
+                                    <img src="{{ get_avatar_url(user) }}" 
+                     class="rounded-circle" style="width:120px;height:120px;object-fit:cover;" alt="{{ get_message('avatar') }}">
                 </div>
                 
                 <h4 class="mb-1">{{ user.username }}</h4>
