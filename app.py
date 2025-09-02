@@ -9504,7 +9504,15 @@ def delete_work(work_id):
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    response = send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        # 禁止缓存头像文件，确保更换后立即生效
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    except Exception:
+        pass
+    return response
 
 @app.route('/avatar/<int:user_id>')
 def user_avatar(user_id):
@@ -9519,15 +9527,38 @@ def user_avatar(user_id):
                 # 提取 base64 数据
                 header, encoded = user.avatar.split(",", 1)
                 image_data = base64.b64decode(encoded)
-                return Response(image_data, mimetype='image/jpeg')
+                resp = Response(image_data, mimetype='image/jpeg')
+                try:
+                    # 禁止缓存 base64 头像
+                    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                    resp.headers['Pragma'] = 'no-cache'
+                    resp.headers['Expires'] = '0'
+                except Exception:
+                    pass
+                return resp
             else:
                 # 处理文件系统中的头像
-                return send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
+                response = send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
+                try:
+                    # 禁止缓存文件系统头像
+                    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                    response.headers['Pragma'] = 'no-cache'
+                    response.headers['Expires'] = '0'
+                except Exception:
+                    pass
+                return response
     except Exception as e:
         print(f"头像获取错误: {e}")
     
     # 返回默认头像
-    return send_from_directory('static', 'default_avatar.png')
+    response = send_from_directory('static', 'default_avatar.png')
+    try:
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    except Exception:
+        pass
+    return response
 
 @app.route('/trust/<int:translator_id>', methods=['POST'])
 def trust_translator(translator_id):
