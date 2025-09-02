@@ -2,7 +2,6 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "regions": ["hnd1"],
-    "installCommand": "echo skip install",
     "buildCommand": "echo skip build",
     "functions": {
       "api/**/*.py": {
