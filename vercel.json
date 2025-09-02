@@ -1,32 +1,21 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "vercel_app.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxDuration": 30
-      }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "vercel_app.py": {
+      "runtime": "python3.11",
+      "regions": ["hnd1"],
+      "maxDuration": 30,
+      "memory": 1024
     }
-  ],
+  },
   "routes": [
     {
       "src": "/static/(.*)",
       "dest": "/static/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
     },
-    {
-      "src": "/healthz",
-      "dest": "/vercel_app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/vercel_app.py"
-    }
+    { "src": "/healthz", "dest": "/vercel_app.py" },
+    { "src": "/(.*)", "dest": "/vercel_app.py" }
   ],
-  "env": {
-    "PYTHONPATH": "."
-  }
+  "env": { "PYTHONPATH": "." }
 }
