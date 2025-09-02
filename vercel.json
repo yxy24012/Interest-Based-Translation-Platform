@@ -2,17 +2,14 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "regions": ["hnd1"],
-  
     "installCommand": "echo skip install",
     "buildCommand": "echo skip build",
-  
     "functions": {
       "api/**/*.py": {
         "maxDuration": 30,
         "memory": 1024
       }
     },
-  
     "routes": [
       {
         "src": "/static/(.*)",
@@ -22,7 +19,6 @@
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
     ],
-  
     "env": { "PYTHONPATH": "." }
   }
   
