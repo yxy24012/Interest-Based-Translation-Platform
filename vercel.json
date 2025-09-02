@@ -2,7 +2,6 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "regions": ["hnd1"],
-    "buildCommand": "echo skip build",
     "functions": {
       "api/**/*.py": {
         "maxDuration": 30,
@@ -10,11 +9,7 @@
       }
     },
     "routes": [
-      {
-        "src": "/static/(.*)",
-        "dest": "/static/$1",
-        "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
-      },
+      { "src": "/static/(.*)", "dest": "/static/$1", "headers": { "Cache-Control": "public, max-age=31536000, immutable" } },
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
     ],
