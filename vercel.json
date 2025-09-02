@@ -7,19 +7,20 @@
     "buildCommand": "echo skip build",
   
     "functions": {
-      "vercel_app.py": {
+      "api/**/*.py": {
         "maxDuration": 30,
         "memory": 1024
       }
     },
+  
     "routes": [
       {
         "src": "/static/(.*)",
         "dest": "/static/$1",
         "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
       },
-      { "src": "/healthz", "dest": "/vercel_app.py" },
-      { "src": "/(.*)", "dest": "/vercel_app.py" }
+      { "src": "/healthz", "dest": "/api/index.py" },
+      { "src": "/(.*)", "dest": "/api/index.py" }
     ],
   
     "env": { "PYTHONPATH": "." }
