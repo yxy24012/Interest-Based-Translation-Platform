@@ -13,10 +13,14 @@
     }
   },
   "routes": [
-    { "src": "/static/(.*)", "dest": "/static/$1",
-      "headers": { "Cache-Control": "public, max-age=31536000, immutable" } },
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
+    },
     { "src": "/healthz", "dest": "/vercel_app.py" },
     { "src": "/(.*)", "dest": "/vercel_app.py" }
   ],
+
   "env": { "PYTHONPATH": "." }
 }
