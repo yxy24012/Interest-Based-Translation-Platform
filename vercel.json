@@ -1,13 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["hnd1"],
+
   "functions": {
     "vercel_app.py": {
       "runtime": "python3.11",
-      "regions": ["hnd1"],
       "maxDuration": 30,
       "memory": 1024
     }
   },
+
   "routes": [
     {
       "src": "/static/(.*)",
@@ -17,5 +19,6 @@
     { "src": "/healthz", "dest": "/vercel_app.py" },
     { "src": "/(.*)", "dest": "/vercel_app.py" }
   ],
+
   "env": { "PYTHONPATH": "." }
 }
