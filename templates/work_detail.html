@@ -1598,8 +1598,8 @@
                     {% endif %}
                     <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border: 1px solid #ced4da;">
-                            <span class="text-dark fw-bold">{{ get_message('created_date') }}</span>
-                            <span class="fw-bold text-dark">{{ work.created_at.strftime('%Y-%m-%d') }}</span>
+                            <span class="text-dark fw-bold">{{ get_message('submission_time') if get_message('submission_time') else get_message('created_date') }}</span>
+                            <span class="fw-bold text-dark">{{ work.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
                         </div>
                     </div>
                     <div class="col-12">
@@ -1694,7 +1694,7 @@
                 <!-- 注册时间 -->
                 <div class="text-center mb-4">
                     <small class="text-muted">
-                        <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}{{ work.creator.created_at.strftime('%Y-%m-%d') }}
+                        <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}{{ work.creator.created_at.strftime('%Y-%m-%d %H:%M') }}
                     </small>
                 </div>
                 
@@ -1892,8 +1892,12 @@ document.querySelectorAll('.like-btn').forEach(button => {
                 const countElement = this.querySelector('.like-count');
                 const currentCount = parseInt(countElement.textContent);
                 
+                // 优先使用后端返回的最新计数
+                if (typeof data.likes_count === 'number') {
+                    countElement.textContent = data.likes_count;
+                }
+                
                 if (data.action === 'liked') {
-                    countElement.textContent = currentCount + 1;
                     this.dataset.liked = 'true';
                     this.classList.add('liked');
                     
@@ -1932,7 +1936,6 @@ document.querySelectorAll('.like-btn').forEach(button => {
                         countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
                     }
                 } else {
-                    countElement.textContent = currentCount - 1;
                     this.dataset.liked = 'false';
                     this.classList.remove('liked');
                     

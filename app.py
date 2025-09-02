@@ -2181,6 +2181,9 @@ def get_message(key, lang=None, **kwargs):
         'created_date': {
             'zh': '创建时间：', 'zh-TW': '創建時間：', 'ja': '作成日：', 'en': 'Created Date:', 'ru': 'Дата создания:', 'ko': '생성 날짜:', 'fr': 'Date de création:', 'es': 'Fecha de creación:'
         },
+        'submission_time': {
+            'zh': '投稿时间：', 'zh-TW': '投稿時間：', 'ja': '投稿日時：', 'en': 'Submission Time:', 'ru': 'Время отправки:', 'ko': '제출 시간:', 'fr': 'Heure de soumission:', 'es': 'Hora de envío:'
+        },
         'status': {
             'zh': '状态：', 'zh-TW': '狀態：', 'ja': 'ステータス：', 'en': 'Status:', 'ru': 'Статус:', 'ko': '상태:', 'fr': 'Statut:', 'es': 'Estado:'
         },
@@ -8637,8 +8640,8 @@ def admin_panel():
         flash(get_message('no_admin_permission'), 'error')
         return redirect(url_for('index'))
     
-    # 过滤掉admin账号，不显示在用户列表中
-    users = User.query.filter(User.username != 'admin').all()
+    # 显示全部用户（包含 admin），按 ID 升序
+    users = User.query.order_by(User.id.asc()).all()
     works = Work.query.all()
     translations = Translation.query.all()
     
@@ -9874,7 +9877,9 @@ def like_content(target_type, target_id):
         # 取消点赞
         db.session.delete(existing_like)
         db.session.commit()
-        return jsonify({'success': True, 'action': 'unliked'})
+        # 最新点赞数
+        likes_count = Like.query.filter_by(target_type=target_type, target_id=target_id).count()
+        return jsonify({'success': True, 'action': 'unliked', 'likes_count': likes_count})
     else:
         # 添加点赞
         new_like = Like(
@@ -9884,6 +9889,9 @@ def like_content(target_type, target_id):
         )
         db.session.add(new_like)
         db.session.commit()
+        
+        # 最新点赞数
+        likes_count = Like.query.filter_by(target_type=target_type, target_id=target_id).count()
         
         # 获取被点赞的内容信息
         target_user_id = None

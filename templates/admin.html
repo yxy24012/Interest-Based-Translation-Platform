@@ -146,7 +146,7 @@
                                                 {{ {'admin': get_message('role_admin') if get_message('role_admin') else '管理员', 'creator': get_message('role_creator') if get_message('role_creator') else '创作者', 'translator': get_message('role_translator') if get_message('role_translator') else '翻译者', 'user': get_message('role_user') if get_message('role_user') else '普通用户'}[user.role] }}
                                             </span>
                                         </td>
-                                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             <a href="{{ url_for('toggle_user_role', user_id=user.id) }}" class="btn btn-sm btn-outline-warning">
                                                 <i class="fas fa-edit me-1"></i>{{ get_message('change_role') if get_message('change_role') else '切换角色' }}
@@ -192,7 +192,7 @@
                                                 {{ {'pending': get_message('pending') if get_message('pending') else '待翻译', 'translating': get_message('translating') if get_message('translating') else '翻译中', 'completed': get_message('completed') if get_message('completed') else '已完成'}[work.status] }}
                                             </span>
                                         </td>
-                                        <td>{{ work.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ work.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-eye me-1"></i>{{ get_message('view') if get_message('view') else '查看' }}
@@ -235,7 +235,7 @@
                                                 {{ {'draft': get_message('status_draft') if get_message('status_draft') else '草稿', 'submitted': get_message('status_submitted') if get_message('status_submitted') else '已提交', 'approved': get_message('status_approved') if get_message('status_approved') else '已通过', 'rejected': get_message('status_rejected') if get_message('status_rejected') else '已拒绝'}[translation.status] }}
                                             </span>
                                         </td>
-                                        <td>{{ translation.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ translation.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             <a href="{{ url_for('work_detail', work_id=translation.work.id) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-eye me-1"></i>{{ get_message('view') if get_message('view') else '查看' }}

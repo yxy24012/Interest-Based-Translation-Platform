@@ -259,7 +259,7 @@
                 
                 <!-- 注册时间 -->
                 <small class="text-muted">
-                    <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}：{{ user.created_at.strftime('%Y-%m-%d') }}
+                    <i class="fas fa-calendar me-1"></i>{{ get_message('registration_date') }}：{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}
                 </small>
                 
                 <!-- 互动按钮 -->
@@ -404,7 +404,7 @@
                                         →
                                         {{ get_message(lang_code_map.get(work.target_language, lang_code_map.get(session.get('lang','zh')))) }}
                                     </small>
-                                    <small class="text-muted">{{ work.created_at.strftime('%m-%d') }}</small>
+                                    <small class="text-muted">{{ work.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                                 </div>
                                 {% if work.category %}
                                 <div class="mt-2">
@@ -493,7 +493,7 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <small class="text-muted">{{ t.updated_at.strftime('%m-%d') }}</small>
+                                    <small class="text-muted">{{ t.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
                                 </div>
                             </div>
                         </div>
