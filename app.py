@@ -36,7 +36,7 @@ except ImportError:
 
 app = Flask(__name__)
 # --- DB config: use DATABASE_URL (Supabase/Railway). Default to SQLite for local dev.
-db_url = os.getenv('DATABASE_URL', 'sqlite:///forum.db')
+db_url = os.getenv('DATABASE_URL', 'sqlite:///instance/forum.db')
 if db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
 if 'postgresql+psycopg2://' in db_url and 'sslmode=' not in db_url:
@@ -69,7 +69,8 @@ if STATIC_CACHE_CONFIG:
 if add_performance_headers:
     app.after_request(add_performance_headers)
 
-db = SQLAlchemy(app)
+db = SQLAlchemy()
+db.init_app(app)
 
 # Helper: SQL for boolean defaults depending on backend
 def bool_default(val: bool) -> str:
@@ -11338,3 +11339,16 @@ if __name__ == '__main__':
     # 获取端口，Render会提供PORT环境变量
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+@app.get("/warm")
+def warm():
+    """Warm up critical dependencies and DB connection"""
+    try:
+        from sqlalchemy import text
+        db.session.execute(text("SELECT 1"))
+    except Exception:
+        pass
+    try:
+        _ = render_template('works.html', works=[], categories=[], page=1, total_pages=1)
+    except Exception:
+        pass
+    return {"ok": True}

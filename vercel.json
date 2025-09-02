@@ -25,4 +25,10 @@
   "env": {
     "PYTHONPATH": "."
   }
+  {
+    "functions": {
+      "api/**.js": { "runtime": "nodejs20.x", "regions": ["hnd1"] },
+      "app/**/route.js": { "runtime": "nodejs20.x", "regions": ["hnd1"] }
+    }
+  } 
 }
