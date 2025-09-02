@@ -4,5 +4,5 @@ Werkzeug==2.3.7
 gunicorn==21.2.0 
 psycopg2-binary
 python-dotenv
-Pillow==10.0.1
+Pillow==10.4.0
 Flask-Caching==2.1.0
