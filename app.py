@@ -7313,8 +7313,25 @@ def utility_processor():
                 # 对于文件系统中的头像
                 return url_for('uploaded_file', filename=user.avatar)
         else:
-            # 默认头像
-            return url_for('static', filename='default_avatar.png')
+            # 默认头像 - 添加版本号确保缓存刷新
+            import os
+            import hashlib
+            try:
+                # 获取默认头像文件的修改时间作为版本号
+                avatar_path = os.path.join('static', 'default_avatar.png')
+                if os.path.exists(avatar_path):
+                    mtime = os.path.getmtime(avatar_path)
+                    version = str(int(mtime))
+                    return url_for('static', filename=f'default_avatar.png?v={version}')
+                else:
+                    # 如果文件不存在，使用部署时间作为版本号
+                    version = str(int(os.environ.get('VERCEL_GIT_COMMIT_SHA', '0')[:8], 16) if os.environ.get('VERCEL_GIT_COMMIT_SHA') else 0)
+                    return url_for('static', filename=f'default_avatar.png?v={version}')
+            except Exception:
+                # 如果获取版本号失败，使用当前时间戳
+                import time
+                version = str(int(time.time()))
+                return url_for('static', filename=f'default_avatar.png?v={version}')
     
     def format_message_content(content, work_id=None, message_id=None, liker_id=None):
         """格式化消息内容，将作品标题和用户名转换为超链接"""
