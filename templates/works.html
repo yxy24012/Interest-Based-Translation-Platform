@@ -445,7 +445,7 @@
                                         {{ work.creator.username }}
                                     </span>
                                     {% else %}
-                                    <img src="{{ url_for('static', filename='default_avatar.png') }}" 
+                                    <img src="{{ get_avatar_url(None) }}" 
                                          class="rounded-circle me-2" style="width: 20px; height: 20px; object-fit: cover;" 
                                          alt="{{ get_message('avatar_alt') if get_message('avatar_alt') else '头像' }}">
                                     <span style="color: #6c757d; font-weight: 600;">

@@ -7313,24 +7313,38 @@ def utility_processor():
                 # 对于文件系统中的头像
                 return url_for('uploaded_file', filename=user.avatar)
         else:
-            # 默认头像 - 添加版本号确保缓存刷新
+            # 默认头像 - 在Vercel环境中使用更可靠的版本号策略
             import os
-            import hashlib
-            try:
-                # 获取默认头像文件的修改时间作为版本号
+            import time
+            
+            if IS_VERCEL:
+                # 在Vercel环境中，使用环境变量或时间戳作为版本号
+                try:
+                    # 优先使用VERCEL_GIT_COMMIT_SHA
+                    commit_sha = os.environ.get('VERCEL_GIT_COMMIT_SHA')
+                    if commit_sha:
+                        version = commit_sha[:8]  # 使用前8位
+                    else:
+                        # 使用部署时间戳
+                        version = str(int(time.time()))
+                except Exception:
+                    version = str(int(time.time()))
+            else:
+                # 在本地环境中，尝试获取文件修改时间
+                try:
                 avatar_path = os.path.join('static', 'default_avatar.png')
                 if os.path.exists(avatar_path):
                     mtime = os.path.getmtime(avatar_path)
                     version = str(int(mtime))
-                    return url_for('static', filename=f'default_avatar.png?v={version}')
                 else:
-                    # 如果文件不存在，使用部署时间作为版本号
-                    version = str(int(os.environ.get('VERCEL_GIT_COMMIT_SHA', '0')[:8], 16) if os.environ.get('VERCEL_GIT_COMMIT_SHA') else 0)
-                    return url_for('static', filename=f'default_avatar.png?v={version}')
+                        version = str(int(time.time()))
             except Exception:
-                # 如果获取版本号失败，使用当前时间戳
-                import time
                 version = str(int(time.time()))
+            
+            if IS_VERCEL:
+                # 在Vercel环境中，使用专门的默认头像路由
+                return url_for('default_avatar')
+            else:
                 return url_for('static', filename=f'default_avatar.png?v={version}')
     
     def format_message_content(content, work_id=None, message_id=None, liker_id=None):
@@ -9571,6 +9585,13 @@ def user_avatar(user_id):
         print(f"头像获取错误: {e}")
     
     # 返回默认头像
+    try:
+        if IS_VERCEL:
+            # 在Vercel环境中，直接重定向到静态文件URL
+            from flask import redirect
+            return redirect(url_for('static', filename='default_avatar.png'))
+        else:
+            # 在本地环境中，使用send_from_directory
     response = send_from_directory('static', 'default_avatar.png')
     try:
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
@@ -9579,6 +9600,29 @@ def user_avatar(user_id):
     except Exception:
         pass
     return response
+    except Exception as e:
+        print(f"默认头像返回错误: {e}")
+        # 最后的兜底方案：返回404或重定向到静态文件
+        from flask import redirect
+        return redirect(url_for('static', filename='default_avatar.png'))
+
+@app.route('/default-avatar')
+def default_avatar():
+    """专门的默认头像路由，确保在Vercel环境中正确返回"""
+    try:
+        if IS_VERCEL:
+            # 在Vercel环境中，重定向到静态文件
+            from flask import redirect
+            return redirect(url_for('static', filename='default_avatar.png'))
+        else:
+            # 在本地环境中，直接返回文件
+            response = send_from_directory('static', 'default_avatar.png')
+            response.headers['Cache-Control'] = 'public, max-age=86400'
+            return response
+    except Exception as e:
+        print(f"默认头像路由错误: {e}")
+        from flask import redirect
+        return redirect(url_for('static', filename='default_avatar.png'))
 
 @app.route('/trust/<int:translator_id>', methods=['POST'])
 def trust_translator(translator_id):

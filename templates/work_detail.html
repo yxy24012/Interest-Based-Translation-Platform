@@ -2323,7 +2323,7 @@ function renderWorkComments(container, comments) {
     
     let html = '';
     comments.forEach(comment => {
-        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/static/default_avatar.png';
+        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/default-avatar';
         html += `
             <div class="d-flex mb-3">
                 <img src="${avatarSrc}" class="rounded-circle me-3" style="width:40px;height:40px;object-fit:cover;">
@@ -2419,7 +2419,7 @@ function renderComments(container, comments) {
     
     let html = '';
     comments.forEach(comment => {
-        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/static/default_avatar.png';
+        const avatarSrc = comment.author_avatar ? `/avatar/${comment.author_id}` : '/default-avatar';
         html += `
             <div class="d-flex mb-3">
                 <img src="${avatarSrc}" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
