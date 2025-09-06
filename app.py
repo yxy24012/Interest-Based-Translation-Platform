@@ -7314,7 +7314,9 @@ def utility_processor():
                 return url_for('uploaded_file', filename=user.avatar)
         else:
             # 默认头像
-            return url_for('static', filename='default_avatar.png')
+            avatar_url = url_for('static', filename='default_avatar.png')
+            print(f"🔍 生成默认头像URL: {avatar_url}")
+            return avatar_url
     
     def format_message_content(content, work_id=None, message_id=None, liker_id=None):
         """格式化消息内容，将作品标题和用户名转换为超链接"""
