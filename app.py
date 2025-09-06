@@ -7332,14 +7332,14 @@ def utility_processor():
             else:
                 # 在本地环境中，尝试获取文件修改时间
                 try:
-                avatar_path = os.path.join('static', 'default_avatar.png')
-                if os.path.exists(avatar_path):
-                    mtime = os.path.getmtime(avatar_path)
-                    version = str(int(mtime))
-                else:
+                    avatar_path = os.path.join('static', 'default_avatar.png')
+                    if os.path.exists(avatar_path):
+                        mtime = os.path.getmtime(avatar_path)
+                        version = str(int(mtime))
+                    else:
                         version = str(int(time.time()))
-            except Exception:
-                version = str(int(time.time()))
+                except Exception:
+                    version = str(int(time.time()))
             
             if IS_VERCEL:
                 # 在Vercel环境中，使用专门的默认头像路由
@@ -9592,14 +9592,14 @@ def user_avatar(user_id):
             return redirect(url_for('static', filename='default_avatar.png'))
         else:
             # 在本地环境中，使用send_from_directory
-    response = send_from_directory('static', 'default_avatar.png')
-    try:
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-    except Exception:
-        pass
-    return response
+            response = send_from_directory('static', 'default_avatar.png')
+            try:
+                response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                response.headers['Pragma'] = 'no-cache'
+                response.headers['Expires'] = '0'
+            except Exception:
+                pass
+            return response
     except Exception as e:
         print(f"默认头像返回错误: {e}")
         # 最后的兜底方案：返回404或重定向到静态文件
