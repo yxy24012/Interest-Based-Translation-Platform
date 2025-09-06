@@ -9,6 +9,9 @@
       }
     },
     "routes": [
+      { "handle": "filesystem" },
+      { "src": "/static/(.*)", "dest": "/static/$1", "headers": { "Cache-Control": "public, max-age=31536000, immutable" } },
+      { "src": "/uploads/(.*)", "dest": "/uploads/$1", "headers": { "Cache-Control": "public, max-age=31536000, immutable" } },
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
     ],
