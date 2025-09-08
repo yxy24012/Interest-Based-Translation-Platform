@@ -87,6 +87,26 @@ def bool_default(val: bool) -> str:
 if not IS_VERCEL and not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
+# 允许的文件扩展名
+ALLOWED_EXTENSIONS = {
+    'image': {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'tiff', 'tif', 'ico'},
+    'audio': {'mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'wma', 'opus'},
+    'video': {'mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv', 'm4v', '3gp', 'ogv'},
+    'document': {'pdf', 'doc', 'docx', 'txt', 'rtf', 'odt', 'pages', 'xls', 'xlsx', 'ppt', 'pptx', 'odp', 'ods', 'csv'}
+}
+
+def is_allowed_file(filename):
+    """检查文件类型是否被允许"""
+    if not filename:
+        return False
+    
+    ext = filename.rsplit('.', 1)[-1].lower()
+    all_allowed_extensions = set()
+    for category in ALLOWED_EXTENSIONS.values():
+        all_allowed_extensions.update(category)
+    
+    return ext in all_allowed_extensions
+
 # 头像处理函数
 def process_avatar_upload(file, user_id):
     """处理头像上传，支持文件系统和数据库存储"""
@@ -1829,7 +1849,7 @@ def get_message(key, lang=None, **kwargs):
             'zh': '翻译附件', 'zh-TW': '翻譯附件', 'ja': '翻訳添付ファイル', 'en': 'Translation attachments', 'ru': 'Вложения к переводу', 'ko': '번역 첨부 파일', 'fr': 'Pièces jointes de traduction', 'es': 'Archivos adjuntos de traducción'
         },
         'supported_formats': {
-            'zh': '支持格式：图片、视频、音频、PDF、Word、文本文件', 'zh-TW': '支持格式：圖片、視頻、音頻、PDF、Word、文本文件', 'ja': 'サポート形式：画像、動画、音声、PDF、Word、テキストファイル', 'en': 'Supported formats: images, video, audio, PDF, Word, text files', 'ru': 'Поддерживаемые форматы: изображения, видео, аудио, PDF, Word, текстовые файлы', 'ko': '지원 형식: 이미지, 비디오, 오디오, PDF, Word, 텍스트 파일', 'fr': 'Formats pris en charge : images, vidéo, audio, PDF, Word, fichiers texte', 'es': 'Formatos soportados: imágenes, video, audio, PDF, Word, archivos de texto'
+            'zh': '支持格式：图片、视频、音频、PDF、Office文档、文本文件等多种格式', 'zh-TW': '支持格式：圖片、視頻、音頻、PDF、Office文檔、文本文件等多種格式', 'ja': 'サポート形式：画像、動画、音声、PDF、Office文書、テキストファイルなど複数の形式', 'en': 'Supported formats: images, video, audio, PDF, Office documents, text files and more', 'ru': 'Поддерживаемые форматы: изображения, видео, аудио, PDF, документы Office, текстовые файлы и другие', 'ko': '지원 형식: 이미지, 비디오, 오디오, PDF, Office 문서, 텍스트 파일 등 다양한 형식', 'fr': 'Formats pris en charge : images, vidéo, audio, PDF, documents Office, fichiers texte et plus', 'es': 'Formatos soportados: imágenes, video, audio, PDF, documentos de Office, archivos de texto y más'
         },
         'submit_translation': {
             'zh': '提交翻译', 'zh-TW': '提交翻譯', 'ja': '翻訳を提出', 'en': 'Submit translation', 'ru': 'Отправить перевод', 'ko': '번역 제출', 'fr': 'Soumettre la traduction', 'es': 'Enviar traducción'
@@ -6571,6 +6591,16 @@ def get_message(key, lang=None, **kwargs):
             'fr': 'Le contenu du test n\'est pas encore prêt. Cliquez sur le bouton de confirmation ci-dessous pour devenir correcteur.',
             'es': 'El contenido de la prueba aún no está listo. Haz clic en el botón de confirmación de abajo para convertirte en revisor.'
         },
+        'file_type_not_allowed': {
+            'zh': '不支持的文件类型，请上传图片、音频、视频或文档文件（支持多种格式：图片、音频、视频、PDF、Office文档、文本文件等）',
+            'zh-TW': '不支持的文件類型，請上傳圖片、音頻、視頻或文檔文件（支持多種格式：圖片、音頻、視頻、PDF、Office文檔、文本文件等）',
+            'ja': 'サポートされていないファイル形式です。画像、音声、動画、または文書ファイル（複数の形式をサポート：画像、音声、動画、PDF、Office文書、テキストファイルなど）をアップロードしてください',
+            'en': 'Unsupported file type. Please upload image, audio, video, or document files (supports multiple formats: images, audio, video, PDF, Office documents, text files, etc.)',
+            'ru': 'Неподдерживаемый тип файла. Пожалуйста, загрузите изображение, аудио, видео или документ (поддерживает множество форматов: изображения, аудио, видео, PDF, документы Office, текстовые файлы и т.д.)',
+            'ko': '지원되지 않는 파일 형식입니다. 이미지, 오디오, 비디오 또는 문서 파일(여러 형식 지원: 이미지, 오디오, 비디오, PDF, Office 문서, 텍스트 파일 등)을 업로드하세요',
+            'fr': 'Type de fichier non pris en charge. Veuillez télécharger des fichiers image, audio, vidéo ou document (prend en charge plusieurs formats : images, audio, vidéo, PDF, documents Office, fichiers texte, etc.)',
+            'es': 'Tipo de archivo no compatible. Por favor, sube archivos de imagen, audio, video o documento (soporta múltiples formatos: imágenes, audio, video, PDF, documentos de Office, archivos de texto, etc.)'
+        },
         'confirm': {
             'zh': '确认',
             'zh-TW': '確認',
@@ -7976,6 +8006,11 @@ def upload():
         media_filename = None
         file = request.files.get('media_file')
         if file and file.filename:
+            if not is_allowed_file(file.filename):
+                flash(get_message('file_type_not_allowed'), 'error')
+                user = get_current_user()
+                return render_template('upload.html', user=user)
+            
             filename = secure_filename(file.filename)
             ext = filename.rsplit('.', 1)[-1].lower()
             media_filename = f"work_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{session['user_id']}.{ext}"
@@ -8205,6 +8240,10 @@ def handle_translation_submit(work_id, current_user):
         media_filename = None
         file = request.files.get('media')
         if file and file.filename:
+            if not is_allowed_file(file.filename):
+                flash(get_message('file_type_not_allowed'), 'error')
+                return redirect(url_for('translate_work', work_id=work_id))
+            
             filename = secure_filename(file.filename)
             ext = filename.rsplit('.', 1)[-1].lower()
             media_filename = f"translation_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{current_user.id}.{ext}"
@@ -8287,6 +8326,10 @@ def handle_translation_submit(work_id, current_user):
         media_filename = None
         file = request.files.get('media')
         if file and file.filename:
+            if not is_allowed_file(file.filename):
+                flash(get_message('file_type_not_allowed'), 'error')
+                return redirect(url_for('translate_work', work_id=work_id))
+            
             filename = secure_filename(file.filename)
             ext = filename.rsplit('.', 1)[-1].lower()
             media_filename = f"translation_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{current_user.id}.{ext}"
@@ -9361,6 +9404,10 @@ def edit_work(work_id):
             work.translation_requirements = ''
         file = request.files.get('media_file')
         if file and file.filename:
+            if not is_allowed_file(file.filename):
+                flash(get_message('file_type_not_allowed'), 'error')
+                return redirect(url_for('edit_work', work_id=work_id))
+            
             filename = secure_filename(file.filename)
             ext = filename.rsplit('.', 1)[-1].lower()
             media_filename = f"work_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{current_user.id}.{ext}"
@@ -10059,7 +10106,7 @@ def like_content(target_type, target_id):
                 db.session.add(notification)
                 db.session.commit()
         
-        return jsonify({'success': True, 'action': 'liked'})
+        return jsonify({'success': True, 'action': 'liked', 'likes_count': likes_count})
 
 @app.route('/likes/<target_type>/<int:target_id>')
 def get_likes_count(target_type, target_id):
@@ -10094,6 +10141,10 @@ def edit_translation(work_id):
             media_filename = None
             file = request.files.get('translation_media_file')
             if file and file.filename:
+                if not is_allowed_file(file.filename):
+                    flash(get_message('file_type_not_allowed'), 'error')
+                    return redirect(url_for('edit_translation', work_id=work_id))
+                
                 filename = secure_filename(file.filename)
                 ext = filename.rsplit('.', 1)[-1].lower()
                 media_filename = f"translation_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{current_user.id}.{ext}"

@@ -867,8 +867,7 @@
                             <button class="btn {{ 'btn-primary' if user_liked else 'btn-outline-primary' }} btn-sm like-btn" 
                                     data-type="work" 
                                     data-id="{{ work.id }}" 
-                                    data-liked="{{ 'true' if user_liked else 'false' }}"
-                                    class="btn {{ 'btn-primary' if user_liked else 'btn-outline-primary' }} btn-sm like-btn">
+                                    data-liked="{{ 'true' if user_liked else 'false' }}">
                                 <i class="fas fa-thumbs-up like-icon me-1"></i>
                                 <span class="like-count">{{ work_likes }}</span>
                             </button>
@@ -2367,10 +2366,13 @@ function renderWorkComments(container, comments) {
             .then(data => {
                 if (data.success) {
                     const countElement = this.querySelector('.like-count');
-                    const currentCount = parseInt(countElement.textContent);
+                    
+                    // 优先使用后端返回的最新计数
+                    if (typeof data.likes_count === 'number') {
+                        countElement.textContent = data.likes_count;
+                    }
                     
                     if (data.action === 'liked') {
-                        countElement.textContent = currentCount + 1;
                         this.dataset.liked = 'true';
                         this.classList.add('liked');
                         
@@ -2385,7 +2387,6 @@ function renderWorkComments(container, comments) {
                             countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
                         }
                     } else {
-                        countElement.textContent = currentCount - 1;
                         this.dataset.liked = 'false';
                         this.classList.remove('liked');
                         
@@ -2463,10 +2464,13 @@ function renderComments(container, comments) {
             .then(data => {
                 if (data.success) {
                     const countElement = this.querySelector('.comment-like-count');
-                    const currentCount = parseInt(countElement.textContent);
+                    
+                    // 优先使用后端返回的最新计数
+                    if (typeof data.likes_count === 'number') {
+                        countElement.textContent = data.likes_count;
+                    }
                     
                     if (data.action === 'liked') {
-                        countElement.textContent = currentCount + 1;
                         this.dataset.liked = 'true';
                         this.classList.add('liked');
                         
@@ -2505,7 +2509,6 @@ function renderComments(container, comments) {
                             countElement.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8)';
                         }
                     } else {
-                        countElement.textContent = currentCount - 1;
                         this.dataset.liked = 'false';
                         this.classList.remove('liked');
                         
