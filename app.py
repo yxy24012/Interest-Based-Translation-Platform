@@ -35,8 +35,13 @@ except ImportError:
     add_performance_headers = None
 
 app = Flask(__name__)
-# --- DB config: use DATABASE_URL (Supabase/Railway). Default to SQLite for local dev.
-db_url = os.getenv('DATABASE_URL', 'sqlite:///instance/forum.db')
+# --- DB config: use DATABASE_URL (Supabase/Railway). Default to SQLite
+# Vercel 无 DATABASE_URL 时，使用可写的 /tmp/forum.db
+env_db_url = os.getenv('DATABASE_URL')
+if env_db_url and env_db_url.strip():
+    db_url = env_db_url.strip()
+else:
+    db_url = 'sqlite:////tmp/forum.db' if IS_VERCEL else 'sqlite:///instance/forum.db'
 if db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
 if 'postgresql+psycopg2://' in db_url and 'sslmode=' not in db_url:
