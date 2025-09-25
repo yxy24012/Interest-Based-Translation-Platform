@@ -59,7 +59,16 @@ if create_optimized_engine and IS_VERCEL:
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'my-very-strong-and-unique-secret-key-2024')
-app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# 统一设置可写的上传目录：
+# - 优先使用环境变量 UPLOAD_DIR
+# - 在 Vercel 环境下默认使用 /tmp/uploads（其为唯一可写目录）
+# - 其他环境默认使用项目下的 uploads 目录
+_configured_upload_dir = os.environ.get('UPLOAD_DIR')
+if _configured_upload_dir and _configured_upload_dir.strip():
+    app.config['UPLOAD_FOLDER'] = _configured_upload_dir.strip()
+else:
+    app.config['UPLOAD_FOLDER'] = '/tmp/uploads' if IS_VERCEL else 'uploads'
 
 # 应用静态文件缓存配置
 if STATIC_CACHE_CONFIG:
@@ -83,9 +92,12 @@ def bool_default(val: bool) -> str:
     # SQLite accepts 1/0 for booleans
     return '1' if val else '0'
 
-# 确保上传文件夹存在（仅在非 Vercel 环境）
-if not IS_VERCEL and not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# 确保上传目录存在（包括 Vercel 的 /tmp/uploads）
+try:
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+except Exception:
+    # 若目录创建失败，后续保存会抛错并在调用处体现
+    pass
 
 # 允许的文件扩展名
 ALLOWED_EXTENSIONS = {
