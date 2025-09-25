@@ -11,7 +11,7 @@
     "routes": [
       { "handle": "filesystem" },
       { "src": "/static/(.*)", "dest": "/static/$1", "headers": { "Cache-Control": "public, max-age=86400" } },
-      { "src": "/uploads/(.*)", "dest": "/uploads/$1", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0" } },
+      { "src": "/uploads/(.*)", "dest": "/api/index.py" },
       { "src": "/avatar/(.*)", "dest": "/api/index.py" },
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
