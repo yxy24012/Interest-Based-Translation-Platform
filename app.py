@@ -13,6 +13,8 @@ from mail_utils import send_email, is_smtp_configured
 import base64
 import io
 from PIL import Image
+import bleach
+from markupsafe import Markup
 
 # 加载 .env 文件
 try:
@@ -297,6 +299,46 @@ def ensure_session_language():
         # 任何异常均回退到英语，避免阻断请求
         session['lang'] = 'en'
 
+
+# HTML清理函数
+def clean_html_content(content):
+    """
+    清理HTML内容，允许安全的HTML标签和属性
+    """
+    if not content:
+        return content
+    
+    # 允许的HTML标签
+    allowed_tags = [
+        'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike', 'del',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li',
+        'blockquote', 'pre', 'code',
+        'a', 'img',
+        'div', 'span',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'hr'
+    ]
+    
+    # 允许的属性
+    allowed_attributes = {
+        'a': ['href', 'title', 'target'],
+        'img': ['src', 'alt', 'title', 'width', 'height'],
+        'table': ['border', 'cellpadding', 'cellspacing'],
+        'td': ['colspan', 'rowspan'],
+        'th': ['colspan', 'rowspan'],
+        '*': ['class', 'id', 'style']
+    }
+    
+    # 清理HTML
+    cleaned_content = bleach.clean(
+        content,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        strip=True
+    )
+    
+    return cleaned_content
 
 # 多语言消息函数
 def get_message(key, lang=None, **kwargs):
@@ -8016,7 +8058,7 @@ def upload():
         return redirect(url_for('login'))
     if request.method == 'POST':
         title = request.form['title']
-        content = request.form['content']
+        content = clean_html_content(request.form['content'])
         original_language = request.form['original_language']
         target_language = request.form['target_language']
         category = request.form['category']
@@ -8044,8 +8086,8 @@ def upload():
             ext = filename.rsplit('.', 1)[-1].lower()
             media_filename = f"work_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{session['user_id']}.{ext}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], media_filename))
-        translation_requirements = request.form.get('translation_requirements', '')
-        translation_expectation = request.form.get('translation_expectation', '')
+        translation_requirements = clean_html_content(request.form.get('translation_requirements', ''))
+        translation_expectation = clean_html_content(request.form.get('translation_expectation', ''))
         contact_before_translate = request.form.get('contact_before_translate') == 'on' # 修正布尔类型
         allow_multiple_translators = request.form.get('allow_multiple_translators') == 'on' # 允许多人翻译
         work = Work(
@@ -8108,7 +8150,7 @@ def work_detail(work_id):
             if not current_user:
                 flash(get_message('please_login'), 'error')
                 return redirect(url_for('login'))
-            content = request.form['content']
+            content = clean_html_content(request.form['content'])
             comment = Comment(
                 content=content,
                 author_id=current_user.id,
@@ -8260,7 +8302,7 @@ def handle_translation_submit(work_id, current_user):
     
     if 'submit' in request.form:
         # 提交翻译
-        content = request.form.get('content', '').strip()
+        content = clean_html_content(request.form.get('content', '').strip())
         if not content:
             flash(get_message('translation_content_required'), 'error')
             return redirect(url_for('translate_work', work_id=work_id))
@@ -8349,7 +8391,7 @@ def handle_translation_submit(work_id, current_user):
     
     elif 'save_draft' in request.form:
         # 保存草稿
-        content = request.form.get('content', '').strip()
+        content = clean_html_content(request.form.get('content', '').strip())
         
         # 处理多媒体文件上传
         media_filename = None
@@ -8486,7 +8528,7 @@ def make_request(work_id):
     submitted = False
     
     if request.method == 'POST':
-        content = request.form.get('content', '').strip()
+        content = clean_html_content(request.form.get('content', '').strip())
         
         if not content:
             flash(get_message('request_content_required') if get_message('request_content_required') else '请输入您的要求内容', 'error')
@@ -9032,7 +9074,7 @@ def conversation(user_id):
     user = get_current_user()
     other = User.query.get_or_404(user_id)
     if request.method == 'POST':
-        content = request.form.get('content', '')
+        content = clean_html_content(request.form.get('content', ''))
         image_filename = None
         
         # 处理图片上传
@@ -9405,7 +9447,7 @@ def edit_work(work_id):
         work_translators = [t.translator_id for t in work.translations]
         
         work.title = request.form['title']
-        work.content = request.form['content']
+        work.content = clean_html_content(request.form['content'])
         original_language = request.form['original_language']
         target_language = request.form['target_language']
         work.original_language = original_language
@@ -9423,12 +9465,12 @@ def edit_work(work_id):
             return render_template('edit_work.html', work=work, admin_reason=admin_reason)
         
         work.category = category
-        work.translation_expectation = request.form.get('translation_expectation', '')
+        work.translation_expectation = clean_html_content(request.form.get('translation_expectation', ''))
         
         # 处理翻译要求：如果勾选框未选中，则清空翻译要求内容
         show_requirements = request.form.get('show_requirements') == 'on'
         if show_requirements:
-            work.translation_requirements = request.form.get('translation_requirements', '')
+            work.translation_requirements = clean_html_content(request.form.get('translation_requirements', ''))
         else:
             work.translation_requirements = ''
         file = request.files.get('media_file')
@@ -10252,7 +10294,7 @@ def edit_translation(work_id):
     
     if request.method == 'POST':
         if 'update_translation' in request.form:
-            content = request.form['translation_content']
+            content = clean_html_content(request.form['translation_content'])
             
             # 处理多媒体文件上传
             media_filename = None
@@ -11324,7 +11366,7 @@ def add_comment():
     
     # 创建评论
     comment = Comment(
-        content=content,
+        content=clean_html_content(content),
         author_id=current_user.id,
         work_id=work_id,
         translation_id=translation_id,

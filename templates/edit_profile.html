@@ -60,7 +60,7 @@
                         <label for="bio" class="form-label">
                             <i class="fas fa-info-circle me-1"></i>{{ get_message('bio') if get_message('bio') else '个人简介' }}
                         </label>
-                        <textarea class="form-control" id="bio" name="bio" rows="4" 
+                        <textarea class="form-control rich-text-editor" id="bio" name="bio" rows="4" 
                                   placeholder="{{ get_message('bio_placeholder') if get_message('bio_placeholder') else '请输入个人简介（例如：翻译工作者，擅长中文、日文、英文翻译）' }}">{{ user.bio or '' }}</textarea>
                         <div class="form-text">
                             {{ get_message('bio_help_text') if get_message('bio_help_text') else '请描述您的语言能力和专业领域' }}

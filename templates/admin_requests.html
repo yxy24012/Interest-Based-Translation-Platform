@@ -151,7 +151,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="approveNotes" class="form-label">{{ get_message('review_notes_optional') if get_message('review_notes_optional') else '审核备注（可选）' }}</label>
-                        <textarea class="form-control" id="approveNotes" name="review_notes" rows="3"></textarea>
+                        <textarea class="form-control rich-text-editor" id="approveNotes" name="review_notes" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -175,7 +175,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="rejectNotes" class="form-label">{{ get_message('rejection_reason_optional') if get_message('rejection_reason_optional') else '拒绝理由（可选）' }}</label>
-                        <textarea class="form-control" id="rejectNotes" name="review_notes" rows="3"></textarea>
+                        <textarea class="form-control rich-text-editor" id="rejectNotes" name="review_notes" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

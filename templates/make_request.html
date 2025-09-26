@@ -92,7 +92,7 @@
                                 <h5><i class="fas fa-heart me-2 text-danger"></i>{{ get_message('your_expectations_for_creator') if get_message('your_expectations_for_creator') else '您对作者的期待/要求' }}</h5>
                                 <div class="mb-3">
                                     <label for="content" class="form-label">{{ get_message('enter_expectations_for_creator') if get_message('enter_expectations_for_creator') else '请输入您对作者的期待或要求' }}</label>
-                                    <textarea class="form-control" id="content" name="content" rows="6" 
+                                    <textarea class="form-control rich-text-editor" id="content" name="content" rows="6" 
                                               placeholder="{{ get_message('expectations_for_creator_placeholder') if get_message('expectations_for_creator_placeholder') else '例如：希望作者提供更多背景信息、希望作者对某些术语进行解释、希望作者提供参考材料等...' }}" required></textarea>
                                     <div class="form-text">
                                         {{ get_message('request_help_text') if get_message('request_help_text') else '请详细描述您的需求，这将帮助作者更好地理解您的期望。' }}

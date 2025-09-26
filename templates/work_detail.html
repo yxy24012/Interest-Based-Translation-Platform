@@ -886,31 +886,33 @@
                     </div>
                     <div class="card border-0" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
                         <div class="card-body p-4">
-                            <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; line-height: 1.6; color: #212529;">{{ work.content }}</pre>
+                            <div class="mb-0" style="line-height: 1.6; color: #212529;">{{ work.content|safe }}</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- 创作者期待 -->
-                {% if work.translation_expectation %}
+                {% set expectation_text = work.translation_expectation|striptags|trim if work.translation_expectation else '' %}
+                {% if expectation_text %}
                 <div class="mb-4">
                     <h5 class="mb-3">
                         <i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') }}
                     </h5>
                     <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                        <span style="color: #212529; white-space: pre-wrap;">{{ work.translation_expectation }}</span>
+                        <div style="color: #212529;">{{ work.translation_expectation|safe }}</div>
                     </div>
                 </div>
                 {% endif %}
                 
                 <!-- 创作者要求 -->
-                {% if work.translation_requirements %}
+                {% set requirements_text = work.translation_requirements|striptags|trim if work.translation_requirements else '' %}
+                {% if requirements_text %}
                 <div class="mb-4">
                     <h5 class="mb-3">
                         <i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') }}
                     </h5>
                     <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
-                        {{ work.translation_requirements }}
+                        {{ work.translation_requirements|safe }}
                     </div>
                 </div>
                 {% endif %}
@@ -984,7 +986,7 @@
                         <div class="card-body">
                             <!-- 翻译文本 -->
                             <div class="border border-dark rounded p-3 mb-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                                <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; color: #212529;">{{ translation.content }}</pre>
+                                <div class="mb-0" style="color: #212529;">{{ translation.content|safe }}</div>
                             </div>
                             
                             <!-- 作者操作按钮 -->
@@ -1027,11 +1029,11 @@
                                             <input type="hidden" name="translation_id" value="{{ translation.id }}">
                                             <div class="mb-3">
                                                 <label class="form-label">{{ get_message('correction_content_label') }}</label>
-                                                <textarea name="content" class="form-control" rows="4" placeholder="{{ get_message('correction_content_placeholder') }}" required></textarea>
+                                                <textarea name="content" class="form-control rich-text-editor" rows="4" placeholder="{{ get_message('correction_content_placeholder') }}" required></textarea>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">{{ get_message('correction_notes_label') }}</label>
-                                                <textarea name="notes" class="form-control" rows="2" placeholder="{{ get_message('correction_notes_placeholder') }}"></textarea>
+                                                <textarea name="notes" class="form-control rich-text-editor" rows="2" placeholder="{{ get_message('correction_notes_placeholder') }}"></textarea>
                                             </div>
                                             <div class="d-flex gap-2">
                                                 <button type="submit" class="btn btn-warning">
@@ -1163,7 +1165,7 @@
                                         {% if session.get('user_id') %}
                                         <form class="correction-comment-form" data-correction-id="{{ correction.id }}">
                                             <div class="mb-3">
-                                                <textarea class="form-control" rows="2" placeholder="{{ get_message('correction_comment_placeholder') }}" required></textarea>
+                                                <textarea class="form-control rich-text-editor" rows="2" placeholder="{{ get_message('correction_comment_placeholder') }}" required></textarea>
                                             </div>
                                             <button type="submit" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_comment') }}
@@ -1191,7 +1193,7 @@
                                 {% if session.get('user_id') %}
                                 <form class="translation-comment-form" data-translation-id="{{ translation.id }}">
                                     <div class="mb-3">
-                                        <textarea class="form-control" rows="3" placeholder="{{ get_message('translation_comment_placeholder') }}" required></textarea>
+                                        <textarea class="form-control rich-text-editor" rows="3" placeholder="{{ get_message('translation_comment_placeholder') }}" required></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-success btn-sm">
                                         <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_translation_comment') }}
@@ -1422,7 +1424,7 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <p class="mb-0">{{ comment.content }}</p>
+                                    <div class="mb-0">{{ comment.content|safe }}</div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -1439,7 +1441,7 @@
                     <form method="POST">
                         <input type="hidden" name="add_comment" value="1">
                         <div class="mb-3">
-                            <textarea name="content" class="form-control" rows="3" placeholder="{{ get_message('comment_placeholder') }}" required></textarea>
+                            <textarea name="content" class="form-control rich-text-editor" rows="3" placeholder="{{ get_message('comment_placeholder') }}" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane me-2"></i>{{ get_message('post_work_comment') }}
@@ -1743,7 +1745,7 @@
                         <label for="evaluation" class="form-label">
                             {{ get_message('evaluation_optional') }}
                         </label>
-                        <textarea class="form-control" id="evaluation" name="evaluation" rows="4" 
+                        <textarea class="form-control rich-text-editor" id="evaluation" name="evaluation" rows="4" 
                                 placeholder="{{ get_message('evaluation_placeholder') }}"></textarea>
                     </div>
                     <div class="mb-3">
@@ -1784,7 +1786,7 @@
                         <label for="rejectEvaluation" class="form-label">
                             {{ get_message('reject_reason') if get_message('reject_reason') else '拒绝理由（可选）' }}
                         </label>
-                        <textarea class="form-control" id="rejectEvaluation" name="rejectEvaluation" rows="4" 
+                        <textarea class="form-control rich-text-editor" id="rejectEvaluation" name="rejectEvaluation" rows="4" 
                                 placeholder="{{ get_message('reject_reason_placeholder') if get_message('reject_reason_placeholder') else '请输入拒绝翻译的理由...' }}"></textarea>
                     </div>
                 </form>
@@ -1817,7 +1819,7 @@
                         <label for="adminEditReason" class="form-label">
                             {{ get_message('edit_reason') if get_message('edit_reason') else '编辑理由' }}
                         </label>
-                        <textarea class="form-control" id="adminEditReason" name="adminEditReason" rows="4" 
+                        <textarea class="form-control rich-text-editor" id="adminEditReason" name="adminEditReason" rows="4" 
                                 placeholder="{{ get_message('edit_reason_placeholder') if get_message('edit_reason_placeholder') else '请输入编辑理由...' }}"></textarea>
                     </div>
                 </form>
@@ -1854,7 +1856,7 @@
                         <label for="adminDeleteReason" class="form-label">
                             {{ get_message('delete_reason') if get_message('delete_reason') else '删除理由' }}
                         </label>
-                        <textarea class="form-control" id="adminDeleteReason" name="adminDeleteReason" rows="4" 
+                        <textarea class="form-control rich-text-editor" id="adminDeleteReason" name="adminDeleteReason" rows="4" 
                                 placeholder="{{ get_message('delete_reason_placeholder') if get_message('delete_reason_placeholder') else '请输入删除理由...' }}"></textarea>
                     </div>
                 </form>
@@ -2342,7 +2344,7 @@ function renderWorkComments(container, comments) {
                             </button>
                         </div>
                     </div>
-                    <p class="mb-0">${comment.content}</p>
+                    <div class="mb-0">${comment.content}</div>
                 </div>
             </div>
         `;
@@ -2440,7 +2442,7 @@ function renderComments(container, comments) {
                             </button>
                         </div>
                     </div>
-                    <p class="mb-0">${comment.content}</p>
+                    <div class="mb-0">${comment.content}</div>
                 </div>
             </div>
         `;

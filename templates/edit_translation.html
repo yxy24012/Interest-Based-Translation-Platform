@@ -55,7 +55,7 @@
                 <div class="mb-4">
                     <h6><i class="fas fa-file-text me-2"></i>{{ get_message('original_content') }}</h6>
                     <div class="border rounded p-3 bg-light">
-                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ work.content }}</pre>
+                        <div class="mb-0">{{ work.content|safe }}</div>
                     </div>
                 </div>
                 
@@ -65,7 +65,7 @@
                         <label for="translation_content" class="form-label">
                             <i class="fas fa-language me-2"></i>{{ get_message('translation_content_label') if get_message('translation_content_label') else '翻译内容' }}
                         </label>
-                        <textarea class="form-control translation-area" id="translation_content" 
+                        <textarea class="form-control rich-text-editor translation-area" id="translation_content" 
                                   name="translation_content" rows="15" 
                                   placeholder="{{ get_message('translation_content_placeholder') if get_message('translation_content_placeholder') else '请输入翻译内容...' }}" required>{{ translation.content }}</textarea>
                         <div class="form-text">

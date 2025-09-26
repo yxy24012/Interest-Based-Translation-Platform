@@ -159,7 +159,7 @@
                             <i class="fas fa-file-text me-1"></i>
                             {{ get_message('content') }} <span class="text-danger">*</span>
                         </label>
-                        <textarea class="form-control" id="content" name="content" rows="8" required 
+                        <textarea class="form-control rich-text-editor" id="content" name="content" rows="8" required 
                                   placeholder="{{ get_message('enter_work_content') }}"></textarea>
                         <div class="form-text">
                             <i class="fas fa-info-circle me-1"></i>
@@ -186,7 +186,7 @@
                             <i class="fas fa-star me-1"></i>
                             {{ get_message('translation_expectation') }}
                         </label>
-                        <textarea class="form-control" id="translation_expectation" name="translation_expectation" rows="3" 
+                        <textarea class="form-control rich-text-editor" id="translation_expectation" name="translation_expectation" rows="3" 
                                   placeholder="{{ get_message('translation_expectation_placeholder') }}"></textarea>
                         <div class="form-text">
                             <i class="fas fa-lightbulb me-1"></i>
@@ -207,7 +207,7 @@
                             </label>
                         </div>
                         <div id="requirements_section" style="display: none;">
-                            <textarea class="form-control mt-2" id="translation_requirements" name="translation_requirements" rows="3" 
+                            <textarea class="form-control rich-text-editor mt-2" id="translation_requirements" name="translation_requirements" rows="3" 
                                       placeholder="{% if user.preferred_language == 'ja' %}翻訳者に無断での配布、商業利用などを禁止するよう要求
                                       {% elif user.preferred_language == 'en' %}Require translators not to distribute without permission or use for commercial purposes, etc.
                                       {% elif user.preferred_language == 'ru' %}Требовать от переводчиков не распространять без разрешения или использовать в коммерческих целях и т.д.

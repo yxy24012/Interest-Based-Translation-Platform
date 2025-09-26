@@ -28,7 +28,7 @@
                             <label for="reason" class="form-label">
                                 {{ get_message('application_reason') if get_message('application_reason') else '申请理由' }}
                             </label>
-                            <textarea class="form-control" id="reason" name="reason" rows="8" 
+                            <textarea class="form-control rich-text-editor" id="reason" name="reason" rows="8" 
                                     placeholder="{{ get_message('application_reason_placeholder') if get_message('application_reason_placeholder') else '请详细填写申请理由...' }}" required></textarea>
                         </div>
                         
