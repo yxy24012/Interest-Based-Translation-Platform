@@ -7352,17 +7352,28 @@ def utility_processor():
     
     def get_avatar_url(user):
         """获取用户头像URL的辅助函数"""
+        import time
+        
         if user and user.avatar:
             if user.avatar.startswith('data:image'):
-                # 对于 base64 编码的头像，使用专门的路由
-                return url_for('user_avatar', user_id=user.id)
+                # 对于 base64 编码的头像，使用专门的路由并添加时间戳防止缓存
+                if IS_VERCEL and hasattr(user, 'updated_at') and user.updated_at:
+                    # 在Vercel环境中，使用用户更新时间戳
+                    timestamp = str(int(user.updated_at.timestamp()))
+                else:
+                    timestamp = str(int(time.time()))
+                return url_for('user_avatar', user_id=user.id, _external=False) + f'?t={timestamp}'
             else:
-                # 对于文件系统中的头像
-                return url_for('uploaded_file', filename=user.avatar)
+                # 对于文件系统中的头像，添加时间戳防止缓存
+                if IS_VERCEL and hasattr(user, 'updated_at') and user.updated_at:
+                    # 在Vercel环境中，使用用户更新时间戳
+                    timestamp = str(int(user.updated_at.timestamp()))
+                else:
+                    timestamp = str(int(time.time()))
+                return url_for('uploaded_file', filename=user.avatar, _external=False) + f'?t={timestamp}'
         else:
             # 默认头像 - 在Vercel环境中使用更可靠的版本号策略
             import os
-            import time
             
             if IS_VERCEL:
                 # 在Vercel环境中，使用环境变量或时间戳作为版本号
@@ -7389,8 +7400,9 @@ def utility_processor():
                     version = str(int(time.time()))
             
             if IS_VERCEL:
-                # 在Vercel环境中，使用专门的默认头像路由
-                return url_for('default_avatar')
+                # 在Vercel环境中，使用专门的默认头像路由并添加时间戳
+                timestamp = str(int(time.time()))
+                return url_for('default_avatar', _external=False) + f'?t={timestamp}'
             else:
                 return url_for('static', filename=f'default_avatar.png?v={version}')
     
@@ -7951,6 +7963,11 @@ def edit_profile():
             avatar_result = process_avatar_upload(file, user.id)
             if avatar_result:
                 user.avatar = avatar_result
+                # 在Vercel环境中，强制更新头像缓存
+                if IS_VERCEL:
+                    # 添加一个时间戳到用户记录中，用于强制刷新头像
+                    import time
+                    user.updated_at = datetime.utcnow()
         
         db.session.commit()
         
@@ -9605,13 +9622,19 @@ def uploaded_file(filename):
     try:
         response = send_from_directory(app.config['UPLOAD_FOLDER'], filename)
         try:
-            # 禁止缓存头像文件，确保更换后立即生效
-            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            # 禁止缓存头像文件，确保更换后立即生效 - 增强版缓存控制
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0, private'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
             response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            response.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            response.headers['If-None-Match'] = '*'
             import time
             response.headers['ETag'] = f'"{int(time.time())}"'
+            # 添加额外的防缓存头
+            response.headers['X-Accel-Expires'] = '0'
+            response.headers['X-Cache'] = 'no-cache'
+            response.headers['X-Cache-Control'] = 'no-cache'
         except Exception:
             pass
         return response
@@ -9644,11 +9667,19 @@ def default_avatar():
     try:
         response = send_from_directory('static', 'default_avatar.png')
         try:
-            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            # 增强版缓存控制头
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0, private'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
             response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            response.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            response.headers['If-None-Match'] = '*'
+            import time
             response.headers['ETag'] = f'"{int(time.time())}"'
+            # 添加额外的防缓存头
+            response.headers['X-Accel-Expires'] = '0'
+            response.headers['X-Cache'] = 'no-cache'
+            response.headers['X-Cache-Control'] = 'no-cache'
         except Exception:
             pass
         return response
@@ -9672,13 +9703,19 @@ def user_avatar(user_id):
                 image_data = base64.b64decode(encoded)
                 resp = Response(image_data, mimetype='image/jpeg')
                 try:
-                    # 禁止缓存 base64 头像
-                    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                    # 禁止缓存 base64 头像 - 增强版缓存控制
+                    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0, private'
                     resp.headers['Pragma'] = 'no-cache'
                     resp.headers['Expires'] = '0'
                     resp.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                    resp.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                    resp.headers['If-None-Match'] = '*'
                     import time
                     resp.headers['ETag'] = f'"{int(time.time())}"'
+                    # 添加额外的防缓存头
+                    resp.headers['X-Accel-Expires'] = '0'
+                    resp.headers['X-Cache'] = 'no-cache'
+                    resp.headers['X-Cache-Control'] = 'no-cache'
                 except Exception:
                     pass
                 return resp
@@ -9702,13 +9739,19 @@ def user_avatar(user_id):
                     # 在本地环境中，使用send_from_directory
                     response = send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
                     try:
-                        # 禁止缓存文件系统头像
-                        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                        # 禁止缓存文件系统头像 - 增强版缓存控制
+                        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0, private'
                         response.headers['Pragma'] = 'no-cache'
                         response.headers['Expires'] = '0'
                         response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                        response.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                        response.headers['If-None-Match'] = '*'
                         import time
                         response.headers['ETag'] = f'"{int(time.time())}"'
+                        # 添加额外的防缓存头
+                        response.headers['X-Accel-Expires'] = '0'
+                        response.headers['X-Cache'] = 'no-cache'
+                        response.headers['X-Cache-Control'] = 'no-cache'
                     except Exception:
                         pass
                     return response

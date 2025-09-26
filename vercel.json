@@ -11,9 +11,9 @@
     "routes": [
       { "handle": "filesystem" },
       { "src": "/static/(.*)", "dest": "/static/$1", "headers": { "Cache-Control": "public, max-age=86400" } },
-      { "src": "/uploads/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
-      { "src": "/avatar/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
-      { "src": "/default-avatar", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
+      { "src": "/uploads/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0, private", "Pragma": "no-cache", "Expires": "0", "Last-Modified": "Thu, 01 Jan 1970 00:00:00 GMT", "If-Modified-Since": "Thu, 01 Jan 1970 00:00:00 GMT", "If-None-Match": "*", "X-Accel-Expires": "0", "X-Cache": "no-cache", "X-Cache-Control": "no-cache" } },
+      { "src": "/avatar/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0, private", "Pragma": "no-cache", "Expires": "0", "Last-Modified": "Thu, 01 Jan 1970 00:00:00 GMT", "If-Modified-Since": "Thu, 01 Jan 1970 00:00:00 GMT", "If-None-Match": "*", "X-Accel-Expires": "0", "X-Cache": "no-cache", "X-Cache-Control": "no-cache" } },
+      { "src": "/default-avatar", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0, private", "Pragma": "no-cache", "Expires": "0", "Last-Modified": "Thu, 01 Jan 1970 00:00:00 GMT", "If-Modified-Since": "Thu, 01 Jan 1970 00:00:00 GMT", "If-None-Match": "*", "X-Accel-Expires": "0", "X-Cache": "no-cache", "X-Cache-Control": "no-cache" } },
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
     ],
