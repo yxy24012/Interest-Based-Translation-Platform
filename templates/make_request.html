@@ -72,7 +72,7 @@
                         <div class="mb-4">
                             <h5><i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') if get_message('creator_expectation') else '作者期待' }}</h5>
                             <div class="border rounded p-3 bg-light">
-                                <p class="mb-0">{{ work.translation_expectation }}</p>
+                                <p class="mb-0" style="white-space: pre-wrap;">{{ work.translation_expectation }}</p>
                             </div>
                         </div>
                         {% endif %}

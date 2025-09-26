@@ -898,7 +898,7 @@
                         <i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') }}
                     </h5>
                     <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                        <span style="color: #212529;">{{ work.translation_expectation }}</span>
+                        <span style="color: #212529; white-space: pre-wrap;">{{ work.translation_expectation }}</span>
                     </div>
                 </div>
                 {% endif %}
@@ -922,7 +922,7 @@
                         <i class="fas fa-user-edit me-2 text-danger"></i>{{ get_message('translator') }}<a href="{{ url_for('user_profile', user_id=approved_req.translator_id) }}" class="text-decoration-underline">{{ get_username(approved_req.translator_id) }}</a>{{ get_message('translator_expectation') }}
                     </h5>
                     <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                        <span style="color: #212529;">{{ translator_expectation }}</span>
+                        <span style="color: #212529; white-space: pre-wrap;">{{ translator_expectation }}</span>
                     </div>
                 </div>
                 {% endif %}
@@ -934,7 +934,7 @@
                         <i class="fas fa-user-edit me-2 text-danger"></i>{{ get_message('translator') }}<a href="{{ url_for('user_profile', user_id=approved_general_req.translator_id) }}" class="text-decoration-underline">{{ get_username(approved_general_req.translator_id) }}</a>{{ get_message('translator_expectation') }}
                     </h5>
                     <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                        <span style="color: #212529;">{{ general_expectation }}</span>
+                        <span style="color: #212529; white-space: pre-wrap;">{{ general_expectation }}</span>
                     </div>
                 </div>
                 {% endif %}

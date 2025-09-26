@@ -2270,13 +2270,13 @@ def get_message(key, lang=None, **kwargs):
             'zh': '查看资料', 'zh-TW': '查看資料', 'ja': 'プロフィール', 'en': 'View Profile', 'ru': 'Просмотр профиля', 'ko': '프로필 보기', 'fr': 'Voir le profil', 'es': 'Ver perfil'
         },
         'accept_translation': {
-            'zh': '接受翻译', 'zh-TW': '接受翻譯', 'ja': '翻訳を承認', 'en': 'Accept Translation', 'ru': 'Принять перевод', 'ko': '번역 수락', 'fr': 'Accepter la traduction', 'es': 'Aceptar traducción'
+            'zh': '感谢并接受翻译', 'zh-TW': '感謝並接受翻譯', 'ja': '翻訳に感謝し承認', 'en': 'Thank and Accept Translation', 'ru': 'Поблагодарить и принять перевод', 'ko': '번역에 감사하고 수락', 'fr': 'Remercier et accepter la traduction', 'es': 'Agradecer y aceptar traducción'
         },
         'evaluation_optional': {
-            'zh': '评价（可选）', 'zh-TW': '評價（可選）', 'ja': '評価（オプション）', 'en': 'Evaluation (Optional)', 'ru': 'Оценка (необязательно)', 'ko': '평가 (선택사항)', 'fr': 'Évaluation (optionnel)', 'es': 'Evaluación (opcional)'
+            'zh': '感谢与评价（可选）', 'zh-TW': '感謝與評價（可選）', 'ja': '感謝と評価（オプション）', 'en': 'Gratitude and Evaluation (Optional)', 'ru': 'Благодарность и оценка (необязательно)', 'ko': '감사와 평가 (선택사항)', 'fr': 'Gratitude et évaluation (optionnel)', 'es': 'Gratitud y evaluación (opcional)'
         },
         'evaluation_placeholder': {
-            'zh': '请输入对翻译的评价...', 'zh-TW': '請輸入對翻譯的評價...', 'ja': '翻訳についての評価を入力してください...', 'en': 'Please enter your evaluation of the translation...', 'ru': 'Пожалуйста, введите вашу оценку перевода...', 'ko': '번역에 대한 평가를 입력하세요...', 'fr': 'Veuillez entrer votre évaluation de la traduction...', 'es': 'Por favor ingrese su evaluación de la traducción...'
+            'zh': '请表达您对翻译者的感谢和评价...', 'zh-TW': '請表達您對翻譯者的感謝和評價...', 'ja': '翻訳者への感謝と評価を入力してください...', 'en': 'Please express your gratitude and evaluation to the translator...', 'ru': 'Пожалуйста, выразите благодарность и оценку переводчику...', 'ko': '번역자에 대한 감사와 평가를 표현해 주세요...', 'fr': 'Veuillez exprimer votre gratitude et évaluation au traducteur...', 'es': 'Por favor exprese su gratitud y evaluación al traductor...'
         },
         'add_like_to_translation': {
             'zh': '为翻译点赞', 'zh-TW': '為翻譯點讚', 'ja': '翻訳にいいねを追加', 'en': 'Add like to translation', 'ru': 'Добавить лайк к переводу', 'ko': '번역에 좋아요 추가', 'fr': 'Ajouter un j\'aime à la traduction', 'es': 'Agregar me gusta a la traducción'
@@ -6753,11 +6753,11 @@ def get_system_message(message_type, user_id, **kwargs):
             'es': 'Tu solicitud de amistad ha sido rechazada por {receiver_name}.'
         },
         'translation_accepted_by_author': {
-            'en': f'Congratulations! Your translation "{kwargs.get("work_title", "")}" has been accepted by the author and liked!',
-            'ru': f'Поздравляем! Ваш перевод "{kwargs.get("work_title", "")}" был принят автором и получил лайк!',
-            'ko': f'축하합니다! 귀하의 번역 "{kwargs.get("work_title", "")}"이 저자에 의해 승인되고 좋아요를 받았습니다!',
-            'fr': f'Félicitations ! Votre traduction "{kwargs.get("work_title", "")}" a été acceptée par l\'auteur et aimée !',
-            'zh': f'恭喜！您的翻译《{kwargs.get("work_title", "")}》已被作者接受并点赞！',
+            'en': f'The author has accepted your translation of "{kwargs.get("work_title", "")}" and expresses gratitude to you.',
+            'ru': f'Автор принял ваш перевод "{kwargs.get("work_title", "")}" и выражает вам благодарность.',
+            'ko': f'작가가 귀하의 "{kwargs.get("work_title", "")}" 번역을 수락하고 감사를 표현합니다.',
+            'fr': f'L\'auteur a accepté votre traduction de "{kwargs.get("work_title", "")}" et vous exprime sa gratitude.',
+            'zh': f'作者接受了您的翻译《{kwargs.get("work_title", "")}》，并对您表示感谢。',
             'zh-TW': f'恭喜！您的翻譯《{kwargs.get("work_title", "")}》已被作者接受並點讚！',
             'ja': f'おめでとうございます！あなたの翻訳《{kwargs.get("work_title", "")}》が作者によって承認され、いいねされました！',
             'es': f'¡Felicitaciones! Tu traducción "{kwargs.get("work_title", "")}" ha sido aceptada por el autor y recibió un me gusta!'
