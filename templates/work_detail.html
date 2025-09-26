@@ -2417,7 +2417,7 @@ function showAdminEditModal() {
                 // 根据是否是作者选择不同的API
                 const apiUrl = isAuthor ? `/correction/${correctionId}/author_like` : `/correction/${correctionId}/like`;
                 
-                fetch(apiUrl, {
+                return fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2448,11 +2448,13 @@ function showAdminEditModal() {
                         }
                     } else {
                         alert(data.message);
+                        throw new Error(data.message);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('操作失败，请重试');
+                    throw error;
                 });
             });
         });
@@ -2493,7 +2495,7 @@ function showAdminEditModal() {
             formData.append('work_id', '{{ work.id }}');
             formData.append('translation_id', translationId);
             
-            fetch('/comment/add', {
+            return fetch('/comment/add', {
                 method: 'POST',
                 body: formData
             })
@@ -2518,11 +2520,13 @@ function showAdminEditModal() {
                     }, 3000);
                 } else {
                     alert(data.message);
+                    throw new Error(data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('评论提交失败，请重试');
+                throw error;
             });
         });
     });
@@ -2545,7 +2549,7 @@ function showAdminEditModal() {
             formData.append('work_id', '{{ work.id }}');
             formData.append('correction_id', correctionId);
             
-            fetch('/comment/add', {
+            return fetch('/comment/add', {
                 method: 'POST',
                 body: formData
             })
@@ -2556,11 +2560,13 @@ function showAdminEditModal() {
                     loadCorrectionComments();
                 } else {
                     alert(data.message);
+                    throw new Error(data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('评论提交失败，请重试');
+                throw error;
             });
         });
     });
@@ -2952,7 +2958,7 @@ function adminDeleteWork() {
 // 删除作品
 function deleteWork() {
     if (confirm('{{ get_message("confirm_delete_work") }}')) {
-        fetch('{{ url_for("delete_work", work_id=work.id) }}', {
+        return fetch('{{ url_for("delete_work", work_id=work.id) }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2967,18 +2973,21 @@ function deleteWork() {
                 window.location.href = '{{ url_for("works") }}?deleted=true';
             } else {
                 alert(data.message);
+                throw new Error(data.message);
             }
         })
         .catch(error => {
             console.error('删除作品时出错:', error);
             alert('删除作品时发生错误，请重试');
+            throw error;
         });
     }
+    return Promise.resolve();
 }
 
 // 收藏功能
 function toggleFavorite(workId, button) {
-    fetch(`/favorite/${workId}/toggle`, {
+    return fetch(`/favorite/${workId}/toggle`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -3029,6 +3038,7 @@ function toggleFavorite(workId, button) {
             } else {
                 alert(data.message);
             }
+            throw new Error(data.message);
         }
     })
     .catch(error => {
@@ -3038,6 +3048,7 @@ function toggleFavorite(workId, button) {
         } else {
             alert('{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}');
         }
+        throw error;
     });
 }
 
@@ -3158,7 +3169,24 @@ function submitRating(translationId, rating) {
     const form = document.querySelector(`#visitorRating${translationId}`).closest('form');
     const ratingInput = document.getElementById(`visitorRating${translationId}`);
     ratingInput.value = rating;
-    form.submit();
+    return new Promise((resolve, reject) => {
+        // 使用fetch提交表单数据
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                resolve();
+            } else {
+                reject(new Error('提交失败'));
+            }
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
 }
 
 // 提交校正评分
@@ -3166,7 +3194,24 @@ function submitCorrectionRating(correctionId, rating) {
     const form = document.querySelector(`#correctionRating${correctionId}`).closest('form');
     const ratingInput = document.getElementById(`correctionRating${correctionId}`);
     ratingInput.value = rating;
-    form.submit();
+    return new Promise((resolve, reject) => {
+        // 使用fetch提交表单数据
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                resolve();
+            } else {
+                reject(new Error('提交失败'));
+            }
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
 }
 
 // 作者评分确认功能
