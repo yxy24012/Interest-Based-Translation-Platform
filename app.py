@@ -9699,23 +9699,6 @@ def user_avatar(user_id):
         from flask import redirect
         return redirect(url_for('static', filename='default_avatar.png'))
 
-@app.route('/default-avatar')
-def default_avatar():
-    """专门的默认头像路由，确保在Vercel环境中正确返回"""
-    try:
-        if IS_VERCEL:
-            # 在Vercel环境中，重定向到静态文件
-            from flask import redirect
-            return redirect(url_for('static', filename='default_avatar.png'))
-        else:
-            # 在本地环境中，直接返回文件
-            response = send_from_directory('static', 'default_avatar.png')
-            response.headers['Cache-Control'] = 'public, max-age=86400'
-            return response
-    except Exception as e:
-        print(f"默认头像路由错误: {e}")
-        from flask import redirect
-        return redirect(url_for('static', filename='default_avatar.png'))
 
 @app.route('/trust/<int:translator_id>', methods=['POST'])
 def trust_translator(translator_id):
