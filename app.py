@@ -9602,17 +9602,41 @@ def delete_work(work_id):
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    response = send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     try:
-        # 禁止缓存头像文件，确保更换后立即生效
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-        response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
-        response.headers['ETag'] = f'"{int(time.time())}"'
-    except Exception:
-        pass
-    return response
+        response = send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+        try:
+            # 禁止缓存头像文件，确保更换后立即生效
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            import time
+            response.headers['ETag'] = f'"{int(time.time())}"'
+        except Exception:
+            pass
+        return response
+    except Exception as e:
+        print(f"文件获取错误: {e}")
+        # 如果文件不存在，返回默认头像
+        if IS_VERCEL:
+            from flask import redirect
+            return redirect(url_for('static', filename='default_avatar.png'))
+        else:
+            try:
+                response = send_from_directory('static', 'default_avatar.png')
+                try:
+                    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                    response.headers['Pragma'] = 'no-cache'
+                    response.headers['Expires'] = '0'
+                    response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                    import time
+                    response.headers['ETag'] = f'"{int(time.time())}"'
+                except Exception:
+                    pass
+                return response
+            except Exception:
+                from flask import redirect
+                return redirect(url_for('static', filename='default_avatar.png'))
 
 @app.route('/default-avatar')
 def default_avatar():
@@ -9660,18 +9684,34 @@ def user_avatar(user_id):
                 return resp
             else:
                 # 处理文件系统中的头像
-                response = send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
-                try:
-                    # 禁止缓存文件系统头像
-                    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-                    response.headers['Pragma'] = 'no-cache'
-                    response.headers['Expires'] = '0'
-                    response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
-                    import time
-                    response.headers['ETag'] = f'"{int(time.time())}"'
-                except Exception:
-                    pass
-                return response
+                if IS_VERCEL:
+                    # 在Vercel环境中，文件系统是只读的，而且文件可能不存在
+                    # 检查文件是否存在，如果不存在则返回默认头像
+                    import os
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], user.avatar)
+                    if os.path.exists(file_path):
+                        # 文件存在，重定向到uploads路由
+                        from flask import redirect
+                        return redirect(url_for('uploaded_file', filename=user.avatar))
+                    else:
+                        # 文件不存在，返回默认头像
+                        print(f"DEBUG: 在Vercel环境中，头像文件不存在: {user.avatar}")
+                        from flask import redirect
+                        return redirect(url_for('static', filename='default_avatar.png'))
+                else:
+                    # 在本地环境中，使用send_from_directory
+                    response = send_from_directory(app.config['UPLOAD_FOLDER'], user.avatar)
+                    try:
+                        # 禁止缓存文件系统头像
+                        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                        response.headers['Pragma'] = 'no-cache'
+                        response.headers['Expires'] = '0'
+                        response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                        import time
+                        response.headers['ETag'] = f'"{int(time.time())}"'
+                    except Exception:
+                        pass
+                    return response
     except Exception as e:
         print(f"头像获取错误: {e}")
     
