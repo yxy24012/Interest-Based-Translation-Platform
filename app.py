@@ -9608,9 +9608,30 @@ def uploaded_file(filename):
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
+        response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        response.headers['ETag'] = f'"{int(time.time())}"'
     except Exception:
         pass
     return response
+
+@app.route('/default-avatar')
+def default_avatar():
+    """专门处理默认头像的路由，确保不被缓存"""
+    try:
+        response = send_from_directory('static', 'default_avatar.png')
+        try:
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+            response.headers['ETag'] = f'"{int(time.time())}"'
+        except Exception:
+            pass
+        return response
+    except Exception as e:
+        print(f"默认头像路由错误: {e}")
+        from flask import redirect
+        return redirect(url_for('static', filename='default_avatar.png'))
 
 @app.route('/avatar/<int:user_id>')
 def user_avatar(user_id):
@@ -9631,6 +9652,9 @@ def user_avatar(user_id):
                     resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
                     resp.headers['Pragma'] = 'no-cache'
                     resp.headers['Expires'] = '0'
+                    resp.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                    import time
+                    resp.headers['ETag'] = f'"{int(time.time())}"'
                 except Exception:
                     pass
                 return resp
@@ -9642,6 +9666,9 @@ def user_avatar(user_id):
                     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
                     response.headers['Pragma'] = 'no-cache'
                     response.headers['Expires'] = '0'
+                    response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                    import time
+                    response.headers['ETag'] = f'"{int(time.time())}"'
                 except Exception:
                     pass
                 return response
@@ -9661,6 +9688,8 @@ def user_avatar(user_id):
                 response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
                 response.headers['Pragma'] = 'no-cache'
                 response.headers['Expires'] = '0'
+                response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+                response.headers['ETag'] = f'"{int(time.time())}"'
             except Exception:
                 pass
             return response

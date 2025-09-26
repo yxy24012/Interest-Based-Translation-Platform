@@ -11,8 +11,9 @@
     "routes": [
       { "handle": "filesystem" },
       { "src": "/static/(.*)", "dest": "/static/$1", "headers": { "Cache-Control": "public, max-age=86400" } },
-      { "src": "/uploads/(.*)", "dest": "/api/index.py" },
-      { "src": "/avatar/(.*)", "dest": "/api/index.py" },
+      { "src": "/uploads/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
+      { "src": "/avatar/(.*)", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
+      { "src": "/default-avatar", "dest": "/api/index.py", "headers": { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } },
       { "src": "/healthz", "dest": "/api/index.py" },
       { "src": "/(.*)", "dest": "/api/index.py" }
     ],
