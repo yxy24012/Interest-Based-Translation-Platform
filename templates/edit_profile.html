@@ -106,6 +106,33 @@
                         </div>
                     </div>
                     
+                    <!-- 得分显示设置 -->
+                    {% if user.is_translator or user.is_reviewer %}
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-star me-1"></i>{{ get_message('show_scores') if get_message('show_scores') else '显示得分' }}
+                        </label>
+                        <div class="form-check form-switch">
+                            {% if user.is_translator %}
+                            <input class="form-check-input" type="checkbox" id="show_translation_score" name="show_translation_score" {% if user.show_translation_score %}checked{% endif %}>
+                            <label class="form-check-label" for="show_translation_score">
+                                <i class="fas fa-language me-1"></i>{{ get_message('avg_translation_score') if get_message('avg_translation_score') else '平均翻译得分' }}
+                            </label>
+                            {% endif %}
+                        </div>
+                        <div class="form-check form-switch">
+                            {% if user.is_reviewer %}
+                            <input class="form-check-input" type="checkbox" id="show_correction_score" name="show_correction_score" {% if user.show_correction_score %}checked{% endif %}>
+                            <label class="form-check-label" for="show_correction_score">
+                                <i class="fas fa-check-circle me-1"></i>{{ get_message('avg_correction_score') if get_message('avg_correction_score') else '平均校正得分' }}
+                            </label>
+                            {% endif %}
+                        </div>
+                        <div class="form-text">
+                            {{ get_message('score_display_help_text') if get_message('score_display_help_text') else '选择是否在个人资料中显示您的平均得分' }}
+                        </div>
+                    </div>
+                    {% endif %}
 
                     
                     <div class="d-grid gap-2">

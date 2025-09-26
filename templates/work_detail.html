@@ -1894,7 +1894,7 @@
                         <h6 class="mb-2 fw-bold">{{ work.creator.username }}</h6>
                     </a>
                     {% if work.creator.bio %}
-                    <p class="text-muted small mb-3">{{ work.creator.bio }}</p>
+                    <p class="text-muted small mb-3">{{ work.creator.bio|safe }}</p>
                     {% endif %}
                     
                     <!-- 角色标签 -->

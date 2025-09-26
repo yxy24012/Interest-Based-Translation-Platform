@@ -2318,13 +2318,56 @@ def get_message(key, lang=None, **kwargs):
             'zh': '感谢与评价（可选）', 'zh-TW': '感謝與評價（可選）', 'ja': '感謝と評価（オプション）', 'en': 'Gratitude and Evaluation (Optional)', 'ru': 'Благодарность и оценка (необязательно)', 'ko': '감사와 평가 (선택사항)', 'fr': 'Gratitude et évaluation (optionnel)', 'es': 'Gratitud y evaluación (opcional)'
         },
         'evaluation_placeholder': {
-            'zh': '请表达您对翻译者的感谢和评价...', 'zh-TW': '請表達您對翻譯者的感謝和評價...', 'ja': '翻訳者への感謝と評価を入力してください...', 'en': 'Please express your gratitude and evaluation to the translator...', 'ru': 'Пожалуйста, выразите благодарность и оценку переводчику...', 'ko': '번역자에 대한 감사와 평가를 표현해 주세요...', 'fr': 'Veuillez exprimer votre gratitude et évaluation au traducteur...', 'es': 'Por favor exprese su gratitud y evaluación al traductor...'
+            'zh': '请表达您对翻译者的感谢和评价...\n\n例文参考：\n• 感谢您的精彩翻译，让更多人能够欣赏这部作品！\n• 您的翻译质量很高，为作品增色不少，非常感谢！', 
+            'zh-TW': '請表達您對翻譯者的感謝和評價...\n\n例文參考：\n• 感謝您的精彩翻譯，讓更多人能夠欣賞這部作品！\n• 您的翻譯質量很高，為作品增色不少，非常感謝！', 
+            'ja': '翻訳者への感謝と評価を入力してください...\n\n例文参考：\n• 素晴らしい翻訳をありがとうございます。より多くの人がこの作品を楽しめるようになりました！\n• 翻訳の質がとても高く、作品に彩りを添えてくれました。本当にありがとうございます！', 
+            'en': 'Please express your gratitude and evaluation to the translator...\n\nExample references:\n• Thank you for your wonderful translation, allowing more people to enjoy this work!\n• Your translation quality is very high and adds much to the work. Thank you very much!', 
+            'ru': 'Пожалуйста, выразите благодарность и оценку переводчику...\n\nПримеры:\n• Спасибо за прекрасный перевод, позволивший большему количеству людей насладиться этим произведением!\n• Качество вашего перевода очень высокое и многое добавляет к произведению. Большое спасибо!', 
+            'ko': '번역자에 대한 감사와 평가를 표현해 주세요...\n\n예문 참고:\n• 훌륭한 번역을 해주셔서 감사합니다. 더 많은 사람들이 이 작품을 즐길 수 있게 되었습니다!\n• 번역 품질이 매우 높고 작품에 많은 색채를 더해주었습니다. 정말 감사합니다!', 
+            'fr': 'Veuillez exprimer votre gratitude et évaluation au traducteur...\n\nExemples de référence:\n• Merci pour votre merveilleuse traduction, permettant à plus de gens d\'apprécier cette œuvre!\n• La qualité de votre traduction est très élevée et ajoute beaucoup à l\'œuvre. Merci beaucoup!', 
+            'es': 'Por favor exprese su gratitud y evaluación al traductor...\n\nEjemplos de referencia:\n• ¡Gracias por su maravillosa traducción, permitiendo que más personas disfruten de esta obra!\n• La calidad de su traducción es muy alta y añade mucho a la obra. ¡Muchas gracias!'
         },
         'add_like_to_translation': {
             'zh': '为翻译点赞', 'zh-TW': '為翻譯點讚', 'ja': '翻訳にいいねを追加', 'en': 'Add like to translation', 'ru': 'Добавить лайк к переводу', 'ko': '번역에 좋아요 추가', 'fr': 'Ajouter un j\'aime à la traduction', 'es': 'Agregar me gusta a la traducción'
         },
         'rate_translation': {
             'zh': '为翻译评分', 'zh-TW': '為翻譯評分', 'ja': '翻訳を評価', 'en': 'Rate Translation', 'ru': 'Оценить перевод', 'ko': '번역 평가', 'fr': 'Évaluer la traduction', 'es': 'Calificar traducción'
+        },
+        'best_translation': {
+            'zh': '最佳翻译', 'zh-TW': '最佳翻譯', 'ja': '最適な翻訳', 'en': 'Best Translation', 'ru': 'Лучший перевод', 'ko': '최고의 번역', 'fr': 'Meilleure traduction', 'es': 'Mejor traducción'
+        },
+        'avg_translation_score': {
+            'zh': '平均翻译得分', 'zh-TW': '平均翻譯得分', 'ja': '平均翻訳スコア', 'en': 'Average Translation Score', 'ru': 'Средний балл перевода', 'ko': '평균 번역 점수', 'fr': 'Score moyen de traduction', 'es': 'Puntuación promedio de traducción'
+        },
+        'avg_correction_score': {
+            'zh': '平均校正得分', 'zh-TW': '平均校正得分', 'ja': '平均校正スコア', 'en': 'Average Correction Score', 'ru': 'Средний балл коррекции', 'ko': '평균 교정 점수', 'fr': 'Score moyen de correction', 'es': 'Puntuación promedio de corrección'
+        },
+        'show_scores': {
+            'zh': '显示得分', 'zh-TW': '顯示得分', 'ja': 'スコアを表示', 'en': 'Show Scores', 'ru': 'Показать баллы', 'ko': '점수 표시', 'fr': 'Afficher les scores', 'es': 'Mostrar puntuaciones'
+        },
+        'hide_scores': {
+            'zh': '隐藏得分', 'zh-TW': '隱藏得分', 'ja': 'スコアを非表示', 'en': 'Hide Scores', 'ru': 'Скрыть баллы', 'ko': '점수 숨기기', 'fr': 'Masquer les scores', 'es': 'Ocultar puntuaciones'
+        },
+        'score_display_help_text': {
+            'zh': '选择是否在个人资料中显示您的平均得分', 'zh-TW': '選擇是否在個人資料中顯示您的平均得分', 'ja': 'プロフィールに平均スコアを表示するかどうかを選択', 'en': 'Choose whether to display your average scores in your profile', 'ru': 'Выберите, показывать ли ваши средние баллы в профиле', 'ko': '프로필에 평균 점수를 표시할지 선택하세요', 'fr': 'Choisissez d\'afficher ou non vos scores moyens dans votre profil', 'es': 'Elige si mostrar tus puntuaciones promedio en tu perfil'
+        },
+        'translator': {
+            'zh': '翻译者', 'zh-TW': '翻譯者', 'ja': '翻訳者', 'en': 'Translator', 'ru': 'Переводчик', 'ko': '번역자', 'fr': 'Traducteur', 'es': 'Traductor'
+        },
+        'translation_completed': {
+            'zh': '翻译完成', 'zh-TW': '翻譯完成', 'ja': '翻訳完了', 'en': 'Translation completed', 'ru': 'Перевод завершен', 'ko': '번역 완료', 'fr': 'Traduction terminée', 'es': 'Traducción completada'
+        },
+        'received_likes_count': {
+            'zh': '获得点赞数', 'zh-TW': '獲得點讚數', 'ja': 'いいね数', 'en': 'Received Likes', 'ru': 'Получено лайков', 'ko': '받은 좋아요 수', 'fr': 'J\'aime reçus', 'es': 'Me gusta recibidos'
+        },
+        'author_comment': {
+            'zh': '作者评价', 'zh-TW': '作者評價', 'ja': '作者の評価', 'en': 'Author comment', 'ru': 'Комментарий автора', 'ko': '작가 평가', 'fr': 'Commentaire de l\'auteur', 'es': 'Comentario del autor'
+        },
+        'thank_translator': {
+            'zh': '向翻译者致谢', 'zh-TW': '向翻譯者致謝', 'ja': '翻訳者に感謝', 'en': 'Thank translator', 'ru': 'Поблагодарить переводчика', 'ko': '번역자에게 감사', 'fr': 'Remercier le traducteur', 'es': 'Agradecer al traductor'
+        },
+        'view_translator_profile': {
+            'zh': '查看翻译者资料', 'zh-TW': '查看翻譯者資料', 'ja': '翻訳者プロフィールを見る', 'en': 'View translator profile', 'ru': 'Посмотреть профиль переводчика', 'ko': '번역자 프로필 보기', 'fr': 'Voir le profil du traducteur', 'es': 'Ver perfil del traductor'
         },
         'translation_rating': {
             'zh': '翻译评分', 'zh-TW': '翻譯評分', 'ja': '翻訳評価', 'en': 'Translation Rating', 'ru': 'Оценка перевода', 'ko': '번역 평가', 'fr': 'Évaluation de traduction', 'es': 'Calificación de traducción'
@@ -7076,6 +7119,14 @@ class User(db.Model):
     experience = db.Column(db.Integer, default=0)  # 经验值字段
     email_notifications_enabled = db.Column(db.Boolean, default=True)  # 邮件通知开关
     
+    # 平均得分字段
+    avg_translation_score = db.Column(db.Float, default=None)  # 平均翻译得分
+    avg_correction_score = db.Column(db.Float, default=None)  # 平均校正得分
+    
+    # 得分显示设置
+    show_translation_score = db.Column(db.Boolean, default=True)  # 是否显示翻译得分
+    show_correction_score = db.Column(db.Boolean, default=True)  # 是否显示校正得分
+    
     # 关系
     works = db.relationship('Work', backref='creator', lazy=True)
     translations = db.relationship(
@@ -7545,6 +7596,71 @@ def get_correction_rating_breakdown(correction_id):
     }
     
     return breakdown
+
+def calculate_user_avg_translation_score(user_id):
+    """计算用户的平均翻译得分"""
+    user = User.query.get(user_id)
+    if not user or not user.is_translator:
+        return None
+    
+    # 获取用户所有已批准的翻译
+    approved_translations = Translation.query.filter_by(
+        translator_id=user_id, 
+        status='approved'
+    ).all()
+    
+    if not approved_translations:
+        return None
+    
+    total_score = 0
+    count = 0
+    
+    for translation in approved_translations:
+        score = calculate_translation_rating(translation.id)
+        if score is not None:
+            total_score += score
+            count += 1
+    
+    return round(total_score / count, 1) if count > 0 else None
+
+def calculate_user_avg_correction_score(user_id):
+    """计算用户的平均校正得分"""
+    user = User.query.get(user_id)
+    if not user or not user.is_reviewer:
+        return None
+    
+    # 获取用户所有校正
+    corrections = Correction.query.filter_by(reviewer_id=user_id).all()
+    
+    if not corrections:
+        return None
+    
+    total_score = 0
+    count = 0
+    
+    for correction in corrections:
+        score = calculate_correction_rating(correction.id)
+        if score is not None:
+            total_score += score
+            count += 1
+    
+    return round(total_score / count, 1) if count > 0 else None
+
+def update_user_scores(user_id):
+    """更新用户的平均得分"""
+    user = User.query.get(user_id)
+    if not user:
+        return
+    
+    # 更新翻译平均得分
+    if user.is_translator:
+        user.avg_translation_score = calculate_user_avg_translation_score(user_id)
+    
+    # 更新校正平均得分
+    if user.is_reviewer:
+        user.avg_correction_score = calculate_user_avg_correction_score(user_id)
+    
+    db.session.commit()
 
 def has_role(role):
     return is_logged_in() and session.get('role') == role
@@ -8136,7 +8252,18 @@ def profile():
     ).all()
     # 信赖者列表
     trusted = TrustedTranslator.query.filter_by(user_id=user.id).all()
-    return render_template('profile.html', user=user, works=user_works, translations=user_translations, all_user_translations=all_user_translations, comments=user_comments, friends=friends, trusted=trusted, work_likes=work_likes, translation_likes=translation_likes, comment_likes=comment_likes, author_likes=author_likes, correction_likes=correction_likes, recent_author_likes=recent_author_likes, AuthorLike=AuthorLike, Like=Like, TrustedTranslator=TrustedTranslator, Friend=Friend)
+    
+    # 计算平均得分（如果用户选择显示）
+    avg_translation_score = None
+    avg_correction_score = None
+    
+    if user.show_translation_score and user.is_translator:
+        avg_translation_score = user.avg_translation_score or calculate_user_avg_translation_score(user.id)
+    
+    if user.show_correction_score and user.is_reviewer:
+        avg_correction_score = user.avg_correction_score or calculate_user_avg_correction_score(user.id)
+    
+    return render_template('profile.html', user=user, works=user_works, translations=user_translations, all_user_translations=all_user_translations, comments=user_comments, friends=friends, trusted=trusted, work_likes=work_likes, translation_likes=translation_likes, comment_likes=comment_likes, author_likes=author_likes, correction_likes=correction_likes, recent_author_likes=recent_author_likes, avg_translation_score=avg_translation_score, avg_correction_score=avg_correction_score, AuthorLike=AuthorLike, Like=Like, TrustedTranslator=TrustedTranslator, Friend=Friend)
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
 def edit_profile():
@@ -8187,6 +8314,13 @@ def edit_profile():
                 return render_template('edit_profile.html', user=user)
         
         user.email_notifications_enabled = new_email_notifications_enabled
+
+        # 处理得分显示设置
+        show_translation_score = request.form.get('show_translation_score')
+        user.show_translation_score = True if show_translation_score else False
+        
+        show_correction_score = request.form.get('show_correction_score')
+        user.show_correction_score = True if show_correction_score else False
 
         # 处理语言设置
         preferred_language = request.form.get('preferred_language', 'zh')
@@ -8434,7 +8568,27 @@ def work_detail(work_id):
             'breakdown': get_correction_rating_breakdown(correction.id)
         }
     
-    return render_template('work_detail.html', work=work, translation=translation, translations=translations, comments=comments, current_user=current_user, translation_requests=translation_requests, translator_requests=translator_requests, translator_expectation=translator_expectation, general_expectation=general_expectation, approved_req=approved_req, approved_general_req=approved_general_req, current_user_approved_req=current_user_approved_req, current_user_approved_translator_req=current_user_approved_translator_req, author_stats=author_stats, corrections=corrections, CorrectionLike=CorrectionLike, Like=Like, AuthorLike=AuthorLike, Comment=Comment, translation_ratings=translation_ratings, TranslationRating=TranslationRating, correction_ratings=correction_ratings, CorrectionRating=CorrectionRating)
+    # 计算每个翻译者的总点赞数量
+    translator_total_likes = {}
+    for trans in translations:
+        translator_id = trans.translator_id
+        if translator_id not in translator_total_likes:
+            translator_total_likes[translator_id] = 0
+        # 计算该翻译的点赞数量
+        like_count = Like.query.filter_by(target_type='translation', target_id=trans.id).count()
+        translator_total_likes[translator_id] += like_count
+    
+    # 找到评分最高的翻译
+    best_translation = None
+    best_rating = 0
+    for trans in translations:
+        if trans.status == 'approved':
+            rating = translation_ratings[trans.id]['weighted_average']
+            if rating and rating > best_rating:
+                best_rating = rating
+                best_translation = trans
+    
+    return render_template('work_detail.html', work=work, translation=translation, translations=translations, comments=comments, current_user=current_user, translation_requests=translation_requests, translator_requests=translator_requests, translator_expectation=translator_expectation, general_expectation=general_expectation, approved_req=approved_req, approved_general_req=approved_general_req, current_user_approved_req=current_user_approved_req, current_user_approved_translator_req=current_user_approved_translator_req, author_stats=author_stats, corrections=corrections, CorrectionLike=CorrectionLike, Like=Like, AuthorLike=AuthorLike, Comment=Comment, translation_ratings=translation_ratings, TranslationRating=TranslationRating, correction_ratings=correction_ratings, CorrectionRating=CorrectionRating, translator_total_likes=translator_total_likes, best_translation=best_translation, best_rating=best_rating)
 
 @app.route('/work/<int:work_id>/translate', methods=['GET', 'POST'])
 def translate_work(work_id):
@@ -9410,7 +9564,18 @@ def user_profile(user_id):
     ).all()
     # 信赖者列表
     trusted = TrustedTranslator.query.filter_by(user_id=user.id).all()
-    return render_template('user_profile.html', user=user, works=works, translations=translations, comments=comments, friends=friends, trusted=trusted, work_likes=work_likes, translation_likes=translation_likes, comment_likes=comment_likes, author_likes=author_likes, correction_likes=correction_likes, recent_author_likes=recent_author_likes, AuthorLike=AuthorLike, Like=Like, TrustedTranslator=TrustedTranslator, Friend=Friend)
+    
+    # 计算平均得分（如果用户选择显示）
+    avg_translation_score = None
+    avg_correction_score = None
+    
+    if user.show_translation_score and user.is_translator:
+        avg_translation_score = user.avg_translation_score or calculate_user_avg_translation_score(user.id)
+    
+    if user.show_correction_score and user.is_reviewer:
+        avg_correction_score = user.avg_correction_score or calculate_user_avg_correction_score(user.id)
+    
+    return render_template('user_profile.html', user=user, works=works, translations=translations, comments=comments, friends=friends, trusted=trusted, work_likes=work_likes, translation_likes=translation_likes, comment_likes=comment_likes, author_likes=author_likes, correction_likes=correction_likes, recent_author_likes=recent_author_likes, avg_translation_score=avg_translation_score, avg_correction_score=avg_correction_score, AuthorLike=AuthorLike, Like=Like, TrustedTranslator=TrustedTranslator, Friend=Friend)
 
 @app.route('/friends')
 def friends_list():
@@ -9789,14 +9954,38 @@ def delete_work(work_id):
         for comment in work.comments:
             Like.query.filter_by(target_type='comment', target_id=comment.id).delete()
         
-        # 删除关联的翻译点赞
+        # 删除关联的翻译点赞和校正相关记录
         for translation in work.translations:
             Like.query.filter_by(target_type='translation', target_id=translation.id).delete()
             # 删除作者点赞
             AuthorLike.query.filter_by(translation_id=translation.id).delete()
+            # 删除翻译评分
+            TranslationRating.query.filter_by(translation_id=translation.id).delete()
+            # 删除校正相关的点赞
+            CorrectionLike.query.filter(CorrectionLike.correction_id.in_(
+                db.session.query(Correction.id).filter_by(translation_id=translation.id)
+            )).delete(synchronize_session=False)
+            # 删除校正评分
+            CorrectionRating.query.filter(CorrectionRating.correction_id.in_(
+                db.session.query(Correction.id).filter_by(translation_id=translation.id)
+            )).delete(synchronize_session=False)
+            # 删除校正相关的作者点赞
+            AuthorLike.query.filter(AuthorLike.correction_id.in_(
+                db.session.query(Correction.id).filter_by(translation_id=translation.id)
+            )).delete(synchronize_session=False)
+            # 删除校正相关的评论
+            Comment.query.filter(Comment.correction_id.in_(
+                db.session.query(Correction.id).filter_by(translation_id=translation.id)
+            )).delete(synchronize_session=False)
+            # 删除校正记录
+            Correction.query.filter_by(translation_id=translation.id).delete()
         
-        # 删除关联的评论
+        # 删除关联的评论（包括翻译和校正相关的评论）
         Comment.query.filter_by(work_id=work_id).delete()
+        # 删除翻译相关的评论
+        Comment.query.filter(Comment.translation_id.in_(
+            db.session.query(Translation.id).filter_by(work_id=work_id)
+        )).delete(synchronize_session=False)
         
         # 删除关联的翻译
         Translation.query.filter_by(work_id=work_id).delete()
@@ -10359,7 +10548,20 @@ def like_content(target_type, target_id):
         db.session.commit()
         # 最新点赞数
         likes_count = Like.query.filter_by(target_type=target_type, target_id=target_id).count()
-        return jsonify({'success': True, 'action': 'unliked', 'likes_count': likes_count})
+        # 如果是翻译点赞，计算翻译者的总点赞数量
+        translator_total_likes = None
+        if target_type == 'translation':
+            translation = Translation.query.get(target_id)
+            if translation:
+                translator_total_likes = 0
+                for trans in translation.translator.translations:
+                    if trans.status == 'approved':
+                        translator_total_likes += Like.query.filter_by(target_type='translation', target_id=trans.id).count()
+        
+        response_data = {'success': True, 'action': 'unliked', 'likes_count': likes_count}
+        if translator_total_likes is not None:
+            response_data['translator_total_likes'] = translator_total_likes
+        return jsonify(response_data)
     else:
         # 添加点赞
         new_like = Like(
@@ -10375,6 +10577,7 @@ def like_content(target_type, target_id):
         
         # 获取被点赞的内容信息
         target_user_id = None
+        translator_total_likes = None
         if target_type == 'work':
             work = Work.query.get(target_id)
             if work:
@@ -10387,6 +10590,11 @@ def like_content(target_type, target_id):
             translation = Translation.query.get(target_id)
             if translation:
                 target_user_id = translation.translator_id
+                # 计算翻译者的总点赞数量
+                translator_total_likes = 0
+                for trans in translation.translator.translations:
+                    if trans.status == 'approved':
+                        translator_total_likes += Like.query.filter_by(target_type='translation', target_id=trans.id).count()
         
         # 点赞通知：创建通知类型消息（自发自收），用于消息中心"通知消息"卡片
         if target_user_id and target_user_id != current_user.id:
@@ -10478,7 +10686,10 @@ def like_content(target_type, target_id):
                 db.session.add(notification)
                 db.session.commit()
         
-        return jsonify({'success': True, 'action': 'liked', 'likes_count': likes_count})
+        response_data = {'success': True, 'action': 'liked', 'likes_count': likes_count}
+        if translator_total_likes is not None:
+            response_data['translator_total_likes'] = translator_total_likes
+        return jsonify(response_data)
 
 @app.route('/likes/<target_type>/<int:target_id>')
 def get_likes_count(target_type, target_id):
@@ -10588,9 +10799,45 @@ def delete_translation(work_id):
             flash(get_message('completed_work_translation_cannot_delete'), 'error')
             return redirect(url_for('work_detail', work_id=work_id))
     
-    # 删除翻译
-    db.session.delete(translation)
-    db.session.commit()
+    try:
+        # 先删除翻译相关的点赞
+        Like.query.filter_by(target_type='translation', target_id=translation.id).delete()
+        # 删除作者点赞
+        AuthorLike.query.filter_by(translation_id=translation.id).delete()
+        # 删除翻译评分
+        TranslationRating.query.filter_by(translation_id=translation.id).delete()
+        # 删除校正相关的点赞
+        CorrectionLike.query.filter(CorrectionLike.correction_id.in_(
+            db.session.query(Correction.id).filter_by(translation_id=translation.id)
+        )).delete(synchronize_session=False)
+        # 删除校正评分
+        CorrectionRating.query.filter(CorrectionRating.correction_id.in_(
+            db.session.query(Correction.id).filter_by(translation_id=translation.id)
+        )).delete(synchronize_session=False)
+        # 删除校正相关的作者点赞
+        AuthorLike.query.filter(AuthorLike.correction_id.in_(
+            db.session.query(Correction.id).filter_by(translation_id=translation.id)
+        )).delete(synchronize_session=False)
+        # 删除校正相关的评论
+        Comment.query.filter(Comment.correction_id.in_(
+            db.session.query(Correction.id).filter_by(translation_id=translation.id)
+        )).delete(synchronize_session=False)
+        # 删除校正记录
+        Correction.query.filter_by(translation_id=translation.id).delete()
+        # 删除翻译相关的评论
+        Comment.query.filter_by(translation_id=translation.id).delete()
+        
+        # 删除翻译
+        db.session.delete(translation)
+        db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        if request.headers.get('Content-Type') == 'application/json':
+            return jsonify({'success': False, 'message': get_message('delete_translation_error').format(str(e))})
+        else:
+            flash(get_message('delete_translation_error').format(str(e)), 'error')
+            return redirect(url_for('work_detail', work_id=work_id))
     
     if request.headers.get('Content-Type') == 'application/json':
         return jsonify({'success': True, 'message': get_message('translation_deleted')})
@@ -10837,8 +11084,15 @@ def rate_translation(translation_id):
     work = translation.work
     
     # 获取评分数据
-    rating = request.form.get('rating', type=int)
+    if request.is_json:
+        data = request.get_json()
+        rating = data.get('rating', type=int)
+    else:
+        rating = request.form.get('rating', type=int)
+    
     if not rating or rating < 1 or rating > 5:
+        if request.is_json:
+            return jsonify({'success': False, 'message': '评分必须在1-5之间'})
         flash('评分必须在1-5之间', 'error')
         return redirect(url_for('work_detail', work_id=work.id))
     
@@ -10890,6 +11144,33 @@ def rate_translation(translation_id):
         message = get_message('rating_submitted')
     
     db.session.commit()
+    
+    # 更新翻译者的平均得分
+    update_user_scores(translation.translator_id)
+    
+    if request.is_json:
+        # 计算最新评分数据
+        average_rating = calculate_translation_rating(translation_id)
+        breakdown = get_rating_breakdown(translation_id)
+        total_ratings = sum(breakdown[key]['count'] for key in breakdown)
+        
+        # 计算翻译者的总评分数量
+        translator = translation.translator
+        translator_total_ratings = 0
+        for trans in translator.translations:
+            if trans.status == 'approved':
+                trans_breakdown = get_rating_breakdown(trans.id)
+                translator_total_ratings += sum(trans_breakdown[key]['count'] for key in trans_breakdown)
+        
+        return jsonify({
+            'success': True,
+            'message': message,
+            'average_rating': average_rating,
+            'total_ratings': total_ratings,
+            'breakdown': breakdown,
+            'translator_total_ratings': translator_total_ratings
+        })
+    
     flash(message, 'success')
     return redirect(url_for('work_detail', work_id=work.id))
 
@@ -10901,11 +11182,21 @@ def author_rate_translation(translation_id):
     current_user = get_current_user()
     
     if not current_user or current_user.id != work.creator_id:
+        if request.is_json:
+            return jsonify({'success': False, 'message': '只有作者可以评分'})
         flash('只有作者可以评分', 'error')
         return redirect(url_for('work_detail', work_id=work.id))
     
-    rating = request.form.get('rating', type=int)
+    # 获取评分数据
+    if request.is_json:
+        data = request.get_json()
+        rating = data.get('rating', type=int)
+    else:
+        rating = request.form.get('rating', type=int)
+    
     if not rating or rating < 1 or rating > 5:
+        if request.is_json:
+            return jsonify({'success': False, 'message': '评分必须在1-5之间'})
         flash('评分必须在1-5之间', 'error')
         return redirect(url_for('work_detail', work_id=work.id))
     
@@ -10933,6 +11224,24 @@ def author_rate_translation(translation_id):
         message = get_message('rating_submitted')
     
     db.session.commit()
+    
+    # 更新翻译者的平均得分
+    update_user_scores(translation.translator_id)
+    
+    if request.is_json:
+        # 计算最新评分数据
+        average_rating = calculate_translation_rating(translation_id)
+        breakdown = get_rating_breakdown(translation_id)
+        total_ratings = sum(breakdown[key]['count'] for key in breakdown)
+        
+        return jsonify({
+            'success': True,
+            'message': message,
+            'average_rating': average_rating,
+            'total_ratings': total_ratings,
+            'breakdown': breakdown
+        })
+    
     flash(message, 'success')
     return redirect(url_for('work_detail', work_id=work.id))
 
@@ -10997,6 +11306,10 @@ def rate_correction(correction_id):
         message = get_message('rating_submitted')
     
     db.session.commit()
+    
+    # 更新校正者的平均得分
+    update_user_scores(correction.reviewer_id)
+    
     flash(message, 'success')
     return redirect(url_for('work_detail', work_id=work.id))
 
@@ -11042,6 +11355,10 @@ def author_rate_correction(correction_id):
         message = get_message('rating_submitted')
     
     db.session.commit()
+    
+    # 更新校正者的平均得分
+    update_user_scores(correction.reviewer_id)
+    
     flash(message, 'success')
     return redirect(url_for('work_detail', work_id=work.id))
 
@@ -11181,8 +11498,24 @@ def delete_correction(work_id, correction_id):
         flash('没有权限删除此校正', 'error')
         return redirect(url_for('work_detail', work_id=work_id))
     
-    db.session.delete(correction)
-    db.session.commit()
+    try:
+        # 先删除校正相关的点赞
+        CorrectionLike.query.filter_by(correction_id=correction_id).delete()
+        # 删除校正评分
+        CorrectionRating.query.filter_by(correction_id=correction_id).delete()
+        # 删除校正相关的作者点赞
+        AuthorLike.query.filter_by(correction_id=correction_id).delete()
+        # 删除校正相关的评论
+        Comment.query.filter_by(correction_id=correction_id).delete()
+        
+        # 删除校正
+        db.session.delete(correction)
+        db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'删除校正时发生错误: {str(e)}', 'error')
+        return redirect(url_for('work_detail', work_id=work_id))
     
     flash(get_message('correction_deleted'), 'success')
     return redirect(url_for('work_detail', work_id=work_id))
@@ -11896,9 +12229,17 @@ def delete_comment(comment_id):
     work = Work.query.get(comment.work_id)
     work_title = work.title if work else "未知作品"
     
-    # 删除评论
-    db.session.delete(comment)
-    db.session.commit()
+    try:
+        # 先删除评论相关的点赞
+        Like.query.filter_by(target_type='comment', target_id=comment_id).delete()
+        
+        # 删除评论
+        db.session.delete(comment)
+        db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'删除评论时发生错误: {str(e)}'})
     
     # 如果是管理员删除，发送系统消息给评论作者
     if current_user.role == 'admin' and comment_author_id != current_user.id:

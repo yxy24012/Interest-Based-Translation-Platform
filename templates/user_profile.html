@@ -215,7 +215,7 @@
                 </div>
                 
                 <h4 class="mb-1">{{ user.username }}</h4>
-                <p class="text-muted mb-3" style="white-space: pre-line;">{{ (user.bio or get_message('no_bio')) | e }}</p>
+                <p class="text-muted mb-3" style="white-space: pre-line;">{{ (user.bio or get_message('no_bio')) | safe }}</p>
                 
                 <!-- 用户ID -->
                 <div class="mb-3">
@@ -256,6 +256,28 @@
                     </span>
                     {% endif %}
                 </div>
+                
+                <!-- 平均得分显示 -->
+                {% if avg_translation_score is not none or avg_correction_score is not none %}
+                <div class="mb-3">
+                    {% if avg_translation_score is not none %}
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-star me-1" style="color: #f1c40f;"></i>
+                            {{ get_message('avg_translation_score') }}：<span class="fw-bold text-warning">{{ avg_translation_score }}</span>
+                        </small>
+                    </div>
+                    {% endif %}
+                    {% if avg_correction_score is not none %}
+                    <div class="mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle me-1" style="color: #17a2b8;"></i>
+                            {{ get_message('avg_correction_score') }}：<span class="fw-bold text-info">{{ avg_correction_score }}</span>
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
                 
                 <!-- 注册时间 -->
                 <small class="text-muted">
