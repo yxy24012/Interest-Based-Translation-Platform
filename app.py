@@ -6986,6 +6986,7 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False, default='user')  # admin, creator, translator, user
     bio = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     avatar = db.Column(db.Text)
     is_translator = db.Column(db.Boolean, default=False)
     is_reviewer = db.Column(db.Boolean, default=False)
@@ -7351,28 +7352,25 @@ def utility_processor():
         return '中文'  # 默认返回中文
     
     def get_avatar_url(user):
-        """获取用户头像URL的辅助函数"""
+        """获取用户头像URL的辅助函数，优化缓存控制"""
         import time
         
         if user and user.avatar:
+            # 优先使用用户更新时间戳，确保头像更新后URL会变化
+            if hasattr(user, 'updated_at') and user.updated_at:
+                timestamp = str(int(user.updated_at.timestamp()))
+            else:
+                # 如果没有updated_at字段，使用当前时间戳
+                timestamp = str(int(time.time()))
+            
             if user.avatar.startswith('data:image'):
                 # 对于 base64 编码的头像，使用专门的路由并添加时间戳防止缓存
-                if IS_VERCEL and hasattr(user, 'updated_at') and user.updated_at:
-                    # 在Vercel环境中，使用用户更新时间戳
-                    timestamp = str(int(user.updated_at.timestamp()))
-                else:
-                    timestamp = str(int(time.time()))
                 return url_for('user_avatar', user_id=user.id, _external=False) + f'?t={timestamp}'
             else:
                 # 对于文件系统中的头像，添加时间戳防止缓存
-                if IS_VERCEL and hasattr(user, 'updated_at') and user.updated_at:
-                    # 在Vercel环境中，使用用户更新时间戳
-                    timestamp = str(int(user.updated_at.timestamp()))
-                else:
-                    timestamp = str(int(time.time()))
                 return url_for('uploaded_file', filename=user.avatar, _external=False) + f'?t={timestamp}'
         else:
-            # 默认头像 - 在Vercel环境中使用更可靠的版本号策略
+            # 默认头像 - 使用更可靠的版本号策略
             import os
             
             if IS_VERCEL:
@@ -7963,11 +7961,8 @@ def edit_profile():
             avatar_result = process_avatar_upload(file, user.id)
             if avatar_result:
                 user.avatar = avatar_result
-                # 在Vercel环境中，强制更新头像缓存
-                if IS_VERCEL:
-                    # 添加一个时间戳到用户记录中，用于强制刷新头像
-                    import time
-                    user.updated_at = datetime.utcnow()
+                # 强制更新用户记录的updated_at时间戳，确保头像URL会变化
+                user.updated_at = datetime.utcnow()
         
         db.session.commit()
         
@@ -9710,8 +9705,13 @@ def user_avatar(user_id):
                     resp.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
                     resp.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
                     resp.headers['If-None-Match'] = '*'
-                    import time
-                    resp.headers['ETag'] = f'"{int(time.time())}"'
+                    # 使用用户更新时间戳作为ETag，确保头像更新后ETag会变化
+                    if hasattr(user, 'updated_at') and user.updated_at:
+                        etag = f'"{int(user.updated_at.timestamp())}"'
+                    else:
+                        import time
+                        etag = f'"{int(time.time())}"'
+                    resp.headers['ETag'] = etag
                     # 添加额外的防缓存头
                     resp.headers['X-Accel-Expires'] = '0'
                     resp.headers['X-Cache'] = 'no-cache'
@@ -9746,8 +9746,13 @@ def user_avatar(user_id):
                         response.headers['Last-Modified'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
                         response.headers['If-Modified-Since'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
                         response.headers['If-None-Match'] = '*'
-                        import time
-                        response.headers['ETag'] = f'"{int(time.time())}"'
+                        # 使用用户更新时间戳作为ETag，确保头像更新后ETag会变化
+                        if hasattr(user, 'updated_at') and user.updated_at:
+                            etag = f'"{int(user.updated_at.timestamp())}"'
+                        else:
+                            import time
+                            etag = f'"{int(time.time())}"'
+                        response.headers['ETag'] = etag
                         # 添加额外的防缓存头
                         response.headers['X-Accel-Expires'] = '0'
                         response.headers['X-Cache'] = 'no-cache'
