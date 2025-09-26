@@ -380,7 +380,7 @@
                                 </span>
                             </div>
                             <p class="card-text small text-muted">
-                                {{ work.content[:100] }}{% if work.content|length > 100 %}...{% endif %}
+                                {{ work.content|striptags|truncate(100) }}
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">

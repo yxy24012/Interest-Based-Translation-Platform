@@ -47,6 +47,50 @@
         font-weight: 500;
     }
     
+    /* 星星评分样式 */
+    .star-rating {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+    
+    .star-rating i {
+        font-size: 28px;
+        color: #ddd !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        position: relative;
+        user-select: none;
+    }
+    
+    .star-rating i:hover {
+        color: #ffc107 !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .star-rating i.active {
+        color: #ffc107 !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .star-rating i.hover {
+        color: #ffc107 !important;
+        transform: scale(1.1) !important;
+    }
+    
+    /* 确保悬停效果优先级最高 */
+    .star-rating i.hover,
+    .star-rating i.hover:hover {
+        color: #ffc107 !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .rating-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
     /* 统一的点赞按钮样式 */
     .like-btn {
         border-radius: 20px;
@@ -249,19 +293,41 @@
     }
     
             /* 校正点赞实心按钮 */
-        .btn-warning .correction-like-count {
-            color: white !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        .correction-like-btn.correction-liked {
+            background-color: #f8f9fa !important;
+            color: #6c757d !important;
+            border: 1px solid #dee2e6 !important;
+        }
+        
+        .correction-like-btn.correction-liked .correction-like-count {
+            color: #6c757d !important;
             font-weight: 800;
             font-size: 1rem;
         }
         
         /* 校正点赞空心按钮 */
-        .btn-outline-warning .correction-like-count {
-            color: #ffc107 !important;
+        .correction-like-btn.correction-not-liked {
+            color: #6c757d !important;
+            border: 1px solid #dee2e6 !important;
+            background-color: transparent !important;
+        }
+        
+        .correction-like-btn.correction-not-liked .correction-like-count {
+            color: #6c757d !important;
             font-weight: 800;
             font-size: 1rem;
-            text-shadow: 0 1px 2px rgba(255, 193, 7, 0.2);
+        }
+        
+        /* 校正内容输入框样式 */
+        .correction-form .form-control {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%) !important;
+            border: 1px solid #ffb74d !important;
+        }
+        
+        .correction-form .form-control:focus {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%) !important;
+            border-color: #ff9800 !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.25) !important;
         }
     
     /* 评论点赞按钮 */
@@ -842,7 +908,7 @@
                 
                 <!-- 联系要求提示 -->
                 {% if work.contact_before_translate %}
-                <div class="alert alert-warning border-0 mb-4" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                <div class="alert alert-warning border-0 mb-4" style="background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);">
                     <div class="d-flex align-items-start">
                         <i class="fas fa-exclamation-triangle me-3 fa-lg text-warning mt-1"></i>
                         <div>
@@ -985,8 +1051,104 @@
                         </div>
                         <div class="card-body">
                             <!-- 翻译文本 -->
-                            <div class="border border-dark rounded p-3 mb-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
+                            <div class="border border-dark rounded p-3 mb-3" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
                                 <div class="mb-0" style="color: #212529;">{{ translation.content|safe }}</div>
+                            </div>
+                            
+                            <!-- 翻译评分区域 -->
+                            <div class="mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-star me-2 text-warning"></i>{{ get_message('translation_rating') }}
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% set rating_info = translation_ratings.get(translation.id, {}) %}
+                                        {% set weighted_avg = rating_info.get('weighted_average') %}
+                                        {% set breakdown = rating_info.get('breakdown', {}) %}
+                                        
+                                        <!-- 当前评分显示 -->
+                                        {% if weighted_avg %}
+                                        <div class="mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="me-3"><strong>{{ get_message('current_rating') }}：</strong></span>
+                                                <div class="rating-display">
+                                                    <span class="rating-score text-primary fw-bold fs-4">{{ weighted_avg }}</span>
+                                                    <span class="text-muted">/ 5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- 评分构成 -->
+                                        {% if breakdown %}
+                                        <div class="mb-3">
+                                            <h6 class="text-muted">{{ get_message('rating_breakdown') }}：</h6>
+                                            <div class="row">
+                                                {% if breakdown.author.average %}
+                                                <div class="col-md-4">
+                                                    <small class="text-muted">{{ get_message('author_rating') }} (30%)：</small>
+                                                    <div class="fw-bold text-primary">{{ breakdown.author.average }}/5</div>
+                                                    <small class="text-muted">({{ breakdown.author.count }}人)</small>
+                                                </div>
+                                                {% endif %}
+                                                {% if breakdown.reviewer.average %}
+                                                <div class="col-md-4">
+                                                    <small class="text-muted">{{ get_message('reviewer_rating') }} (40%)：</small>
+                                                    <div class="fw-bold text-warning">{{ breakdown.reviewer.average }}/5</div>
+                                                    <small class="text-muted">({{ breakdown.reviewer.count }}人)</small>
+                                                </div>
+                                                {% endif %}
+                                                {% if breakdown.visitor.average %}
+                                                <div class="col-md-4">
+                                                    <small class="text-muted">{{ get_message('visitor_rating') }} (30%)：</small>
+                                                    <div class="fw-bold text-success">{{ breakdown.visitor.average }}/5</div>
+                                                    <small class="text-muted">({{ breakdown.visitor.count }}人)</small>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- 评分表单 -->
+                                        <div class="rating-form">
+                                            <h6 class="text-muted">{{ get_message('rate_translation_quality') }}：</h6>
+                                            {% if session.get('user_id') == work.creator.id %}
+                                            <!-- 作者评分需要二次确认 -->
+                                            <div class="star-rating-container">
+                                                <div class="star-rating" id="authorStarRating{{ translation.id }}" data-translation-id="{{ translation.id }}" data-is-author="true">
+                                                    <i class="fas fa-star" data-rating="1"></i>
+                                                    <i class="fas fa-star" data-rating="2"></i>
+                                                    <i class="fas fa-star" data-rating="3"></i>
+                                                    <i class="fas fa-star" data-rating="4"></i>
+                                                    <i class="fas fa-star" data-rating="5"></i>
+                                                </div>
+                                                <div class="rating-text mt-2">
+                                                    <span class="text-muted">点击星星评分（1-5星）</span>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <!-- 普通用户评分 -->
+                                            <form method="POST" action="{{ url_for('rate_translation', translation_id=translation.id) }}" class="d-inline">
+                                                <input type="hidden" name="rating" id="visitorRating{{ translation.id }}" value="">
+                                                <div class="star-rating-container">
+                                                    <div class="star-rating" id="visitorStarRating{{ translation.id }}" data-translation-id="{{ translation.id }}" data-is-author="false">
+                                                        <i class="fas fa-star" data-rating="1"></i>
+                                                        <i class="fas fa-star" data-rating="2"></i>
+                                                        <i class="fas fa-star" data-rating="3"></i>
+                                                        <i class="fas fa-star" data-rating="4"></i>
+                                                        <i class="fas fa-star" data-rating="5"></i>
+                                                    </div>
+                                                    <div class="rating-text mt-2">
+                                                        <span class="text-muted">点击星星评分（1-5星）</span>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- 作者操作按钮 -->
@@ -1004,7 +1166,7 @@
                             <!-- 校正者功能 -->
                             {% if session.get('user_id') and current_user and current_user.is_reviewer and session.get('user_id') != translation.translator.id %}
                             <div class="mb-3">
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="collapse" data-bs-target="#correctionForm{{ translation.id }}">
+                                <button type="button" class="btn btn-sm" data-bs-toggle="collapse" data-bs-target="#correctionForm{{ translation.id }}" style="background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6;">
                                     <i class="fas fa-edit me-2"></i>{{ get_message('add_correction') }}
                                 </button>
                             </div>
@@ -1025,7 +1187,7 @@
                                         </h6>
                                     </div>
                                     <div class="card-body">
-                                        <form method="POST" action="{{ url_for('add_correction', work_id=work.id) }}">
+                                        <form method="POST" action="{{ url_for('add_correction', work_id=work.id) }}" class="correction-form">
                                             <input type="hidden" name="translation_id" value="{{ translation.id }}">
                                             <div class="mb-3">
                                                 <label class="form-label">{{ get_message('correction_content_label') }}</label>
@@ -1036,7 +1198,7 @@
                                                 <textarea name="notes" class="form-control rich-text-editor" rows="2" placeholder="{{ get_message('correction_notes_placeholder') }}"></textarea>
                                             </div>
                                             <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-warning">
+                                                <button type="submit" class="btn" style="background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6;">
                                                     <i class="fas fa-check me-2"></i>{{ get_message('submit_correction') }}
                                                 </button>
                                                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#correctionForm{{ translation.id }}">
@@ -1056,10 +1218,9 @@
                                 <button class="btn {{ 'btn-success' if user_liked_translation else 'btn-outline-success' }} like-btn" 
                                         data-type="translation" 
                                         data-id="{{ translation.id }}" 
-                                        data-liked="{{ 'true' if user_liked_translation else 'false' }}"
-                                        style="{{ 'background-color: #28a745 !important; border-color: #28a745 !important; color: white !important;' if user_liked_translation else 'color: #28a745 !important; border-color: #28a745 !important; background-color: transparent !important;' }}">
+                                        data-liked="{{ 'true' if user_liked_translation else 'false' }}">
                                     <i class="fas fa-thumbs-up like-icon me-1"></i>
-                                    <span class="like-count" style="{{ 'color: white !important; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;' if user_liked_translation else 'color: #28a745 !important; text-shadow: 0 1px 2px rgba(40, 167, 69, 0.2) !important;' }}">{{ translation_likes }}</span>
+                                    <span class="like-count">{{ translation_likes }}</span>
                                 </button>
                                 
                                 <!-- 作者专属点赞 -->
@@ -1076,11 +1237,11 @@
                             {% if translation_corrections|length > 0 %}
                             <div class="border-top pt-3">
                                 <h6 class="mb-3">
-                                    <i class="fas fa-check-circle me-2 text-warning"></i>{{ translation.translator.username }} {{ get_message('translator_corrections') }}
+                                    <i class="fas fa-check-circle me-2" style="color: #6c757d;"></i>{{ translation.translator.username }} {{ get_message('translator_corrections') }}
                                 </h6>
                                 
                                 {% for correction in translation_corrections %}
-                                <div class="border rounded p-3 mb-3" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                                <div class="border rounded p-3 mb-3" style="background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="d-flex align-items-center">
                                             <img src="{{ get_avatar_url(correction.reviewer) }}" 
@@ -1090,7 +1251,7 @@
                                                     <a href="{{ url_for('user_profile', user_id=correction.reviewer.id) }}" class="text-decoration-none fw-bold">
                                                         {{ correction.reviewer.username }}
                                                     </a>
-                                                    <span class="badge bg-warning ms-2">
+                                                    <span class="badge ms-2" style="background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6;">
                                                         <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') if get_message('reviewer') else '校正者' }}
                                                     </span>
                                                 </h6>
@@ -1109,11 +1270,11 @@
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <h6 class="text-warning mb-2">
+                                        <h6 class="mb-2" style="color: #6c757d;">
                                             <i class="fas fa-edit me-2"></i>{{ get_message('correction_content_label') }}
                                         </h6>
-                                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                                            <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; color: #212529;">{{ correction.content }}</pre>
+                                        <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);">
+                                            <div class="mb-0" style="line-height: 1.6; color: #212529;">{{ correction.content|safe }}</div>
                                         </div>
                                     </div>
                                     
@@ -1122,9 +1283,95 @@
                                         <h6 class="text-info mb-2">
                                             <i class="fas fa-sticky-note me-2"></i>{{ get_message('correction_notes_label') }}
                                         </h6>
-                                        <p class="mb-0">{{ correction.notes }}</p>
+                                        <p class="mb-0">{{ correction.notes|safe }}</p>
                                     </div>
                                     {% endif %}
+                                    
+                                    <!-- 校正评分区域 -->
+                                    <div class="mb-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-star me-2 text-warning"></i>{{ get_message('translation_rating') }}
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                {% set correction_rating_info = correction_ratings.get(correction.id, {}) %}
+                                                {% set correction_weighted_avg = correction_rating_info.get('weighted_average') %}
+                                                {% set correction_breakdown = correction_rating_info.get('breakdown', {}) %}
+                                                
+                                                <!-- 当前评分显示 -->
+                                                {% if correction_weighted_avg %}
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-3"><strong>{{ get_message('current_rating') }}：</strong></span>
+                                                        <div class="rating-display">
+                                                            <span class="rating-score text-primary fw-bold fs-4">{{ correction_weighted_avg }}</span>
+                                                            <span class="text-muted">/ 5</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- 评分构成 -->
+                                                {% if correction_breakdown %}
+                                                <div class="mb-3">
+                                                    <h6 class="text-muted">{{ get_message('rating_breakdown') }}：</h6>
+                                                    <div class="row">
+                                                        {% if correction_breakdown.author.average %}
+                                                        <div class="col-md-4">
+                                                            <small class="text-muted">{{ get_message('author_rating') }} (30%)：</small>
+                                                            <div class="fw-bold text-primary">{{ correction_breakdown.author.average }}/5</div>
+                                                            <small class="text-muted">({{ correction_breakdown.author.count }}人)</small>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if correction_breakdown.reviewer.average %}
+                                                        <div class="col-md-4">
+                                                            <small class="text-muted">{{ get_message('reviewer_rating') }} (40%)：</small>
+                                                            <div class="fw-bold text-warning">{{ correction_breakdown.reviewer.average }}/5</div>
+                                                            <small class="text-muted">({{ correction_breakdown.reviewer.count }}人)</small>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if correction_breakdown.visitor.average %}
+                                                        <div class="col-md-4">
+                                                            <small class="text-muted">{{ get_message('visitor_rating') }} (30%)：</small>
+                                                            <div class="fw-bold text-success">{{ correction_breakdown.visitor.average }}/5</div>
+                                                            <small class="text-muted">({{ correction_breakdown.visitor.count }}人)</small>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- 评分表单 -->
+                                                <div class="rating-form">
+                                                    <h6 class="text-muted">{{ get_message('rate_translation_quality') }}：</h6>
+                                                    {% if session.get('user_id') == correction.reviewer.id %}
+                                                    <!-- 校正者本人无法评分 -->
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>您无法对自己的校正进行评分
+                                                    </div>
+                                                    {% else %}
+                                                    <!-- 评分界面 -->
+                                                    <div class="star-rating-container">
+                                                        <div class="star-rating" id="correctionStarRating{{ correction.id }}" 
+                                                             data-correction-id="{{ correction.id }}" 
+                                                             data-is-author="{{ 'true' if session.get('user_id') == work.creator.id else 'false' }}">
+                                                            <i class="fas fa-star" data-rating="1"></i>
+                                                            <i class="fas fa-star" data-rating="2"></i>
+                                                            <i class="fas fa-star" data-rating="3"></i>
+                                                            <i class="fas fa-star" data-rating="4"></i>
+                                                            <i class="fas fa-star" data-rating="5"></i>
+                                                        </div>
+                                                        <div class="rating-text mt-2">
+                                                            <span class="text-muted">点击星星评分（1-5星）</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <!-- 校正点赞 -->
                                     {% if session.get('user_id') %}
@@ -1138,7 +1385,7 @@
                                         {% set user_has_liked = user_liked_correction or user_author_liked_correction %}
                                         {% set is_author = session.get('user_id') == work.creator.id %}
                                         
-                                        <button class="btn {{ 'btn-warning' if user_has_liked else 'btn-outline-warning' }} correction-like-btn" 
+                                        <button class="btn correction-like-btn {{ 'correction-liked' if user_has_liked else 'correction-not-liked' }}" 
                                                 data-correction-id="{{ correction.id }}" 
                                                 data-liked="{{ 'true' if user_has_liked else 'false' }}"
                                                 data-is-author="{{ 'true' if is_author else 'false' }}">
@@ -1154,7 +1401,7 @@
                                     <!-- 校正评论区域 -->
                                     <div class="border-top pt-3">
                                         <h6 class="mb-2">
-                                            <i class="fas fa-comments me-2 text-warning"></i>{{ get_message('correction_comments') }}
+                                            <i class="fas fa-comments me-2" style="color: #6c757d;"></i>{{ get_message('correction_comments') }}
                                         </h6>
                                         
                                         <!-- 校正评论列表 -->
@@ -1658,7 +1905,7 @@
                         </span>
                         {% endif %}
                         {% if work.creator.is_reviewer %}
-                        <span class="badge bg-warning me-1">
+                        <span class="badge me-1" style="background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6;">
                             <i class="fas fa-check-circle me-1"></i>{{ get_message('reviewer') }}
                         </span>
                         {% endif %}
@@ -1867,6 +2114,78 @@
                 </button>
                 <button type="button" class="btn btn-danger" onclick="adminDeleteWork()">
                     {{ get_message('delete') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 作者校正评分确认模态框 -->
+<div class="modal fade" id="authorCorrectionRatingModal" tabindex="-1" aria-labelledby="authorCorrectionRatingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authorCorrectionRatingModalLabel">
+                    {{ get_message('confirm_author_rating') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    {{ get_message('author_rating_warning') }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">您选择的评分：</label>
+                    <div class="d-flex align-items-center">
+                        <span id="selectedCorrectionRating" class="text-primary fw-bold fs-4 me-2"></span>
+                        <span class="text-muted">/ 5</span>
+                    </div>
+                </div>
+                <form id="authorCorrectionRatingForm" method="POST">
+                    <input type="hidden" name="rating" id="confirmCorrectionRating" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmAuthorCorrectionRating()">确认评分</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 作者评分确认模态框 -->
+<div class="modal fade" id="authorRatingModal" tabindex="-1" aria-labelledby="authorRatingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authorRatingModalLabel">
+                    {{ get_message('confirm_author_rating') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    {{ get_message('author_rating_warning') }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">您选择的评分：</label>
+                    <div class="rating-display">
+                        <span id="selectedRating" class="text-primary fw-bold fs-4"></span>
+                        <span class="text-muted">/ 5</span>
+                    </div>
+                </div>
+                <form id="authorRatingForm" method="POST">
+                    <input type="hidden" name="rating" id="confirmRating">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ get_message('cancel') }}
+                </button>
+                <button type="button" class="btn btn-primary" onclick="confirmAuthorRating()">
+                    {{ get_message('confirm_author_rating') }}
                 </button>
             </div>
         </div>
@@ -2720,6 +3039,180 @@ function toggleFavorite(workId, button) {
             alert('{{ get_message("network_error") if get_message("network_error") else "网络错误，请重试" }}');
         }
     });
+}
+
+// 星星评分功能
+let currentTranslationId = null;
+
+// 初始化星星评分
+document.addEventListener('DOMContentLoaded', function() {
+    // 为所有星星评分容器添加事件监听器
+    document.querySelectorAll('.star-rating').forEach(function(container) {
+        const stars = container.querySelectorAll('i');
+        const translationId = container.dataset.translationId;
+        const correctionId = container.dataset.correctionId;
+        const isAuthor = container.dataset.isAuthor === 'true';
+        
+        // 为每个容器添加独立的状态
+        let currentRating = 0;
+        let isFixed = false;
+        
+        // 为每颗星星添加事件监听器
+        stars.forEach(function(star, index) {
+            // 点击事件 - 固定评分
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                setFixedRating(container, rating);
+                currentRating = rating;
+                isFixed = true;
+                
+                if (isAuthor && translationId) {
+                    // 作者翻译评分需要二次确认
+                    showAuthorRatingModal(translationId, rating);
+                } else if (isAuthor && correctionId) {
+                    // 作者校正评分需要二次确认
+                    showAuthorCorrectionRatingModal(correctionId, rating);
+                } else if (translationId) {
+                    // 翻译评分直接提交
+                    submitRating(translationId, rating);
+                } else if (correctionId) {
+                    // 校正评分直接提交
+                    submitCorrectionRating(correctionId, rating);
+                }
+            });
+            
+            // 鼠标进入事件 - 悬停高亮
+            star.addEventListener('mouseenter', function() {
+                console.log('Mouse enter star, isFixed:', isFixed);
+                if (!isFixed) {
+                    const rating = parseInt(this.dataset.rating);
+                    console.log('Highlighting stars up to rating:', rating);
+                    highlightStars(container, rating);
+                }
+            });
+        });
+        
+        // 鼠标离开容器时恢复状态
+        container.addEventListener('mouseleave', function() {
+            if (!isFixed) {
+                clearHighlights(container);
+            } else {
+                setFixedRating(container, currentRating);
+            }
+        });
+    });
+});
+
+// 设置固定评分
+function setFixedRating(container, rating) {
+    const stars = container.querySelectorAll('i');
+    stars.forEach(function(star) {
+        star.classList.remove('active', 'hover');
+        const starRating = parseInt(star.dataset.rating);
+        
+        if (starRating <= rating) {
+            star.classList.add('active');
+            star.style.color = '#ffc107';
+            star.style.transform = 'scale(1.1)';
+            star.style.transition = 'all 0.2s ease';
+        } else {
+            star.style.color = '';
+            star.style.transform = '';
+            star.style.transition = '';
+        }
+    });
+}
+
+// 悬停高亮效果
+function highlightStars(container, rating) {
+    console.log('highlightStars called with rating:', rating);
+    const stars = container.querySelectorAll('i');
+    stars.forEach(function(star) {
+        star.classList.remove('hover');
+        const starRating = parseInt(star.dataset.rating);
+        
+        if (starRating <= rating) {
+            star.classList.add('hover');
+            star.style.color = '#ffc107';
+            star.style.transform = 'scale(1.1)';
+            star.style.transition = 'all 0.2s ease';
+            console.log('Added hover class to star with rating:', starRating, 'Class list:', star.classList.toString());
+        }
+    });
+}
+
+// 清除悬停高亮
+function clearHighlights(container) {
+    console.log('clearHighlights called');
+    const stars = container.querySelectorAll('i');
+    stars.forEach(function(star) {
+        star.classList.remove('hover');
+        star.style.color = '';
+        star.style.transform = '';
+        star.style.transition = '';
+    });
+}
+
+// 提交评分
+function submitRating(translationId, rating) {
+    const form = document.querySelector(`#visitorRating${translationId}`).closest('form');
+    const ratingInput = document.getElementById(`visitorRating${translationId}`);
+    ratingInput.value = rating;
+    form.submit();
+}
+
+// 提交校正评分
+function submitCorrectionRating(correctionId, rating) {
+    const form = document.querySelector(`#correctionRating${correctionId}`).closest('form');
+    const ratingInput = document.getElementById(`correctionRating${correctionId}`);
+    ratingInput.value = rating;
+    form.submit();
+}
+
+// 作者评分确认功能
+function showAuthorRatingModal(translationId, rating) {
+    currentTranslationId = translationId;
+    document.getElementById('selectedRating').textContent = rating;
+    document.getElementById('confirmRating').value = rating;
+    
+    const modal = new bootstrap.Modal(document.getElementById('authorRatingModal'));
+    modal.show();
+}
+
+function confirmAuthorRating() {
+    if (!currentTranslationId) {
+        return;
+    }
+    
+    const rating = document.getElementById('confirmRating').value;
+    const form = document.getElementById('authorRatingForm');
+    
+    form.action = '/translation/' + currentTranslationId + '/author_rate';
+    form.submit();
+}
+
+// 作者校正评分确认功能
+let currentCorrectionId = null;
+
+function showAuthorCorrectionRatingModal(correctionId, rating) {
+    currentCorrectionId = correctionId;
+    document.getElementById('selectedCorrectionRating').textContent = rating;
+    document.getElementById('confirmCorrectionRating').value = rating;
+    
+    const modal = new bootstrap.Modal(document.getElementById('authorCorrectionRatingModal'));
+    modal.show();
+}
+
+function confirmAuthorCorrectionRating() {
+    if (!currentCorrectionId) {
+        return;
+    }
+    
+    const rating = document.getElementById('confirmCorrectionRating').value;
+    const form = document.getElementById('authorCorrectionRatingForm');
+    
+    form.action = '/correction/' + currentCorrectionId + '/author_rate';
+    form.submit();
 }
 </script>
 {% endblock %}

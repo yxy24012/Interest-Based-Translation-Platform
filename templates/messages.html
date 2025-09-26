@@ -232,7 +232,7 @@
                                         {% else %}
                                         <span class="text-success">{{ get_message('me') if get_message('me') else '我' }}:</span>
                                         {% endif %}
-                                        {{ item.latest_message.content[:30] }}{% if item.latest_message.content|length > 30 %}...{% endif %}
+                                        {{ item.latest_message.content|striptags|truncate(30) }}
                                     </div>
                                     <div class="text-muted small">
                                         <i class="fas fa-clock me-1"></i>{{ item.latest_message.created_at.strftime('%m-%d %H:%M') }}

@@ -414,7 +414,7 @@
                                     </span>
                                 </div>
                                 <p class="card-text small text-muted mb-2">
-                                    {{ work.content[:50] }}{% if work.content|length > 50 %}...{% endif %}
+                                    {{ work.content|striptags|truncate(50) }}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">
@@ -472,7 +472,7 @@
                                     </span>
                                 </div>
                                 <p class="card-text small text-muted mb-2">
-                                    {{ translation.content[:50] }}{% if translation.content|length > 50 %}...{% endif %}
+                                    {{ translation.content|striptags|truncate(50) }}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -549,9 +549,9 @@
                                 </h6>
                                 <p class="card-text small text-muted mb-2">
                                     {% if like.type == 'translation' %}
-                                        {{ like.translation.content[:50] }}{% if like.translation.content|length > 50 %}...{% endif %}
+                                        {{ like.translation.content|striptags|truncate(50) }}
                                     {% else %}
-                                        {{ like.correction.content[:50] }}{% if like.correction.content|length > 50 %}...{% endif %}
+                                        {{ like.correction.content|striptags|truncate(50) }}
                                     {% endif %}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">

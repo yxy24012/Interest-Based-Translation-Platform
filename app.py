@@ -2001,7 +2001,7 @@ def get_message(key, lang=None, **kwargs):
             'zh': '收到作者的赞', 'zh-TW': '收到作者的讚', 'ja': '作者からもらったいいね', 'en': 'Received Author\'s Like', 'ru': 'Получен лайк от автора', 'ko': '작가로부터 받은 좋아요', 'fr': 'J\'aime reçu de l\'auteur', 'es': 'Me gusta recibido del autor'
         },
         'accept': {
-            'zh': '接受', 'zh-TW': '接受', 'ja': '承認', 'en': 'Accept', 'ru': 'Принять', 'ko': '수락', 'fr': 'Accepter', 'es': 'Aceptar'
+            'zh': '感谢并接受', 'zh-TW': '感謝並接受', 'ja': '感謝し承認', 'en': 'Thank and Accept', 'ru': 'Поблагодарить и принять', 'ko': '감사하고 수락', 'fr': 'Remercier et accepter', 'es': 'Agradecer y aceptar'
         },
         'add_correction': {
             'zh': '添加校正', 'zh-TW': '添加校正', 'ja': '校正を追加', 'en': 'Add Correction', 'ru': 'Добавить исправление', 'ko': '교정 추가', 'fr': 'Ajouter une correction', 'es': 'Agregar corrección'
@@ -2322,6 +2322,45 @@ def get_message(key, lang=None, **kwargs):
         },
         'add_like_to_translation': {
             'zh': '为翻译点赞', 'zh-TW': '為翻譯點讚', 'ja': '翻訳にいいねを追加', 'en': 'Add like to translation', 'ru': 'Добавить лайк к переводу', 'ko': '번역에 좋아요 추가', 'fr': 'Ajouter un j\'aime à la traduction', 'es': 'Agregar me gusta a la traducción'
+        },
+        'rate_translation': {
+            'zh': '为翻译评分', 'zh-TW': '為翻譯評分', 'ja': '翻訳を評価', 'en': 'Rate Translation', 'ru': 'Оценить перевод', 'ko': '번역 평가', 'fr': 'Évaluer la traduction', 'es': 'Calificar traducción'
+        },
+        'translation_rating': {
+            'zh': '翻译评分', 'zh-TW': '翻譯評分', 'ja': '翻訳評価', 'en': 'Translation Rating', 'ru': 'Оценка перевода', 'ko': '번역 평가', 'fr': 'Évaluation de traduction', 'es': 'Calificación de traducción'
+        },
+        'rate_translation_quality': {
+            'zh': '为翻译质量评分（1-5星）', 'zh-TW': '為翻譯質量評分（1-5星）', 'ja': '翻訳品質を評価（1-5星）', 'en': 'Rate Translation Quality (1-5 stars)', 'ru': 'Оценить качество перевода (1-5 звезд)', 'ko': '번역 품질 평가 (1-5별)', 'fr': 'Évaluer la qualité de traduction (1-5 étoiles)', 'es': 'Calificar calidad de traducción (1-5 estrellas)'
+        },
+        'author_rating_warning': {
+            'zh': '作为作者，如果您不熟悉翻译，建议参考其他用户的评分后再进行评分。', 'zh-TW': '作為作者，如果您不熟悉翻譯，建議參考其他用戶的評分後再進行評分。', 'ja': '作者として、翻訳に不慣れな場合は、他のユーザーの評価を参考にしてから評価することをお勧めします。', 'en': 'As an author, if you are not familiar with translation, we recommend referring to other users\' ratings before rating.', 'ru': 'Как автор, если вы не знакомы с переводом, мы рекомендуем сначала посмотреть оценки других пользователей.', 'ko': '작가로서 번역에 익숙하지 않다면 다른 사용자의 평가를 참고한 후 평가하는 것을 권장합니다.', 'fr': 'En tant qu\'auteur, si vous n\'êtes pas familier avec la traduction, nous recommandons de consulter les évaluations d\'autres utilisateurs avant d\'évaluer.', 'es': 'Como autor, si no está familiarizado con la traducción, le recomendamos consultar las calificaciones de otros usuarios antes de calificar.'
+        },
+        'confirm_author_rating': {
+            'zh': '确认作者评分', 'zh-TW': '確認作者評分', 'ja': '作者評価を確認', 'en': 'Confirm Author Rating', 'ru': 'Подтвердить оценку автора', 'ko': '작가 평가 확인', 'fr': 'Confirmer l\'évaluation de l\'auteur', 'es': 'Confirmar calificación del autor'
+        },
+        'current_rating': {
+            'zh': '当前评分', 'zh-TW': '當前評分', 'ja': '現在の評価', 'en': 'Current Rating', 'ru': 'Текущая оценка', 'ko': '현재 평가', 'fr': 'Évaluation actuelle', 'es': 'Calificación actual'
+        },
+        'weighted_average': {
+            'zh': '加权平均分', 'zh-TW': '加權平均分', 'ja': '加重平均点', 'en': 'Weighted Average', 'ru': 'Взвешенное среднее', 'ko': '가중 평균', 'fr': 'Moyenne pondérée', 'es': 'Promedio ponderado'
+        },
+        'rating_breakdown': {
+            'zh': '评分构成', 'zh-TW': '評分構成', 'ja': '評価構成', 'en': 'Rating Breakdown', 'ru': 'Состав оценки', 'ko': '평가 구성', 'fr': 'Répartition des évaluations', 'es': 'Desglose de calificaciones'
+        },
+        'author_rating': {
+            'zh': '作者评分', 'zh-TW': '作者評分', 'ja': '作者評価', 'en': 'Author Rating', 'ru': 'Оценка автора', 'ko': '작가 평가', 'fr': 'Évaluation de l\'auteur', 'es': 'Calificación del autor'
+        },
+        'reviewer_rating': {
+            'zh': '校正者评分', 'zh-TW': '校正者評分', 'ja': '校正者評価', 'en': 'Reviewer Rating', 'ru': 'Оценка корректора', 'ko': '교정자 평가', 'fr': 'Évaluation du correcteur', 'es': 'Calificación del revisor'
+        },
+        'visitor_rating': {
+            'zh': '游客评分', 'zh-TW': '遊客評分', 'ja': '訪問者評価', 'en': 'Visitor Rating', 'ru': 'Оценка посетителей', 'ko': '방문자 평가', 'fr': 'Évaluation des visiteurs', 'es': 'Calificación de visitantes'
+        },
+        'rating_submitted': {
+            'zh': '评分已提交', 'zh-TW': '評分已提交', 'ja': '評価が送信されました', 'en': 'Rating Submitted', 'ru': 'Оценка отправлена', 'ko': '평가가 제출되었습니다', 'fr': 'Évaluation soumise', 'es': 'Calificación enviada'
+        },
+        'rating_updated': {
+            'zh': '评分已更新', 'zh-TW': '評分已更新', 'ja': '評価が更新されました', 'en': 'Rating Updated', 'ru': 'Оценка обновлена', 'ko': '평가가 업데이트되었습니다', 'fr': 'Évaluation mise à jour', 'es': 'Calificación actualizada'
         },
         'already_accepted': {
             'zh': '您已经接受过这个翻译了',
@@ -7337,6 +7376,28 @@ class Favorite(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     __table_args__ = (db.UniqueConstraint('user_id', 'work_id', name='unique_favorite'),)
 
+class TranslationRating(db.Model):
+    """翻译质量评分"""
+    id = db.Column(db.Integer, primary_key=True)
+    translation_id = db.Column(db.Integer, db.ForeignKey('translation.id'), nullable=False)
+    rater_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # 评分者ID，游客为None
+    rater_type = db.Column(db.String(20), nullable=False)  # author, reviewer, visitor
+    rating = db.Column(db.Integer, nullable=False)  # 1-5分
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    __table_args__ = (db.UniqueConstraint('translation_id', 'rater_id', 'rater_type', name='unique_translation_rating'),)
+
+class CorrectionRating(db.Model):
+    """校正质量评分"""
+    id = db.Column(db.Integer, primary_key=True)
+    correction_id = db.Column(db.Integer, db.ForeignKey('correction.id'), nullable=False)
+    rater_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # 评分者ID，游客为None
+    rater_type = db.Column(db.String(20), nullable=False)  # author, reviewer, visitor
+    rating = db.Column(db.Integer, nullable=False)  # 1-5分
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    __table_args__ = (db.UniqueConstraint('correction_id', 'rater_id', 'rater_type', name='unique_correction_rating'),)
+
 # 辅助函数
 def get_user_by_id(user_id):
     return User.query.get(user_id)
@@ -7348,6 +7409,142 @@ def get_current_user():
     if is_logged_in():
         return db.session.get(User, int(session['user_id']))
     return None
+
+def calculate_translation_rating(translation_id):
+    """计算翻译的加权平均分"""
+    ratings = TranslationRating.query.filter_by(translation_id=translation_id).all()
+    
+    if not ratings:
+        return None
+    
+    author_ratings = [r.rating for r in ratings if r.rater_type == 'author']
+    reviewer_ratings = [r.rating for r in ratings if r.rater_type == 'reviewer']
+    visitor_ratings = [r.rating for r in ratings if r.rater_type == 'visitor']
+    
+    weighted_sum = 0
+    total_weight = 0
+    
+    # 作者评分权重30%
+    if author_ratings:
+        author_avg = sum(author_ratings) / len(author_ratings)
+        weighted_sum += author_avg * 0.3
+        total_weight += 0.3
+    
+    # 校正者评分权重40%
+    if reviewer_ratings:
+        reviewer_avg = sum(reviewer_ratings) / len(reviewer_ratings)
+        weighted_sum += reviewer_avg * 0.4
+        total_weight += 0.4
+    
+    # 游客评分权重30%
+    if visitor_ratings:
+        visitor_avg = sum(visitor_ratings) / len(visitor_ratings)
+        weighted_sum += visitor_avg * 0.3
+        total_weight += 0.3
+    
+    if total_weight == 0:
+        return None
+    
+    return round(weighted_sum / total_weight, 1)
+
+def get_rating_breakdown(translation_id):
+    """获取评分构成详情"""
+    ratings = TranslationRating.query.filter_by(translation_id=translation_id).all()
+    
+    author_ratings = [r.rating for r in ratings if r.rater_type == 'author']
+    reviewer_ratings = [r.rating for r in ratings if r.rater_type == 'reviewer']
+    visitor_ratings = [r.rating for r in ratings if r.rater_type == 'visitor']
+    
+    breakdown = {
+        'author': {
+            'ratings': author_ratings,
+            'average': round(sum(author_ratings) / len(author_ratings), 1) if author_ratings else None,
+            'count': len(author_ratings),
+            'weight': 0.3
+        },
+        'reviewer': {
+            'ratings': reviewer_ratings,
+            'average': round(sum(reviewer_ratings) / len(reviewer_ratings), 1) if reviewer_ratings else None,
+            'count': len(reviewer_ratings),
+            'weight': 0.4
+        },
+        'visitor': {
+            'ratings': visitor_ratings,
+            'average': round(sum(visitor_ratings) / len(visitor_ratings), 1) if visitor_ratings else None,
+            'count': len(visitor_ratings),
+            'weight': 0.3
+        }
+    }
+    
+    return breakdown
+
+def calculate_correction_rating(correction_id):
+    """计算校正的加权平均分"""
+    ratings = CorrectionRating.query.filter_by(correction_id=correction_id).all()
+    
+    if not ratings:
+        return None
+    
+    author_ratings = [r.rating for r in ratings if r.rater_type == 'author']
+    reviewer_ratings = [r.rating for r in ratings if r.rater_type == 'reviewer']
+    visitor_ratings = [r.rating for r in ratings if r.rater_type == 'visitor']
+    
+    weighted_sum = 0
+    total_weight = 0
+    
+    # 作者评分权重30%
+    if author_ratings:
+        author_avg = sum(author_ratings) / len(author_ratings)
+        weighted_sum += author_avg * 0.3
+        total_weight += 0.3
+    
+    # 校正者评分权重40%
+    if reviewer_ratings:
+        reviewer_avg = sum(reviewer_ratings) / len(reviewer_ratings)
+        weighted_sum += reviewer_avg * 0.4
+        total_weight += 0.4
+    
+    # 游客评分权重30%
+    if visitor_ratings:
+        visitor_avg = sum(visitor_ratings) / len(visitor_ratings)
+        weighted_sum += visitor_avg * 0.3
+        total_weight += 0.3
+    
+    if total_weight == 0:
+        return None
+    
+    return round(weighted_sum / total_weight, 1)
+
+def get_correction_rating_breakdown(correction_id):
+    """获取校正评分构成详情"""
+    ratings = CorrectionRating.query.filter_by(correction_id=correction_id).all()
+    
+    author_ratings = [r.rating for r in ratings if r.rater_type == 'author']
+    reviewer_ratings = [r.rating for r in ratings if r.rater_type == 'reviewer']
+    visitor_ratings = [r.rating for r in ratings if r.rater_type == 'visitor']
+    
+    breakdown = {
+        'author': {
+            'ratings': author_ratings,
+            'average': round(sum(author_ratings) / len(author_ratings), 1) if author_ratings else None,
+            'count': len(author_ratings),
+            'weight': 0.3
+        },
+        'reviewer': {
+            'ratings': reviewer_ratings,
+            'average': round(sum(reviewer_ratings) / len(reviewer_ratings), 1) if reviewer_ratings else None,
+            'count': len(reviewer_ratings),
+            'weight': 0.4
+        },
+        'visitor': {
+            'ratings': visitor_ratings,
+            'average': round(sum(visitor_ratings) / len(visitor_ratings), 1) if visitor_ratings else None,
+            'count': len(visitor_ratings),
+            'weight': 0.3
+        }
+    }
+    
+    return breakdown
 
 def has_role(role):
     return is_logged_in() and session.get('role') == role
@@ -8221,7 +8418,23 @@ def work_detail(work_id):
         # 按创建时间排序
         corrections.sort(key=lambda x: x.created_at, reverse=True)
     
-    return render_template('work_detail.html', work=work, translation=translation, translations=translations, comments=comments, current_user=current_user, translation_requests=translation_requests, translator_requests=translator_requests, translator_expectation=translator_expectation, general_expectation=general_expectation, approved_req=approved_req, approved_general_req=approved_general_req, current_user_approved_req=current_user_approved_req, current_user_approved_translator_req=current_user_approved_translator_req, author_stats=author_stats, corrections=corrections, CorrectionLike=CorrectionLike, Like=Like, AuthorLike=AuthorLike, Comment=Comment)
+    # 计算每个翻译的评分信息
+    translation_ratings = {}
+    for trans in translations:
+        translation_ratings[trans.id] = {
+            'weighted_average': calculate_translation_rating(trans.id),
+            'breakdown': get_rating_breakdown(trans.id)
+        }
+    
+    # 计算每个校正的评分信息
+    correction_ratings = {}
+    for correction in corrections:
+        correction_ratings[correction.id] = {
+            'weighted_average': calculate_correction_rating(correction.id),
+            'breakdown': get_correction_rating_breakdown(correction.id)
+        }
+    
+    return render_template('work_detail.html', work=work, translation=translation, translations=translations, comments=comments, current_user=current_user, translation_requests=translation_requests, translator_requests=translator_requests, translator_expectation=translator_expectation, general_expectation=general_expectation, approved_req=approved_req, approved_general_req=approved_general_req, current_user_approved_req=current_user_approved_req, current_user_approved_translator_req=current_user_approved_translator_req, author_stats=author_stats, corrections=corrections, CorrectionLike=CorrectionLike, Like=Like, AuthorLike=AuthorLike, Comment=Comment, translation_ratings=translation_ratings, TranslationRating=TranslationRating, correction_ratings=correction_ratings, CorrectionRating=CorrectionRating)
 
 @app.route('/work/<int:work_id>/translate', methods=['GET', 'POST'])
 def translate_work(work_id):
@@ -10616,6 +10829,221 @@ def unaccept_translation(work_id):
     # 作者承认是不可取消的
     flash(get_message('author_accept_irreversible'), 'error')
     return redirect(url_for('work_detail', work_id=work_id))
+
+@app.route('/translation/<int:translation_id>/rate', methods=['POST'])
+def rate_translation(translation_id):
+    """为翻译评分"""
+    translation = Translation.query.get_or_404(translation_id)
+    work = translation.work
+    
+    # 获取评分数据
+    rating = request.form.get('rating', type=int)
+    if not rating or rating < 1 or rating > 5:
+        flash('评分必须在1-5之间', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    current_user = get_current_user()
+    rater_type = None
+    rater_id = None
+    
+    # 确定评分者类型并检查权限
+    if current_user:
+        # 检查是否是翻译者本人
+        if current_user.id == translation.translator_id:
+            flash('您无法对自己的翻译进行评分', 'error')
+            return redirect(url_for('work_detail', work_id=work.id))
+        
+        if current_user.id == work.creator_id:
+            rater_type = 'author'
+            rater_id = current_user.id
+        elif current_user.is_reviewer:
+            rater_type = 'reviewer'
+            rater_id = current_user.id
+        else:
+            rater_type = 'visitor'
+            rater_id = current_user.id
+    else:
+        rater_type = 'visitor'
+        rater_id = None
+    
+    # 检查是否已经评分过
+    existing_rating = TranslationRating.query.filter_by(
+        translation_id=translation_id,
+        rater_id=rater_id,
+        rater_type=rater_type
+    ).first()
+    
+    if existing_rating:
+        # 更新现有评分
+        existing_rating.rating = rating
+        existing_rating.updated_at = datetime.utcnow()
+        message = get_message('rating_updated')
+    else:
+        # 创建新评分
+        new_rating = TranslationRating(
+            translation_id=translation_id,
+            rater_id=rater_id,
+            rater_type=rater_type,
+            rating=rating
+        )
+        db.session.add(new_rating)
+        message = get_message('rating_submitted')
+    
+    db.session.commit()
+    flash(message, 'success')
+    return redirect(url_for('work_detail', work_id=work.id))
+
+@app.route('/translation/<int:translation_id>/author_rate', methods=['POST'])
+def author_rate_translation(translation_id):
+    """作者为翻译评分（需要二次确认）"""
+    translation = Translation.query.get_or_404(translation_id)
+    work = translation.work
+    current_user = get_current_user()
+    
+    if not current_user or current_user.id != work.creator_id:
+        flash('只有作者可以评分', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    rating = request.form.get('rating', type=int)
+    if not rating or rating < 1 or rating > 5:
+        flash('评分必须在1-5之间', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    # 检查是否已经评分过
+    existing_rating = TranslationRating.query.filter_by(
+        translation_id=translation_id,
+        rater_id=current_user.id,
+        rater_type='author'
+    ).first()
+    
+    if existing_rating:
+        # 更新现有评分
+        existing_rating.rating = rating
+        existing_rating.updated_at = datetime.utcnow()
+        message = get_message('rating_updated')
+    else:
+        # 创建新评分
+        new_rating = TranslationRating(
+            translation_id=translation_id,
+            rater_id=current_user.id,
+            rater_type='author',
+            rating=rating
+        )
+        db.session.add(new_rating)
+        message = get_message('rating_submitted')
+    
+    db.session.commit()
+    flash(message, 'success')
+    return redirect(url_for('work_detail', work_id=work.id))
+
+@app.route('/correction/<int:correction_id>/rate', methods=['POST'])
+def rate_correction(correction_id):
+    """为校正评分"""
+    correction = Correction.query.get_or_404(correction_id)
+    translation = correction.translation
+    work = translation.work
+    
+    # 获取评分数据
+    rating = request.form.get('rating', type=int)
+    if not rating or rating < 1 or rating > 5:
+        flash('评分必须在1-5之间', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    current_user = get_current_user()
+    rater_type = None
+    rater_id = None
+    
+    # 确定评分者类型并检查权限
+    if current_user:
+        # 检查是否是校正者本人
+        if current_user.id == correction.reviewer_id:
+            flash('您无法对自己的校正进行评分', 'error')
+            return redirect(url_for('work_detail', work_id=work.id))
+        
+        if current_user.id == work.creator_id:
+            rater_type = 'author'
+            rater_id = current_user.id
+        elif current_user.is_reviewer:
+            rater_type = 'reviewer'
+            rater_id = current_user.id
+        else:
+            rater_type = 'visitor'
+            rater_id = current_user.id
+    else:
+        rater_type = 'visitor'
+        rater_id = None
+    
+    # 检查是否已经评分过
+    existing_rating = CorrectionRating.query.filter_by(
+        correction_id=correction_id,
+        rater_id=rater_id,
+        rater_type=rater_type
+    ).first()
+    
+    if existing_rating:
+        # 更新现有评分
+        existing_rating.rating = rating
+        existing_rating.updated_at = datetime.utcnow()
+        message = get_message('rating_updated')
+    else:
+        # 创建新评分
+        new_rating = CorrectionRating(
+            correction_id=correction_id,
+            rater_id=rater_id,
+            rater_type=rater_type,
+            rating=rating
+        )
+        db.session.add(new_rating)
+        message = get_message('rating_submitted')
+    
+    db.session.commit()
+    flash(message, 'success')
+    return redirect(url_for('work_detail', work_id=work.id))
+
+@app.route('/correction/<int:correction_id>/author_rate', methods=['POST'])
+def author_rate_correction(correction_id):
+    """作者为校正评分（二次确认）"""
+    correction = Correction.query.get_or_404(correction_id)
+    translation = correction.translation
+    work = translation.work
+    
+    # 获取评分数据
+    rating = request.form.get('rating', type=int)
+    if not rating or rating < 1 or rating > 5:
+        flash('评分必须在1-5之间', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    current_user = get_current_user()
+    if not current_user or current_user.id != work.creator_id:
+        flash('只有作者可以执行此操作', 'error')
+        return redirect(url_for('work_detail', work_id=work.id))
+    
+    # 检查是否已经评分过
+    existing_rating = CorrectionRating.query.filter_by(
+        correction_id=correction_id,
+        rater_id=current_user.id,
+        rater_type='author'
+    ).first()
+    
+    if existing_rating:
+        # 更新现有评分
+        existing_rating.rating = rating
+        existing_rating.updated_at = datetime.utcnow()
+        message = get_message('rating_updated')
+    else:
+        # 创建新评分
+        new_rating = CorrectionRating(
+            correction_id=correction_id,
+            rater_id=current_user.id,
+            rater_type='author',
+            rating=rating
+        )
+        db.session.add(new_rating)
+        message = get_message('rating_submitted')
+    
+    db.session.commit()
+    flash(message, 'success')
+    return redirect(url_for('work_detail', work_id=work.id))
 
 # create_default_admin函数已移至seed_data.py中
 

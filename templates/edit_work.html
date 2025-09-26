@@ -61,14 +61,14 @@
                                 } %}
                                 <select class="form-select" id="category" name="category" required>
                                     <option value="">{{ get_message('choose_category') }}</option>
-                                    <option value="投稿・文章" {% if work.category == '投稿・文章' %}selected{% endif %}>{{ get_message(category_key_map['投稿・文章']) if get_message(category_key_map['投稿・文章']) else '投稿・文章' }}</option>
-                                    <option value="小说" {% if work.category == '小说' %}selected{% endif %}>{{ get_message(category_key_map['小说']) if get_message(category_key_map['小说']) else get_message('category_novel') if get_message('category_novel') else '小说' }}</option>
-                                    <option value="图片" {% if work.category == '图片' %}selected{% endif %}>{{ get_message(category_key_map['图片']) if get_message(category_key_map['图片']) else get_message('category_image') if get_message('category_image') else '图片' }}</option>
-                                    <option value="漫画" {% if work.category == '漫画' %}selected{% endif %}>{{ get_message(category_key_map['漫画']) if get_message(category_key_map['漫画']) else '漫画' }}</option>
-                                    <option value="音声" {% if work.category == '音声' %}selected{% endif %}>{{ get_message(category_key_map['音声']) if get_message(category_key_map['音声']) else '音声' }}</option>
-                                    <option value="视频・动画" {% if work.category == '视频・动画' %}selected{% endif %}>{{ get_message(category_key_map['视频・动画']) if get_message(category_key_map['视频・动画']) else get_message('category_video') if get_message('category_video') else '视频・动画' }}</option>
-                                    <option value="闲聊" {% if work.category == '闲聊' %}selected{% endif %}>{{ get_message(category_key_map['闲聊']) if get_message(category_key_map['闲聊']) else get_message('category_chat') if get_message('category_chat') else '闲聊' }}</option>
-                                    <option value="其他" {% if work.category == '其他' %}selected{% endif %}>{{ get_message(category_key_map['其他']) if get_message(category_key_map['其他']) else get_message('category_other') if get_message('category_other') else '其他' }}</option>
+                                    <option value="投稿・文章" {% if work.category == '投稿・文章' %}selected{% endif %}>{{ get_message(category_key_map.get('投稿・文章')) if get_message(category_key_map.get('投稿・文章')) else '投稿・文章' }}</option>
+                                    <option value="小说" {% if work.category == '小说' %}selected{% endif %}>{{ get_message(category_key_map.get('小说')) if get_message(category_key_map.get('小说')) else get_message('category_novel') if get_message('category_novel') else '小说' }}</option>
+                                    <option value="图片" {% if work.category == '图片' %}selected{% endif %}>{{ get_message(category_key_map.get('图片')) if get_message(category_key_map.get('图片')) else get_message('category_image') if get_message('category_image') else '图片' }}</option>
+                                    <option value="漫画" {% if work.category == '漫画' %}selected{% endif %}>{{ get_message(category_key_map.get('漫画')) if get_message(category_key_map.get('漫画')) else '漫画' }}</option>
+                                    <option value="音声" {% if work.category == '音声' %}selected{% endif %}>{{ get_message(category_key_map.get('音声')) if get_message(category_key_map.get('音声')) else '音声' }}</option>
+                                    <option value="视频・动画" {% if work.category == '视频・动画' %}selected{% endif %}>{{ get_message(category_key_map.get('视频・动画')) if get_message(category_key_map.get('视频・动画')) else get_message('category_video') if get_message('category_video') else '视频・动画' }}</option>
+                                    <option value="闲聊" {% if work.category == '闲聊' %}selected{% endif %}>{{ get_message(category_key_map.get('闲聊')) if get_message(category_key_map.get('闲聊')) else get_message('category_chat') if get_message('category_chat') else '闲聊' }}</option>
+                                    <option value="其他" {% if work.category == '其他' %}selected{% endif %}>{{ get_message(category_key_map.get('其他')) if get_message(category_key_map.get('其他')) else get_message('category_other') if get_message('category_other') else '其他' }}</option>
                                 </select>
                             </div>
                         </div>

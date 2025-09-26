@@ -141,7 +141,7 @@
                     </div>
                     
                     <p class="card-text text-muted mb-3">
-                        {{ favorite.work.content[:100] }}{% if favorite.work.content|length > 100 %}...{% endif %}
+                        {{ favorite.work.content|striptags|truncate(100) }}
                     </p>
                     
                     <div class="work-stats">

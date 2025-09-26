@@ -278,7 +278,7 @@
                     {% set friend_rev = Friend.query.filter_by(user_id=user.id, friend_id=session.get('user_id')).first() %}
                     {% if friend_req and friend_req.status == 'accepted' or friend_rev and friend_rev.status == 'accepted' %}
                         <!-- 已经是好友，显示删除好友按钮 -->
-                        <button type="button" class="btn btn-outline-danger btn-sm mb-2 me-2" data-friend-name="{{ get_username(user.id) | safe }}" onclick="deleteFriend({{ user.id }}, this.getAttribute('data-friend-name'))">
+                        <button type="button" class="btn btn-outline-danger btn-sm mb-2 me-2" data-friend-name="{{ get_username(user.id) }}" onclick="deleteFriend({{ user.id }}, this.getAttribute('data-friend-name'))">
                             <i class="fas fa-user-minus me-1"></i>{{ get_message('delete_friend') if get_message('delete_friend') else '删除好友' }}
                         </button>
                     {% elif friend_req and friend_req.status == 'pending' %}
@@ -394,7 +394,7 @@
                                     </span>
                                 </div>
                                 <p class="card-text small text-muted mb-2">
-                                    {{ work.content[:50] }}{% if work.content|length > 50 %}...{% endif %}
+                                    {{ work.content|striptags|truncate(50) }}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">
@@ -472,7 +472,7 @@
                                     </span>
                                 </div>
                                 <p class="card-text small text-muted mb-2">
-                                    {{ t.content[:50] }}{% if t.content|length > 50 %}...{% endif %}
+                                    {{ t.content|striptags|truncate(50) }}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -539,9 +539,9 @@
                                 </h6>
                                 <p class="card-text small text-muted mb-2">
                                     {% if like.type == 'translation' %}
-                                        {{ like.translation.content[:50] }}{% if like.translation.content|length > 50 %}...{% endif %}
+                                        {{ like.translation.content|striptags|truncate(50) }}
                                     {% else %}
-                                        {{ like.correction.content[:50] }}{% if like.correction.content|length > 50 %}...{% endif %}
+                                        {{ like.correction.content|striptags|truncate(50) }}
                                     {% endif %}
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
