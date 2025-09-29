@@ -50,25 +50,25 @@
                         </div>
                     {% else %}
                         <!-- 作者期待和要求 -->
-                        {% if author_expectation %}
+                        {% if author_expectation and not is_empty_html_content(author_expectation) %}
                         <div class="mb-4">
-                            <h5><i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') if get_message('creator_expectation') else '作者期待' }}</h5>
+                            <h5><i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') if get_message('creator_expectation') else '创作者对翻译的期待' }}</h5>
                             <div class="border rounded p-3 bg-light">
                                 <p class="mb-0" style="white-space: pre-wrap;">{{ author_expectation }}</p>
                             </div>
                         </div>
                         {% endif %}
                         
-                        {% if author_requirement %}
+                        {% if author_requirement and not is_empty_html_content(author_requirement) %}
                         <div class="mb-4">
-                            <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') if get_message('creator_requirements') else '翻译要求' }}</h5>
+                            <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') if get_message('creator_requirements') else '创作者对翻译的要求' }}</h5>
                             <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
                                 <p class="mb-0">{{ author_requirement }}</p>
                             </div>
                         </div>
                         {% endif %}
                         
-                        {% if translator_expectation %}
+                        {% if translator_expectation and not is_empty_html_content(translator_expectation) %}
                         <div class="mb-4">
                             <h5><i class="fas fa-comment me-2 text-info"></i>{{ get_message('your_expectation') if get_message('your_expectation') else '您的期待' }}</h5>
                             <div class="border rounded p-3 bg-light">
