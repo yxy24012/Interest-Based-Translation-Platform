@@ -8210,7 +8210,7 @@ def profile():
         # 作者对校正的点赞也计入作者点赞总数
         author_likes += AuthorLike.query.filter_by(translation_id=correction.translation_id, correction_id=correction.id).count()
     
-    # 获取最近收到的作者评价
+    # 获取最近收到的作者评价（从系统消息中获取）
     recent_author_likes = []
     for translation in user.translations:
         # 获取作者对翻译的评价
@@ -8218,14 +8218,40 @@ def profile():
         for like in translation_author_likes:
             author = User.query.get(like.author_id)
             if author:
-                recent_author_likes.append({
-                    'type': 'translation',
-                    'author': author,
-                    'work': translation.work,
-                    'translation': translation,
-                    'correction': None,
-                    'created_at': like.created_at
-                })
+                # 从系统消息中获取作者评价内容
+                # 通过时间范围匹配系统消息（作者点赞时间前后1小时内）
+                from datetime import timedelta
+                time_start = like.created_at - timedelta(hours=1)
+                time_end = like.created_at + timedelta(hours=1)
+                
+                system_message = Message.query.filter(
+                    Message.sender_id == 1,  # 系统用户ID
+                    Message.receiver_id == user.id,
+                    Message.work_id == translation.work_id,
+                    Message.type == 'system',
+                    Message.created_at >= time_start,
+                    Message.created_at <= time_end,
+                    Message.content.like('%作者评价%')
+                ).first()
+                
+                evaluation_content = ""
+                if system_message and "作者评价：" in system_message.content:
+                    # 提取评价内容
+                    parts = system_message.content.split("作者评价：", 1)
+                    if len(parts) > 1:
+                        evaluation_content = parts[1].strip()
+                
+                # 只有当有作者评价时才添加到列表中
+                if evaluation_content:
+                    recent_author_likes.append({
+                        'type': 'translation',
+                        'author': author,
+                        'work': translation.work,
+                        'translation': translation,
+                        'correction': None,
+                        'created_at': like.created_at,
+                        'evaluation': evaluation_content
+                    })
     
     # 获取作者对校正的评价
     for correction in user.corrections:
@@ -8233,14 +8259,33 @@ def profile():
         for like in correction_author_likes:
             author = User.query.get(like.author_id)
             if author:
-                recent_author_likes.append({
-                    'type': 'correction',
-                    'author': author,
-                    'work': correction.translation.work,
-                    'translation': correction.translation,
-                    'correction': correction,
-                    'created_at': like.created_at
-                })
+                # 从系统消息中获取作者评价内容
+                system_message = Message.query.filter_by(
+                    sender_id=1,  # 系统用户ID
+                    receiver_id=user.id,
+                    work_id=correction.translation.work_id,
+                    liker_id=author.id,
+                    type='system'
+                ).first()
+                
+                evaluation_content = ""
+                if system_message and "作者评价：" in system_message.content:
+                    # 提取评价内容
+                    parts = system_message.content.split("作者评价：", 1)
+                    if len(parts) > 1:
+                        evaluation_content = parts[1].strip()
+                
+                # 只有当有作者评价时才添加到列表中
+                if evaluation_content:
+                    recent_author_likes.append({
+                        'type': 'correction',
+                        'author': author,
+                        'work': correction.translation.work,
+                        'translation': correction.translation,
+                        'correction': correction,
+                        'created_at': like.created_at,
+                        'evaluation': evaluation_content
+                    })
     
     # 按时间排序，取最近的5个
     recent_author_likes.sort(key=lambda x: x['created_at'], reverse=True)
@@ -8587,6 +8632,27 @@ def work_detail(work_id):
             if rating and rating > best_rating:
                 best_rating = rating
                 best_translation = trans
+    
+    # 为最佳翻译添加作者评价信息
+    if best_translation:
+        # 查找作者评价的系统消息
+        system_message = Message.query.filter(
+            Message.sender_id == 1,  # 系统用户ID
+            Message.receiver_id == best_translation.translator_id,
+            Message.work_id == best_translation.work_id,
+            Message.type == 'system',
+            Message.content.like('%作者评价%')
+        ).first()
+        
+        # 提取作者评价内容
+        author_evaluation = ""
+        if system_message and "作者评价：" in system_message.content:
+            parts = system_message.content.split("作者评价：", 1)
+            if len(parts) > 1:
+                author_evaluation = parts[1].strip()
+        
+        # 为best_translation对象添加author_evaluation属性
+        best_translation.author_evaluation = author_evaluation
     
     return render_template('work_detail.html', work=work, translation=translation, translations=translations, comments=comments, current_user=current_user, translation_requests=translation_requests, translator_requests=translator_requests, translator_expectation=translator_expectation, general_expectation=general_expectation, approved_req=approved_req, approved_general_req=approved_general_req, current_user_approved_req=current_user_approved_req, current_user_approved_translator_req=current_user_approved_translator_req, author_stats=author_stats, corrections=corrections, CorrectionLike=CorrectionLike, Like=Like, AuthorLike=AuthorLike, Comment=Comment, translation_ratings=translation_ratings, TranslationRating=TranslationRating, correction_ratings=correction_ratings, CorrectionRating=CorrectionRating, translator_total_likes=translator_total_likes, best_translation=best_translation, best_rating=best_rating)
 
@@ -9522,7 +9588,7 @@ def user_profile(user_id):
         # 作者对校正的点赞也计入作者点赞总数
         author_likes += AuthorLike.query.filter_by(translation_id=correction.translation_id, correction_id=correction.id).count()
     
-    # 获取最近收到的作者评价
+    # 获取最近收到的作者评价（从系统消息中获取）
     recent_author_likes = []
     for translation in user.translations:
         # 获取作者对翻译的评价
@@ -9530,14 +9596,40 @@ def user_profile(user_id):
         for like in translation_author_likes:
             author = User.query.get(like.author_id)
             if author:
-                recent_author_likes.append({
-                    'type': 'translation',
-                    'author': author,
-                    'work': translation.work,
-                    'translation': translation,
-                    'correction': None,
-                    'created_at': like.created_at
-                })
+                # 从系统消息中获取作者评价内容
+                # 通过时间范围匹配系统消息（作者点赞时间前后1小时内）
+                from datetime import timedelta
+                time_start = like.created_at - timedelta(hours=1)
+                time_end = like.created_at + timedelta(hours=1)
+                
+                system_message = Message.query.filter(
+                    Message.sender_id == 1,  # 系统用户ID
+                    Message.receiver_id == user.id,
+                    Message.work_id == translation.work_id,
+                    Message.type == 'system',
+                    Message.created_at >= time_start,
+                    Message.created_at <= time_end,
+                    Message.content.like('%作者评价%')
+                ).first()
+                
+                evaluation_content = ""
+                if system_message and "作者评价：" in system_message.content:
+                    # 提取评价内容
+                    parts = system_message.content.split("作者评价：", 1)
+                    if len(parts) > 1:
+                        evaluation_content = parts[1].strip()
+                
+                # 只有当有作者评价时才添加到列表中
+                if evaluation_content:
+                    recent_author_likes.append({
+                        'type': 'translation',
+                        'author': author,
+                        'work': translation.work,
+                        'translation': translation,
+                        'correction': None,
+                        'created_at': like.created_at,
+                        'evaluation': evaluation_content
+                    })
     
     # 获取作者对校正的评价
     for correction in user.corrections:
@@ -9545,14 +9637,33 @@ def user_profile(user_id):
         for like in correction_author_likes:
             author = User.query.get(like.author_id)
             if author:
-                recent_author_likes.append({
-                    'type': 'correction',
-                    'author': author,
-                    'work': correction.translation.work,
-                    'translation': correction.translation,
-                    'correction': correction,
-                    'created_at': like.created_at
-                })
+                # 从系统消息中获取作者评价内容
+                system_message = Message.query.filter_by(
+                    sender_id=1,  # 系统用户ID
+                    receiver_id=user.id,
+                    work_id=correction.translation.work_id,
+                    liker_id=author.id,
+                    type='system'
+                ).first()
+                
+                evaluation_content = ""
+                if system_message and "作者评价：" in system_message.content:
+                    # 提取评价内容
+                    parts = system_message.content.split("作者评价：", 1)
+                    if len(parts) > 1:
+                        evaluation_content = parts[1].strip()
+                
+                # 只有当有作者评价时才添加到列表中
+                if evaluation_content:
+                    recent_author_likes.append({
+                        'type': 'correction',
+                        'author': author,
+                        'work': correction.translation.work,
+                        'translation': correction.translation,
+                        'correction': correction,
+                        'created_at': like.created_at,
+                        'evaluation': evaluation_content
+                    })
     
     # 按时间排序，取最近的5个
     recent_author_likes.sort(key=lambda x: x['created_at'], reverse=True)

@@ -876,6 +876,109 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 最佳翻译区域 -->
+                {% if best_translation %}
+                <div class="translator-acknowledgment-section" style="background: linear-gradient(135deg, #3a4a5c 0%, #4a5a6c 100%); border: 2px dashed #5a9bd4; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                    <div class="text-center mb-3">
+                        <h5 class="text-white mb-0" style="font-weight: 600;">
+                            <i class="fas fa-trophy me-2" style="color: #d4a574;"></i>{{ get_message('best_translation') }}
+                        </h5>
+                    </div>
+                    
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="translator-info-card" style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; backdrop-filter: blur(10px);">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="me-3">
+                                        <a href="{{ url_for('user_profile', user_id=best_translation.translator.id) }}" 
+                                           style="text-decoration: none;">
+                                            <img src="{{ get_avatar_url(best_translation.translator) }}" 
+                                                 class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #5a9bd4; cursor: pointer; transition: transform 0.2s ease;" 
+                                                 alt="{{ best_translation.translator.username }}"
+                                                 onmouseover="this.style.transform='scale(1.1)'"
+                                                 onmouseout="this.style.transform='scale(1)'">
+                                        </a>
+                                    </div>
+                                    <div class="text-white">
+                                        <div class="fw-bold mb-1" style="font-size: 1.1rem;">
+                                            {{ get_message('translator') }}: 
+                                            <a href="{{ url_for('user_profile', user_id=best_translation.translator.id) }}" 
+                                               style="color: #fff; text-decoration: none; cursor: pointer; transition: color 0.2s ease;"
+                                               onmouseover="this.style.color='#d4a574'"
+                                               onmouseout="this.style.color='#fff'">
+                                                {{ best_translation.translator.username }}
+                                            </a>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <small class="text-light">
+                                                <i class="fas fa-calendar me-1" style="color: #d4a574;"></i>
+                                                {{ get_message('translation_completed') }}: {{ best_translation.updated_at.strftime('%Y-%m-%d') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="text-white">
+                                            <i class="fas fa-star me-1" style="color: #d4a574;"></i>
+                                            <span class="fw-bold">{{ get_message('received_likes_count') }}: <span id="good-ratings-count-{{ best_translation.id }}">{{ translator_total_likes.get(best_translation.translator_id, 0) }}</span>个</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-white">
+                                            <i class="fas fa-star me-1" style="color: #d4a574;"></i>
+                                            <span class="fw-bold">评分: {{ "%.1f"|format(best_rating) if best_rating else '暂无评分' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if best_translation.author_evaluation %}
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div class="text-white">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-comment me-2 mt-1" style="color: #b19cd9;"></i>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-bold">{{ get_message('author_comment') }}:</span>
+                                                    <div class="mt-2 p-3" style="background: rgba(255,255,255,0.1); border-radius: 8px; border-left: 3px solid #b19cd9;">
+                                                        <p class="mb-0 text-light" style="line-height: 1.6; white-space: pre-wrap;">{{ best_translation.author_evaluation }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <div class="d-flex flex-column gap-2">
+                                <!-- 向翻译者致谢按钮 - 联动翻译点赞 -->
+                                {% set user_liked_translation = Like.query.filter_by(target_type='translation', target_id=best_translation.id, user_id=session.get('user_id')).first() if session.get('user_id') else None %}
+                                <button class="btn btn-outline-light btn-sm translator-thank-btn" 
+                                        data-translation-id="{{ best_translation.id }}" 
+                                        data-liked="{{ 'true' if user_liked_translation else 'false' }}"
+                                        style="border: 1px dashed {{ '#d67a7a' if user_liked_translation else '#5a9bd4' }}; background: {{ 'rgba(52, 152, 219, 0.4)' if user_liked_translation else 'rgba(52, 152, 219, 0.15)' }}; transition: all 0.3s ease;"
+                                        onmouseover="this.style.background='rgba(52, 152, 219, 0.3)'; this.style.transform='scale(1.05)'"
+                                        onmouseout="this.style.background='{{ 'rgba(52, 152, 219, 0.4)' if user_liked_translation else 'rgba(52, 152, 219, 0.15)' }}'; this.style.transform='scale(1)'">
+                                    <i class="fas fa-thumbs-up me-1" style="color: {{ '#d67a7a' if user_liked_translation else '#fff' }};"></i>
+                                    <span class="thank-count me-2">{{ Like.query.filter_by(target_type='translation', target_id=best_translation.id).count() if Like else 0 }}</span>
+                                    <span class="thank-text">{{ get_message('add_like_to_translation') }}</span>
+                                </button>
+                                <a href="{{ url_for('user_profile', user_id=best_translation.translator.id) }}" 
+                                   class="btn btn-outline-light btn-sm" 
+                                   style="border: 1px dashed #5a9bd4; background: rgba(52, 152, 219, 0.15); transition: all 0.3s ease;"
+                                   onmouseover="this.style.background='rgba(52, 152, 219, 0.3)'; this.style.transform='scale(1.05)'"
+                                   onmouseout="this.style.background='rgba(52, 152, 219, 0.15)'; this.style.transform='scale(1)'">
+                                    <i class="fas fa-user me-1"></i>{{ get_message('view_translator_profile') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             
             <div class="card-body p-4">
                 <!-- 多媒体文件 -->
@@ -3259,5 +3362,86 @@ function confirmAuthorCorrectionRating() {
     form.action = '/correction/' + currentCorrectionId + '/author_rate';
     form.submit();
 }
+
+// 最佳翻译区域点赞功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 最佳翻译区域点赞按钮事件
+    document.querySelectorAll('.translator-thank-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const translationId = this.dataset.translationId;
+            const isLiked = this.dataset.liked === 'true';
+            
+            fetch('/like/translation/' + translationId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: isLiked ? 'unlike' : 'like'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const newLiked = !isLiked;
+                    this.dataset.liked = newLiked.toString();
+                    
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.thank-count');
+                    
+                    if (newLiked) {
+                        icon.style.color = '#d67a7a';
+                        this.style.background = 'rgba(52, 152, 219, 0.4)';
+                        this.style.borderColor = '#d67a7a';
+                    } else {
+                        icon.style.color = '#fff';
+                        this.style.background = 'rgba(52, 152, 219, 0.15)';
+                        this.style.borderColor = '#5a9bd4';
+                    }
+                    
+                    if (countSpan) {
+                        countSpan.textContent = data.likes_count;
+                    }
+                    
+                    // 同步更新主翻译区域的点赞按钮
+                    const mainLikeBtn = document.querySelector(`.like-btn[data-translation-id="${translationId}"]`);
+                    if (mainLikeBtn) {
+                        mainLikeBtn.dataset.liked = newLiked.toString();
+                        const mainIcon = mainLikeBtn.querySelector('i');
+                        const mainCountSpan = mainLikeBtn.querySelector('.like-count');
+                        
+                        if (newLiked) {
+                            mainIcon.style.color = '#dc3545';
+                            mainLikeBtn.style.background = 'rgba(220, 53, 69, 0.1)';
+                            mainLikeBtn.style.borderColor = '#dc3545';
+                        } else {
+                            mainIcon.style.color = '#6c757d';
+                            mainLikeBtn.style.background = 'rgba(108, 117, 125, 0.1)';
+                            mainLikeBtn.style.borderColor = '#6c757d';
+                        }
+                        
+                        if (mainCountSpan) {
+                            mainCountSpan.textContent = data.likes_count;
+                        }
+                    }
+                    
+                    // 更新获得点赞数
+                    const goodRatingsCount = document.getElementById('good-ratings-count-' + translationId);
+                    if (goodRatingsCount && data.translator_total_likes !== undefined) {
+                        goodRatingsCount.textContent = data.translator_total_likes;
+                    }
+                } else {
+                    alert(data.message || '操作失败，请重试');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('网络错误，请重试');
+            });
+        });
+    });
+});
 </script>
 {% endblock %}
