@@ -105,7 +105,7 @@
                     <div class="mb-4">
                         <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i><span class="fw-bold text-warning">{{ get_message('creator_requirements') }}</span></h5>
                         <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
-                            {{ work.translation_requirements }}
+                            <div class="work-content" style="line-height: 1.8; word-wrap: break-word;">{{ work.translation_requirements|safe }}</div>
                         </div>
                     </div>
                     {% endif %}

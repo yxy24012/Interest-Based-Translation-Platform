@@ -14,7 +14,7 @@
           <div class="p-2 rounded {% if msg.sender.id == session.get('user_id') %}bg-primary text-white{% else %}bg-light border{% endif %}" style="max-width:350px;word-break:break-all;">
             <div class="small fw-bold mb-1"><span class="fw-bold" style="font-size:1.15em;">{{ msg.sender.username }}</span></div>
             {% if msg.content %}
-              <div class="mb-2">{{ msg.content|safe }}</div>
+              <div class="mb-2 work-content" style="line-height: 1.6; word-wrap: break-word;">{{ msg.content|safe }}</div>
             {% endif %}
             {% if msg.image_filename %}
               <div class="mb-2">

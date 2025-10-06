@@ -1068,7 +1068,7 @@
                         <i class="fas fa-star me-2 text-primary"></i>{{ get_message('creator_expectation') }}
                     </h5>
                     <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);">
-                        <div style="color: #212529;">{{ work.translation_expectation|safe }}</div>
+                        <div class="work-content" style="color: #212529; line-height: 1.8; word-wrap: break-word;">{{ work.translation_expectation|safe }}</div>
                     </div>
                 </div>
                 {% endif %}
@@ -1081,7 +1081,7 @@
                         <i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ get_message('creator_requirements') }}
                     </h5>
                     <div class="border rounded p-3" style="background:rgba(255,243,205,0.7); border-left:6px solid #ffc107;">
-                        {{ work.translation_requirements|safe }}
+                        <div class="work-content" style="line-height: 1.8; word-wrap: break-word;">{{ work.translation_requirements|safe }}</div>
                     </div>
                 </div>
                 {% endif %}
@@ -1377,7 +1377,7 @@
                                             <i class="fas fa-edit me-2"></i>{{ get_message('correction_content_label') }}
                                         </h6>
                                         <div class="border border-dark rounded p-3" style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);">
-                                            <div class="mb-0" style="line-height: 1.6; color: #212529;">{{ correction.content|safe }}</div>
+                                            <div class="mb-0 work-content" style="line-height: 1.8; color: #212529; word-wrap: break-word;">{{ correction.content|safe }}</div>
                                         </div>
                                     </div>
                                     
@@ -1386,7 +1386,7 @@
                                         <h6 class="text-info mb-2">
                                             <i class="fas fa-sticky-note me-2"></i>{{ get_message('correction_notes_label') }}
                                         </h6>
-                                        <p class="mb-0">{{ correction.notes|safe }}</p>
+                                        <p class="mb-0 work-content" style="line-height: 1.8; word-wrap: break-word;">{{ correction.notes|safe }}</p>
                                     </div>
                                     {% endif %}
                                     
@@ -1774,7 +1774,7 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div class="mb-0">{{ comment.content|safe }}</div>
+                                    <div class="mb-0 work-content" style="line-height: 1.8; word-wrap: break-word;">{{ comment.content|safe }}</div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -1997,7 +1997,7 @@
                         <h6 class="mb-2 fw-bold">{{ work.creator.username }}</h6>
                     </a>
                     {% if work.creator.bio %}
-                    <p class="text-muted small mb-3">{{ work.creator.bio|safe }}</p>
+                    <p class="text-muted small mb-3 work-content" style="line-height: 1.6; word-wrap: break-word;">{{ work.creator.bio|safe }}</p>
                     {% endif %}
                     
                     <!-- 角色标签 -->
