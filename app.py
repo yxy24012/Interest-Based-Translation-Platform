@@ -620,7 +620,7 @@ def is_empty_html_content(content):
 
 def clean_html_content(content):
     """
-    清理HTML内容，允许安全的HTML标签和属性
+    清理HTML内容，允许安全的HTML标签和属性，保留段落格式
     """
     if not content:
         return content
@@ -647,13 +647,28 @@ def clean_html_content(content):
         '*': ['class', 'id', 'style']
     }
     
-    # 清理HTML
+    # 清理HTML，不使用strip=True以保留格式
     cleaned_content = bleach.clean(
         content,
         tags=allowed_tags,
         attributes=allowed_attributes,
-        strip=True
+        strip=False
     )
+    
+    # 后处理：确保段落格式正确
+    import re
+    # 处理Quill.js生成的格式
+    # 将连续的<br><br>转换为段落分隔
+    cleaned_content = re.sub(r'<br\s*/?>\s*<br\s*/?>', '</p><p>', cleaned_content)
+    # 确保内容被<p>标签包装
+    if not cleaned_content.startswith('<p>') and not cleaned_content.startswith('<'):
+        cleaned_content = '<p>' + cleaned_content
+    if not cleaned_content.endswith('</p>') and not cleaned_content.endswith('>'):
+        cleaned_content = cleaned_content + '</p>'
+    # 清理多余的空白段落
+    cleaned_content = re.sub(r'<p>\s*</p>', '', cleaned_content)
+    # 确保段落之间有适当的间距
+    cleaned_content = cleaned_content.replace('</p><p>', '</p>\n<p>')
     
     # 检查是否为空的HTML标签内容
     if is_empty_html_content(cleaned_content):
