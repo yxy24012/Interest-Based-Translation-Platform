@@ -1147,6 +1147,15 @@
                                     <span class="badge bg-{{ 'success' if translation.status == 'approved' else 'warning' if translation.status == 'submitted' else 'secondary' }}">
                                         {{ {'draft': get_message('status_draft') if get_message('status_draft') else '草稿', 'submitted': get_message('status_submitted') if get_message('status_submitted') else '已提交', 'approved': get_message('status_approved') if get_message('status_approved') else '已通过', 'rejected': get_message('status_rejected') if get_message('status_rejected') else '已拒绝'}[translation.status] }}
                                     </span>
+                                    {% if translation.status == 'draft' and session.get('user_id') == work.creator.id %}
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>翻译者尚未提交，您可以提前确认
+                                    </small>
+                                    {% elif translation.status == 'submitted' and session.get('user_id') == work.creator.id %}
+                                    <small class="text-muted">
+                                        <i class="fas fa-check-circle me-1"></i>翻译已提交，等待您的确认
+                                    </small>
+                                    {% endif %}
                                     {% set translation_author_likes = AuthorLike.query.filter_by(translation_id=translation.id, correction_id=None).count() if AuthorLike else 0 %}
                                     <!-- 翻译作者点赞徽章已隐藏 -->
                                 </div>
@@ -1255,7 +1264,7 @@
                             </div>
                             
                             <!-- 作者操作按钮 -->
-                            {% if session.get('user_id') == work.creator.id and translation.status == 'submitted' %}
+                            {% if session.get('user_id') == work.creator.id and translation.status in ['submitted', 'draft'] %}
                             <div class="d-flex gap-2 mb-3">
                                 <button type="button" class="btn btn-success btn-sm" onclick="showAcceptModal({{ translation.id }})">
                                     <i class="fas fa-check me-1"></i>{{ get_message('accept') }}
@@ -1581,7 +1590,7 @@
                                     <a href="{{ url_for('edit_translation', work_id=work.id) }}" class="btn btn-outline-primary">
                                         <i class="fas fa-edit me-2"></i>{{ get_message('edit') }}
                                     </a>
-                                    {% if translation.status == 'submitted' %}
+                                    {% if translation.status in ['submitted', 'draft'] %}
                                     <button type="button" class="btn btn-outline-danger" onclick="deleteTranslation({{ translation.id }})">
                                         <i class="fas fa-trash me-2"></i>{{ get_message('delete') }}
                                     </button>

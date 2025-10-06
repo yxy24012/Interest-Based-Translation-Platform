@@ -3076,7 +3076,41 @@ def get_message(key, lang=None, **kwargs):
 
             'ko': '번역이 업데이트되었습니다',
 
-            'fr': 'Traduction mise à jour', 'es': 'Traducción actualizada'
+        },
+
+        'translation_submitted': {
+
+            'zh': '翻译已提交，等待作者确认', 'zh-TW': '翻譯已提交，等待作者確認',
+
+            'ja': '翻訳が提出されました。作者の確認をお待ちください',
+
+            'en': 'Translation submitted, waiting for author confirmation',
+
+            'ru': 'Перевод отправлен, ожидается подтверждение автора',
+
+            'ko': '번역이 제출되었습니다. 작가의 확인을 기다려 주세요',
+
+            'fr': 'Traduction soumise, en attente de confirmation de l\'auteur',
+
+            'es': 'Traducción enviada, esperando confirmación del autor'
+
+        },
+
+        'submit_translation': {
+
+            'zh': '提交翻译', 'zh-TW': '提交翻譯',
+
+            'ja': '翻訳を提出',
+
+            'en': 'Submit Translation',
+
+            'ru': 'Отправить перевод',
+
+            'ko': '번역 제출',
+
+            'fr': 'Soumettre la traduction',
+
+            'es': 'Enviar traducción'
 
         },
 
@@ -4820,11 +4854,25 @@ def get_message(key, lang=None, **kwargs):
 
             'ru': 'Вы уже приняли этот перевод',
 
-            'ko': '이미 이 번역을 승인했습니다',
+        },
 
-            'fr': 'Vous avez déjà accepté cette traduction',
+        'translation_cannot_be_accepted': {
 
-            'es': 'Ya has aceptado esta traducción'
+            'zh': '该翻译状态不允许确认',
+
+            'zh-TW': '該翻譯狀態不允許確認',
+
+            'ja': 'この翻訳の状態では承認できません',
+
+            'en': 'This translation status cannot be accepted',
+
+            'ru': 'Этот статус перевода не может быть принят',
+
+            'ko': '이 번역 상태는 승인할 수 없습니다',
+
+            'fr': 'Ce statut de traduction ne peut pas être accepté',
+
+            'es': 'Este estado de traducción no puede ser aceptado'
 
         },
 
@@ -21708,6 +21756,60 @@ def edit_translation(work_id):
 
             return redirect(url_for('work_detail', work_id=work_id))
 
+            
+
+        elif 'submit_translation' in request.form:
+
+            content = clean_html_content(request.form['translation_content'])
+
+            
+
+            # 处理多媒体文件上传
+
+            media_filename = None
+
+            file = request.files.get('translation_media_file')
+
+            if file and file.filename:
+
+                if not is_allowed_file(file.filename):
+
+                    flash(get_message('file_type_not_allowed'), 'error')
+
+                    return redirect(url_for('edit_translation', work_id=work_id))
+
+                
+
+                filename = secure_filename(file.filename)
+
+                ext = filename.rsplit('.', 1)[-1].lower()
+
+                media_filename = f"translation_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{current_user.id}.{ext}"
+
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], media_filename))
+
+            
+
+            # 更新翻译并提交
+
+            translation.content = content
+
+            translation.status = 'submitted'  # 提交翻译
+
+            translation.updated_at = datetime.utcnow()
+
+            if media_filename:
+
+                translation.media_filename = media_filename
+
+            
+
+            db.session.commit()
+
+            flash(get_message('translation_submitted'), 'success')
+
+            return redirect(url_for('work_detail', work_id=work_id))
+
     
 
     return render_template('edit_translation.html', work=work, translation=translation)
@@ -22000,17 +22102,19 @@ def accept_translation(work_id):
 
     
 
+    # 检查翻译状态是否可以被确认（允许 draft 和 submitted 状态）
+    if translation.status not in ['draft', 'submitted']:
+        if request.headers.get('Content-Type') == 'application/json':
+            return jsonify({'success': False, 'message': get_message('translation_cannot_be_accepted')})
+        else:
+            flash(get_message('translation_cannot_be_accepted'), 'error')
+            return redirect(url_for('work_detail', work_id=work_id))
+
     # 检查是否已经接受过
-
     existing_author_like = AuthorLike.query.filter_by(
-
         author_id=current_user.id, 
-
         translation_id=translation.id
-
     ).first()
-
-    
 
     if existing_author_like:
 

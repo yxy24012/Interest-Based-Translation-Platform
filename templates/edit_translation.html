@@ -102,10 +102,15 @@
                         {% endif %}
                     </div>
                     
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 flex-wrap">
                         <button type="submit" name="update_translation" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>{{ get_message('save_changes') if get_message('save_changes') else '保存修改' }}
                         </button>
+                        {% if translation.status == 'draft' %}
+                        <button type="submit" name="submit_translation" class="btn btn-success">
+                            <i class="fas fa-paper-plane me-2"></i>{{ get_message('submit_translation') if get_message('submit_translation') else '提交翻译' }}
+                        </button>
+                        {% endif %}
                         <a href="{{ url_for('work_detail', work_id=work.id) }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>{{ get_message('back_to_details') if get_message('back_to_details') else (get_message('back') if get_message('back') else '返回') }}
                         </a>
